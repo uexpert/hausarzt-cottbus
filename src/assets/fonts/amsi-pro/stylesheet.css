@@ -1,0 +1,192 @@
+@font-face {
+    font-family: 'Amsi Pro AKS Narrow';
+    src: url('AmsiProAKSNarrow-Light.eot');
+    src: local('Amsi Pro AKS Narrow Light'), local('AmsiProAKSNarrow-Light'),
+        url('AmsiProAKSNarrow-Light.eot?#iefix') format('embedded-opentype'),
+        url('AmsiProAKSNarrow-Light.woff2') format('woff2'),
+        url('AmsiProAKSNarrow-Light.woff') format('woff'),
+        url('AmsiProAKSNarrow-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Amsi Pro AKS Narrow';
+    src: url('AmsiProAKSNarrow-Italic.eot');
+    src: local('Amsi Pro AKS Narrow Italic'), local('AmsiProAKSNarrow-Italic'),
+        url('AmsiProAKSNarrow-Italic.eot?#iefix') format('embedded-opentype'),
+        url('AmsiProAKSNarrow-Italic.woff2') format('woff2'),
+        url('AmsiProAKSNarrow-Italic.woff') format('woff'),
+        url('AmsiProAKSNarrow-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Amsi Pro AKS Narrow';
+    src: url('AmsiProAKSNarrow-LightItalic.eot');
+    src: local('Amsi Pro AKS Narrow Light Italic'), local('AmsiProAKSNarrow-LightItalic'),
+        url('AmsiProAKSNarrow-LightItalic.eot?#iefix') format('embedded-opentype'),
+        url('AmsiProAKSNarrow-LightItalic.woff2') format('woff2'),
+        url('AmsiProAKSNarrow-LightItalic.woff') format('woff'),
+        url('AmsiProAKSNarrow-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Amsi Pro AKS Narrow';
+    src: url('AmsiProAKSNarrow-Bold.eot');
+    src: local('Amsi Pro AKS Narrow Bold'), local('AmsiProAKSNarrow-Bold'),
+        url('AmsiProAKSNarrow-Bold.eot?#iefix') format('embedded-opentype'),
+        url('AmsiProAKSNarrow-Bold.woff2') format('woff2'),
+        url('AmsiProAKSNarrow-Bold.woff') format('woff'),
+        url('AmsiProAKSNarrow-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Amsi Pro AKS Narrow';
+    src: url('AmsiProAKSNarrow-ExtraLight.eot');
+    src: local('Amsi Pro AKS Narrow ExtraLight'), local('AmsiProAKSNarrow-ExtraLight'),
+        url('AmsiProAKSNarrow-ExtraLight.eot?#iefix') format('embedded-opentype'),
+        url('AmsiProAKSNarrow-ExtraLight.woff2') format('woff2'),
+        url('AmsiProAKSNarrow-ExtraLight.woff') format('woff'),
+        url('AmsiProAKSNarrow-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Amsi Pro AKS Narrow';
+    src: url('AmsiProAKSNarrow-BlackItalic.eot');
+    src: local('Amsi Pro AKS Narrow Black Italic'), local('AmsiProAKSNarrow-BlackItalic'),
+        url('AmsiProAKSNarrow-BlackItalic.eot?#iefix') format('embedded-opentype'),
+        url('AmsiProAKSNarrow-BlackItalic.woff2') format('woff2'),
+        url('AmsiProAKSNarrow-BlackItalic.woff') format('woff'),
+        url('AmsiProAKSNarrow-BlackItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Amsi Pro AKS Narrow';
+    src: url('AmsiProAKSNarrow-Black.eot');
+    src: local('Amsi Pro AKS Narrow Black'), local('AmsiProAKSNarrow-Black'),
+        url('AmsiProAKSNarrow-Black.eot?#iefix') format('embedded-opentype'),
+        url('AmsiProAKSNarrow-Black.woff2') format('woff2'),
+        url('AmsiProAKSNarrow-Black.woff') format('woff'),
+        url('AmsiProAKSNarrow-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Amsi Pro AKS Narrow';
+    src: url('AmsiProAKSNarrow-BoldItalic.eot');
+    src: local('Amsi Pro AKS Narrow Bold Italic'), local('AmsiProAKSNarrow-BoldItalic'),
+        url('AmsiProAKSNarrow-BoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('AmsiProAKSNarrow-BoldItalic.woff2') format('woff2'),
+        url('AmsiProAKSNarrow-BoldItalic.woff') format('woff'),
+        url('AmsiProAKSNarrow-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Amsi Pro AKS Narrow';
+    src: url('AmsiProAKSNarrow-ExtraLightItalic.eot');
+    src: local('Amsi Pro AKS Narrow ExtraLight Italic'), local('AmsiProAKSNarrow-ExtraLightItalic'),
+        url('AmsiProAKSNarrow-ExtraLightItalic.eot?#iefix') format('embedded-opentype'),
+        url('AmsiProAKSNarrow-ExtraLightItalic.woff2') format('woff2'),
+        url('AmsiProAKSNarrow-ExtraLightItalic.woff') format('woff'),
+        url('AmsiProAKSNarrow-ExtraLightItalic.ttf') format('truetype');
+    font-weight: 200;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Amsi Pro AKS Narrow';
+    src: url('AmsiProAKSNarrow-SemiBold.eot');
+    src: local('Amsi Pro AKS Narrow SemiBold'), local('AmsiProAKSNarrow-SemiBold'),
+        url('AmsiProAKSNarrow-SemiBold.eot?#iefix') format('embedded-opentype'),
+        url('AmsiProAKSNarrow-SemiBold.woff2') format('woff2'),
+        url('AmsiProAKSNarrow-SemiBold.woff') format('woff'),
+        url('AmsiProAKSNarrow-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Amsi Pro AKS Narrow';
+    src: url('AmsiProAKSNarrow-Thin.eot');
+    src: local('Amsi Pro AKS Narrow Thin'), local('AmsiProAKSNarrow-Thin'),
+        url('AmsiProAKSNarrow-Thin.eot?#iefix') format('embedded-opentype'),
+        url('AmsiProAKSNarrow-Thin.woff2') format('woff2'),
+        url('AmsiProAKSNarrow-Thin.woff') format('woff'),
+        url('AmsiProAKSNarrow-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Amsi Pro AKS Narrow Ultra';
+    src: url('AmsiProAKSNarrow-Ultra.eot');
+    src: local('Amsi Pro AKS Narrow Ultra'), local('AmsiProAKSNarrow-Ultra'),
+        url('AmsiProAKSNarrow-Ultra.eot?#iefix') format('embedded-opentype'),
+        url('AmsiProAKSNarrow-Ultra.woff2') format('woff2'),
+        url('AmsiProAKSNarrow-Ultra.woff') format('woff'),
+        url('AmsiProAKSNarrow-Ultra.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Amsi Pro AKS Narrow';
+    src: url('AmsiProAKSNarrow-SemiBoldItalic.eot');
+    src: local('Amsi Pro AKS Narrow SemiBold Italic'), local('AmsiProAKSNarrow-SemiBoldItalic'),
+        url('AmsiProAKSNarrow-SemiBoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('AmsiProAKSNarrow-SemiBoldItalic.woff2') format('woff2'),
+        url('AmsiProAKSNarrow-SemiBoldItalic.woff') format('woff'),
+        url('AmsiProAKSNarrow-SemiBoldItalic.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Amsi Pro AKS Narrow Ultra';
+    src: url('AmsiProAKSNarrow-UltraItalic.eot');
+    src: local('Amsi Pro AKS Narrow Ultra Italic'), local('AmsiProAKSNarrow-UltraItalic'),
+        url('AmsiProAKSNarrow-UltraItalic.eot?#iefix') format('embedded-opentype'),
+        url('AmsiProAKSNarrow-UltraItalic.woff2') format('woff2'),
+        url('AmsiProAKSNarrow-UltraItalic.woff') format('woff'),
+        url('AmsiProAKSNarrow-UltraItalic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Amsi Pro AKS Narrow';
+    src: url('AmsiProAKSNarrow-Regular.eot');
+    src: local('Amsi Pro AKS Narrow'), local('AmsiProAKSNarrow-Regular'),
+        url('AmsiProAKSNarrow-Regular.eot?#iefix') format('embedded-opentype'),
+        url('AmsiProAKSNarrow-Regular.woff2') format('woff2'),
+        url('AmsiProAKSNarrow-Regular.woff') format('woff'),
+        url('AmsiProAKSNarrow-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Amsi Pro AKS Narrow';
+    src: url('AmsiProAKSNarrow-ThinItalic.eot');
+    src: local('Amsi Pro AKS Narrow Thin Italic'), local('AmsiProAKSNarrow-ThinItalic'),
+        url('AmsiProAKSNarrow-ThinItalic.eot?#iefix') format('embedded-opentype'),
+        url('AmsiProAKSNarrow-ThinItalic.woff2') format('woff2'),
+        url('AmsiProAKSNarrow-ThinItalic.woff') format('woff'),
+        url('AmsiProAKSNarrow-ThinItalic.ttf') format('truetype');
+    font-weight: 100;
+    font-style: italic;
+}
+
