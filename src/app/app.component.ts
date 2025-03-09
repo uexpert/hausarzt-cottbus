@@ -1,5 +1,6 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { MainComponent } from './pages/main/main.component';
+import { environment } from '../environments/environment';
 
 declare var $: any; // Declare jQuery
 declare var bootstrap: any; // Declare jQuery
@@ -10,13 +11,25 @@ declare var bootstrap: any; // Declare jQuery
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements AfterViewInit, OnDestroy {
+  observer: MutationObserver | null = null;
+
 
   ngAfterViewInit(): void {
-    this.startCustomJS();
+    setTimeout(() => {
+      this.startCustomJS();
+      this.waitForOwlCarousel();
+    }, 500);
+  }
+
+  ngOnDestroy() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
   }
 
   startCustomJS() {
+    const self = this;
     // NAVBAR
     $('.navbar-nav .nav-link').click(function(){
         $(".navbar-collapse").collapse('hide');
@@ -58,7 +71,11 @@ export class AppComponent implements AfterViewInit {
 
       var ReviewsOwlItem = $('.reviews-carousel .owl-item').width();
 
-      $('.reviews-carousel .owl-nav').css({'width' : (ReviewsOwlItem) + 'px'});
+      if (ReviewsOwlItem) {
+        $('.reviews-carousel .owl-nav').css({'width' : (ReviewsOwlItem) + 'px'});        
+      } else {
+        !environment.production && console.log('Element not found or width is 0');
+      }
     }
 
     $(window).on("resize", ReviewsNavResize);
@@ -84,5 +101,31 @@ export class AppComponent implements AfterViewInit {
         }
       }
     });
+  }
+
+  waitForOwlCarousel() {
+    let attempts = 0;
+    const maxAttempts = 10; // Retry up to 10 times
+
+    const checkOwlCarousel = () => {
+      const ReviewsOwlItem = $('.reviews-carousel .owl-item').first().width();
+
+      if (ReviewsOwlItem) {
+        this.setNavWidth(ReviewsOwlItem);
+      } else if (attempts < maxAttempts) {
+        attempts++;
+        console.log(`Retrying (${attempts}/${maxAttempts})...`);
+        setTimeout(checkOwlCarousel, 500); // Retry every 500ms
+      } else {
+        console.warn("Owl Carousel items were not found.");
+      }
+    };
+
+    checkOwlCarousel();
+  }
+
+  setNavWidth(width: number) {
+    $('.reviews-carousel .owl-nav').css({ 'width': `${width}px` });
+    console.log(`.owl-nav width set to ${width}px`);
   }
 }
