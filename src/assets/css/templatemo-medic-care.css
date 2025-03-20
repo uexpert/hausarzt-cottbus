@@ -39,7 +39,7 @@ body {
     background: var(--white-color);
     font-family: var(--body-font-family);    
     position: relative;
-    padding-top: 94px;
+    padding-top: 111px;
 }
 
 /*---------------------------------------
@@ -347,6 +347,12 @@ strong {
 }
 
 .nav-link:focus {
+  color: var(--p-color);
+}
+
+.navbar-nav .nav-item:not(.active) .nav-link, 
+.nav-link:focus, 
+.nav-link:hover {
   color: var(--p-color);
 }
 
