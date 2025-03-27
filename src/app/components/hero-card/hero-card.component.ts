@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { WindowService } from '../../core/services/window.service';
 
 @Component({
   selector: 'hero-card',
@@ -8,5 +9,6 @@ import { Component } from '@angular/core';
   styleUrl: './hero-card.component.scss'
 })
 export class HeroCardComponent {
+  ws = inject(WindowService);
 
 }

@@ -1,6 +1,7 @@
-import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, inject, OnDestroy } from '@angular/core';
 import { MainComponent } from './pages/main/main.component';
 import { environment } from '../environments/environment';
+import { WindowService } from './core/services/window.service';
 
 declare var $: any; // Declare jQuery
 declare var bootstrap: any; // Declare jQuery
@@ -13,9 +14,11 @@ declare var bootstrap: any; // Declare jQuery
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
   observer: MutationObserver | null = null;
+  ws = inject(WindowService);
 
 
   ngAfterViewInit(): void {
+    this.ws.checkBreakpoints({width: window.innerWidth, height: window.innerHeight});
     setTimeout(() => {
       this.startCustomJS();
       this.waitForOwlCarousel();

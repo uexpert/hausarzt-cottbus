@@ -22,7 +22,7 @@
     </div>
 </section>
 
-<section class="gallery">
+<section class="gallery" style="margin-bottom: 136px;">
     <div class="container">
         <div class="row">
 
@@ -38,23 +38,43 @@
     </div>
 </section>
 
-<div class="container">
-    <div class="row overflow-hidden"> 
-         <div class="col-12 col-md-6">
-             <div class="image-container translate-effect-right">
-                 <img src="assets/custom/images/mission-img.jpg" alt="Fables Template" class="img-fluid">
+<section style="margin-bottom: 74px;">
+    <div class="container" #fadeElementInRight>
+        <div class="row overflow-hidden"> 
+             <div class="col-12 col-md-6 ps-0">
+                 <div class="image-container translate-effect-right">
+                     <img [src]="imagesPath + 'team/team-01.jpeg'" alt="Fables Template" class="img-fluid">
+                 </div>
+             </div>
+             <div class="col-12 col-md-6 mt-4 mt-md-0 pe-0" [@fadeInRightExpert]="animateInRightState">
+                 <h2 class="font-30 font-weight-bold fables-second-text-color my-4 d-inline-block d-lg-block">Our Mission</h2>
+                 <div class="fables-vision-detail fables-forth-text-color wow fadeInRight" data-wow-duration="1.5s">
+                     It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. <br> <br>
+                     It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here,
+                 </div>
              </div>
          </div>
-         <div class="col-12 col-md-6 mt-4 mt-md-0">
-             <span class="fables-iconrocket-icon fables-second-text-color fa-3x"></span>
-             <h2 class="font-30 font-weight-bold fables-second-text-color my-4 d-inline-block d-lg-block wow fadeInRight" data-wow-duration="1.5s">Our Mission</h2>
-             <div class="fables-vision-detail fables-forth-text-color wow fadeInRight" data-wow-duration="1.5s">
-                 It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. <br> <br>
-                 It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here,
-             </div>
+    </div>
+</section>
+
+<section style="margin-bottom: 136px;">
+    <div class="container" #fadeElementInLeft>
+        <div class="row overflow-hidden"> 
+            <div class="col-12 col-md-6 mt-4 mt-md-0 pe-0" [@fadeInLeftExpert]="animateInLeftState">
+                <h2 class="font-30 font-weight-bold fables-second-text-color my-4 d-inline-block d-lg-block">Our Mission</h2>
+                <div class="fables-vision-detail fables-forth-text-color wow fadeInRight" data-wow-duration="1.5s" >
+                    It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. <br> <br>
+                    It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here,
+                </div>
+            </div>
+            <div class="col-12 col-md-6 ps-0">
+                <div class="image-container translate-effect-right">
+                    <img [src]="imagesPath + 'team/team-01.jpeg'" alt="Fables Template" class="img-fluid">
+                </div>
+            </div>
          </div>
-     </div>
-</div>
+    </div>
+</section>
 
 <section class="section-padding pb-0 nav-section" id="timeline">
     <div class="container">

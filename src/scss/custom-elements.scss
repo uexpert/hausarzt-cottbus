@@ -1,0 +1,30 @@
+/* Style for the Scroll to Top Button */
+#scrollTopBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: opacity 0.3s, transform 0.3s;
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+/* Hover Effect */
+#scrollTopBtn:hover {
+    background-color: var(--primary-color);
+}
+
+/* Show when scrolled down */
+#scrollTopBtn.show {
+    opacity: 1;
+    transform: scale(1);
+}
+

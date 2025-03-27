@@ -1,20 +1,43 @@
 
 <div class="heroText d-flex flex-column justify-content-center">
 
-    <h1 class="mt-auto mb-2">
-        Better
-        <div class="animated-info">
-            <span class="animated-item">health</span>
-            <span class="animated-item">days</span>
-            <span class="animated-item">lives</span>
+    <h4 class="mb-2 mt-auto text-primary"> Sprechzeiten </h4>
+    <div class="d-flex flex-wrap">
+        <!-- <div class="px-3 mb-2" style="border-right: 1px solid #717287"> -->
+        <div class="px-3 mb-2" [ngStyle]="{'width': ws.mobile ? '100%' : '37%', 'border-right': ws.mobile ? 'none' : '1px solid #717287'}">
+            <div class="mb-2">
+                <div class="font-16" style="font-weight: 600;">Akutsprechstunde</div>
+                <div>Mo-Fr 08:00 - 08:45 Uhr</div>
+            </div>
+            <div class="mb-2">
+                <div class="font-16" style="font-weight: 600;">Normale Sprechstunde</div>
+                <div>Mo-Fr 09:00 - 12:00 Uhr</div>
+            </div>
         </div>
-    </h1>
+        <div class="px-3 mb-2" [ngStyle]="{'width': ws.mobile ? '100%' : '63%'}">
+            <div class="mb-2">
+                <div class="font-16" style="font-weight: 600;">Nach Vereinbarung</div>
+                <div>Di, Do ab 14:00 Uhr</div>
+            </div>
+            <div class="mb-2">
+                <div class="font-16 text-break" style="font-weight: 600;">Hautarzt-Sprechstunde Nach Vereinbarung (nur Privatleistung)</div>
+                <!-- <div>Di, Do ab 14:00 Uhr</div> -->
+            </div>
+        </div>
+        <div class="px-3 w-100">
+            <div class="mb-2">
+                <div class="font-16 text-primary" style="font-weight: 600;">Fremdsprachige Sprechstunde Mo, Mi, Fr nach Vereinbarung ab 14:00 Uhr
+                </div>
+                <!-- <div>Di, Do ab 14:00 Uhr</div> -->
+            </div>
+        </div>
+    </div>
 
-    <p class="mb-4">Medic Care is a Bootstrap 5 Template provided by TemplateMo website. Credits go to FreePik and RawPixel for images used in this template.</p>
+    <div class="heroLinks d-flex flex-wrap align-items-center" style="gap: 32px">
+        <span class="font-18 fw-bold p-2 text-primary" style="border: 1px solid var(--primary-color);">
+            Terminvereinbarung
+        </span>
 
-    <div class="heroLinks d-flex flex-wrap align-items-center">
-        <a class="custom-link me-4" href="#about" data-hover="Learn More">Learn More</a>
-
-        <p class="contact-phone mb-0"><i class="bi-phone"></i> 010-020-0340</p>
+        <p class="contact-phone mb-0"><i class="bi-phone"></i> 0355 - 822006</p>
     </div>
 </div>

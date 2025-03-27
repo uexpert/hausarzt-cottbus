@@ -1,0 +1,37 @@
+
+<!-- one -->
+<div *ngIf="isDisplayed" @container>
+	<div @enterExitLeft></div>
+	<div @enterExitRight></div>
+</div>
+
+<!-- two -->
+<div *ngIf="show" @fadeSlideInOut>...</div>
+
+<!-- three -->
+<div [@enabledStateChange]="stateOfElement">...</div>
+
+<!-- four -->
+<div class="card"></div>
+<div class="card"></div>
+<div class="card"></div>
+<div class="card"></div>
+
+<!-- five : Route -->
+<div [@routeAnimation]="prepareRoute(outlet)">
+	<router-outlet #outlet="outlet"></router-outlet>
+</div>
+
+
+<!-- Six Disable animation -->
+<div [@.disabled]="disableAnimationCondition">
+	<div [@animate]="expression">Animate</div>
+</div>
+
+
+<!-- Seven sequence -->
+<div @fadeInGrow>
+    <div>First Element</div>
+    <div>Second Element</div>
+    <div>Third Element</div>
+</div>

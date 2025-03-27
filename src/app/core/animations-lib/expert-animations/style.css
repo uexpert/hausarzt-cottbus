@@ -1,0 +1,7 @@
+/* css */
+/* Nine */
+@keyframes fadeSlideGrowKeyframe {
+    30% { transform: 'opacity(1)' }
+    60% { transform: 'translateY(0)' }
+    100% { transform: 'scale(1)' }
+}
