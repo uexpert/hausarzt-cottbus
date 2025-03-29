@@ -1,0 +1,1118 @@
+// User Select
+@mixin user-select($value) {
+    -webkit-user-select: $value !important;
+    -moz-user-select: $value !important;
+    -ms-user-select: $value !important;
+    user-select: $value !important;
+}
+
+@mixin respond($breakpoint) {
+    // $breakpoint is simply a variable that can have several values
+    @if $breakpoint == xxl {
+        @media only screen and (max-width: 1411px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == xl {
+        @media only screen and (max-width: 1199px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == lg {
+        @media only screen and (max-width: 991px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == md {
+        @media only screen and (max-width: 767px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == sm {
+        @media only screen and (max-width: 575px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == xs {
+        @media only screen and (max-width: 359px) {
+            @content;
+        }
+    }
+}
+
+@mixin respond-min($breakpoint) {
+    // $breakpoint is simply a variable that can have several values
+    @if $breakpoint == xxl {
+        @media only screen and (min-width: 1412px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == xl {
+        @media only screen and (min-width: 1200px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == lg {
+        @media only screen and (min-width: 992px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == md {
+        @media only screen and (min-width: 768px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == sm {
+        @media only screen and (min-width: 576px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == xs {
+        @media only screen and (min-width: 360px) {
+            @content;
+        }
+    }
+}
+
+@mixin coarse() {
+    @media (pointer: coarse) {
+        @content;
+    }
+}
+
+@mixin fine() {
+    @media (pointer: fine) {
+        @content;
+    }
+}
+
+// ********** Expert Style **********
+// Display
+.x-xl-display {
+    @include respond(xl) {
+        display: inherit !important;
+    }
+}
+.no-x-xl-display {
+    @include respond(xl) {
+        display: none !important;
+    }
+}
+
+.x-lg-display {
+    @include respond(lg) {
+        display: inherit !important;
+    }
+}
+.no-x-lg-display {
+    @include respond(lg) {
+        display: none !important;
+    }
+}
+
+.x-md-display {
+    @include respond(md) {
+        display: inherit !important;
+    }
+}
+.no-x-md-display {
+    @include respond(md) {
+        display: none !important;
+    }
+}
+
+.x-sm-display {
+    @include respond(sm) {
+        display: inherit !important;
+    }
+}
+.no-x-sm-display {
+    @include respond(sm) {
+        display: none !important;
+    }
+}
+
+.x-xs-display {
+    @include respond(xs) {
+        display: inherit !important;
+    }
+}
+.no-x-xs-display {
+    @include respond(xs) {
+        display: none !important;
+    }
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+// Fonts size
+
+.font-md-60 {
+    font-size: clamp(40px, 7.85vw, 60px);
+}
+
+.font-lg-40 {
+    font-size: clamp(30px, 4.1vw, 40px);
+}
+
+.font-md-40 {
+    font-size: clamp(25px, 5.3vw, 40px);
+}
+
+.font-xs-40 {
+    font-size: clamp(25px, 11.2vw, 40px);
+}
+
+.font-md-33 {
+    font-size: clamp(27px, 4.32vw, 33px);
+}
+
+.font-sm-16 {
+    font-size: clamp(14px, 2.8vw, 16px) !important;
+}
+
+.font-sm-18 {
+    font-size: clamp(16px, 3.25vw, 18px) !important;
+}
+
+.font-xs-32 {
+    font-size: clamp(25px, 9vw, 32px);
+}
+
+.font-xs-30 {
+    font-size: clamp(25px, 8.33vw, 30px);
+}
+
+.font-lg-25 {
+    font-size: clamp(21px, 2.54vw, 25px);
+}
+
+.font-xs-25 {
+    font-size: clamp(20px, 7vw, 25px);
+}
+
+.font-xs-22 {
+    font-size: clamp(18px, 6.2vw, 22px);
+}
+
+.font-xs-20 {
+    font-size: clamp(16px, 5.6vw, 20px) !important;
+}
+
+.font-xs-18 {
+    font-size: clamp(16px, 5.1vw, 18px) !important;
+}
+
+.font-xs-16 {
+    font-size: clamp(14px, 4.5vw, 16px) !important;
+}
+
+.font-xs-14 {
+    font-size: clamp(12px, 4.1vw, 14px);
+}
+
+.font-xs-13 {
+    font-size: clamp(11px, 3.7vw, 13px);
+}
+
+.font-xs-12 {
+    font-size: clamp(10px, 3.4vw, 12px);
+}
+
+.font-xs-11 {
+    font-size: clamp(9px, 3.1vw, 11px);
+}
+
+.font-xs-10 {
+    font-size: clamp(9px, 2.88vw, 10px);
+}
+
+.font-xs-9 {
+    font-size: clamp(8px, 2.53vw, 9px);
+}
+
+.font-24 {
+    font-size: 24px !important;
+}
+
+.font-22 {
+    font-size: 22px !important;
+}
+
+.font-20 {
+    font-size: 20px !important;
+}
+
+.font-18 {
+    font-size: 18px !important;
+}
+
+.font-13 {
+    font-size: 13px !important;
+}
+
+.font-9 {
+    font-size: 9px !important;
+}
+
+.font-8 {
+    font-size: 8px !important;
+}
+
+.font-7 {
+    font-size: 7px !important;
+}
+
+// Font Weight
+.x-font-thin {
+    font-weight: 100 !important;
+}
+
+.x-font-extLight {
+    font-weight: 200 !important;
+}
+
+.x-font-light {
+    font-weight: 300 !important;
+}
+
+.x-font-regular {
+    font-weight: 400 !important;
+}
+
+.x-font-medium {
+    font-weight: 500 !important;
+}
+
+.x-font-semiBold {
+    font-weight: 600 !important;
+}
+
+.x-font-bold {
+    font-weight: 700 !important;
+}
+
+.x-font-extBold {
+    font-weight: 800 !important;
+}
+
+.x-font-thick {
+    font-weight: 900 !important;
+}
+
+// Left, Right, Top, Bottom
+.x-left-0 {
+    left: 0 !important;
+}
+
+.x-right-0 {
+    right: 0 !important;
+}
+
+.x-top-0 {
+    top: 0 !important;
+}
+
+.x-bottom-0 {
+    bottom: 0 !important;
+}
+
+// Cursor
+.x-pointer {
+    cursor: pointer;
+}
+
+.x-cursor-default {
+    cursor: default !important;
+}
+
+.x-md-pointer {
+    cursor: default;
+    @include respond(md) {
+        cursor: pointer;
+    }
+}
+
+.x-no-pointer-events {
+    pointer-events: none !important;
+}
+
+.x-pointer-events-all {
+    pointer-events: all !important;
+}
+
+// User select
+.x-no-user-select {
+    @include user-select(none);
+}
+
+.icon-container {
+    display: inline-flex;
+    line-height: 0;
+}
+
+// Dimensions
+
+.x-min-wh-0 {
+    min-width: 0;
+    min-height: 0;
+}
+
+.x-max-h-100-px {
+    max-height: 100px;
+}
+
+.x-max-h-900-px {
+    max-height: 900px;
+}
+
+.w-sm-auto {
+    width: 100%;
+    @media only screen and (min-width: 576px) {
+        width: auto !important;
+    }
+}
+
+.w-xs-auto {
+    @media only screen and (min-width: 360px) {
+        width: auto !important;
+    }
+}
+
+// order
+.order-xs-0 {
+    @include respond-min(xs) {
+        order: 0;
+    }
+}
+
+.order-xs-1 {
+    @include respond-min(xs) {
+        order: 1;
+    }
+}
+
+// Box shadows
+.x-no-box-shadow {
+    box-shadow: none !important;
+}
+
+.x-no-box-shadow-focus {
+    &:focus {
+        box-shadow: none !important;
+    }
+}
+
+.x-no-box-shadow-hover {
+    @include fine() {
+        &:hover {
+            box-shadow: none !important;
+        }
+    }
+}
+
+.x-no-box-shadow-active {
+    &:active {
+        box-shadow: none !important;
+    }
+}
+
+.x-no-box-shadow-disabled {
+    &:disabled {
+        box-shadow: none !important;
+    }
+}
+
+.x-line-height-0 {
+    line-height: 0 !important;
+}
+
+// Borders
+
+.x-no-border {
+    border: none !important;
+}
+
+.x-no-border-focus {
+    &:focus {
+        border: none !important;
+    }
+}
+
+.x-no-border-hover {
+    @include fine() {
+        &:hover {
+            border: none !important;
+        }
+    }
+}
+
+.x-no-border-active {
+    &:active {
+        border: none !important;
+    }
+}
+
+.x-no-border-disabled {
+    &:disabled {
+        border: none !important;
+    }
+}
+
+.x-no-border-top {
+    border-top: none !important;
+}
+
+.x-no-border-bottom {
+    border-bottom: none !important;
+}
+
+.x-no-border-tb {
+    border-bottom: none !important;
+    border-top: none !important;
+}
+
+.x-no-border-left {
+    border-left: none !important;
+}
+
+.x-no-border-right {
+    border-right: none !important;
+}
+
+.x-no-border-lr {
+    border-left: none !important;
+    border-right: none !important;
+}
+
+.x-border-left-1 {
+    border-left-width: 1px;
+    border-left-style: solid;
+}
+
+.x-border-bottom-1 {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+
+.x-border-left-sm-1 {
+    @extend .x-border-left-1;
+
+    @include respond(sm) {
+        border: none;
+    }
+}
+
+.x-border-left-2 {
+    border-left-width: 2px;
+    border-left-style: solid;
+}
+
+.x-border-left-sm-2 {
+    @extend .x-border-left-2;
+
+    @include respond(sm) {
+        border: none;
+    }
+}
+
+.x-border-left-9 {
+    border-left-width: 9px;
+    border-left-style: solid;
+}
+
+.x-border-left-sm-9 {
+    @extend .x-border-left-9;
+
+    @include respond(sm) {
+        border: none;
+    }
+}
+
+.x-radius-2 {
+    border-radius: 2px !important;
+}
+
+.x-radius-3 {
+    border-radius: 3px !important;
+}
+
+.x-radius-4 {
+    border-radius: 4px !important;
+}
+
+.x-radius-5 {
+    border-radius: 5px !important;
+}
+
+.x-radius-6 {
+    border-radius: 6px !important;
+}
+
+.x-radius-0 {
+    border-radius: 0px !important;
+}
+
+.x-radius-tl-0 {
+    border-top-left-radius: 0px !important;
+}
+
+.x-radius-tr-0 {
+    border-top-right-radius: 0px !important;
+}
+
+.x-radius-bl-0 {
+    border-bottom-left-radius: 0px !important;
+}
+
+.x-radius-br-0 {
+    border-bottom-right-radius: 0px !important;
+}
+
+.x-text-underline {
+    text-decoration: underline !important;
+}
+
+.x-no-decoration {
+    text-decoration: none !important;
+}
+
+// Buttons
+.x-icon-btn {
+    display: inline-flex;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    transition: all 100ms ease;
+
+    &:focus {
+        fill-opacity: 1;
+    }
+
+    @include fine() {
+        &:hover {
+            fill-opacity: 0.7;
+        }
+    }
+
+    &:active {
+        fill-opacity: 1;
+    }
+
+    &:disabled,
+    &.disabled {
+        fill-opacity: 0.5;
+    }
+}
+
+
+.x-fx-column {
+    display: flex;
+    flex-direction: column;
+    -ms-flex-direction: column;
+}
+
+.x-fx-column:only-child {
+    width: 100%;
+    color: red;
+}
+
+@mixin bar-section($color) {
+    height: 6px;
+
+    .bar-container {
+        border-radius: 3px;
+        height: 100%;
+        background-color: white;
+        border: 1px solid #d9d9d9;
+
+        .bar {
+            transition: all 1s ease-out;
+            height: 100%;
+            border-radius: 3px;
+            background-color: $color;
+
+            &.animate-bar {
+                background-color: $color;
+                background-image: repeating-linear-gradient(
+                    -45deg,
+                    transparent,
+                    transparent 20px,
+                    var(--ant-secondary-color-active) 20px,
+                    var(--ant-secondary-color-active) 40px
+                );
+                animation: slide 1s linear infinite;
+                will-change: background-position;
+            }
+        }
+    }
+}
+
+.x-text-disabled-transparent {
+    &:disabled {
+        color: transparent !important;
+    }
+}
+
+.x-bg-disabled-transparent {
+    &:disabled {
+        background-color: transparent !important;
+    }
+}
+
+.x-border-disabled-transparent {
+    &:disabled {
+        border-color: transparent !important;
+    }
+}
+
+.x-outline-disabled-transparent {
+    &:disabled {
+        outline-color: transparent !important;
+    }
+}
+
+.loading-screen {
+    position: fixed;
+    z-index: 2000;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+#preview-spin {
+    width: 100%;
+    position: static;
+}
+
+.plus-circle {
+    width: 35px;
+    height: 35px;
+    // line-height: 0;
+    border: 1px dashed;
+    // span {
+    //     font-size: 25px;
+    //     display: inline-block;
+    //     line-height: 11px;
+    //     height: 17px;
+    // }
+}
+
+.row-flow-block {
+    display: flex;
+    align-items: center;
+    grid-column-gap: 1rem;
+}
+
+.vertical-table-cell {
+    height: 103px;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: initial;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    margin: auto;
+}
+
+.x-bg-primary-1 {
+    background-color: var(--ant-primary-1);
+}
+
+.standard-box {
+    padding: 16px;
+    background-color: #f5f5f5;
+    border: 1px solid #d9d9d9;
+}
+
+.docs-viewer-operation-button {
+    padding: 14px;
+    line-height: normal;
+    cursor: pointer;
+
+    &:hover {
+        background: rgb(0 0 0 / 20%);
+    }
+}
+
+.files-size-bar-section {
+    @include bar-section(var(--ant-primary-color));
+    height: 8px;
+
+    .bar-container .bar.danger {
+        background-color: var(--ant-error-color);
+    }
+}
+
+// Define sides for property lookups
+$sides: (
+    t: "top",
+    e: "right",
+    b: "bottom",
+    s: "left",
+    x: (
+        "left",
+        "right"
+    ),
+    // Horizontal, left and right
+    y:
+        (
+            "top",
+            "bottom"
+        )
+        // Vertical, top and bottom
+);
+
+// Define the spacers map for margins/paddings
+$spacers: (
+    0: 0,
+    1: 0.25rem,
+    2: 0.5rem,
+    3: 1rem,
+    4: 1.5rem,
+    5: 3rem
+);
+
+// Define your breakpoints (similar to Bootstrap's breakpoints)
+$breakpoints: (
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px,
+    xxl: 1400px
+);
+
+// Mixin to generate the spacing classes dynamically with full property names (e.g., padding-left)
+@mixin generate-spacing-classes($property, $side: null, $breakpoint: null) {
+    $class-prefix: if($property == "padding", "p", "m"); // Prefix 'p' for padding, 'm' for margin
+    $side-prefix: if($side == null, "", $side); // Empty if no side, otherwise t/e/b/s/x/y
+    $breakpoint-prefix: if($breakpoint == null, "", "-" + $breakpoint); // Add breakpoint if present
+
+    @each $key, $value in $spacers {
+        $class-name: x-#{$class-prefix}#{$side-prefix}#{$breakpoint-prefix}-#{$key}; // Generate the class name
+
+        @if $breakpoint == null {
+            .#{$class-name} {
+                @if $side == null {
+                    #{$property}: $value !important;
+                } @else if $side == "x" or $side == "y" {
+                    // Horizontal or vertical axes: apply both left/right or top/bottom
+                    @each $individual-side in map-get($sides, $side) {
+                        #{$property}-#{$individual-side}: $value !important;
+                    }
+                } @else {
+                    // For t, b, e, s: directly map to full properties
+                    #{$property}-#{map-get($sides, $side)}: $value !important;
+                }
+            }
+        } @else {
+            @media (min-width: map-get($breakpoints, $breakpoint)) {
+                .#{$class-name} {
+                    @if $side == null {
+                        #{$property}: $value !important;
+                    } @else if $side == "x" or $side == "y" {
+                        // Horizontal or vertical axes: apply both left/right or top/bottom
+                        @each $individual-side in map-get($sides, $side) {
+                            #{$property}-#{$individual-side}: $value !important;
+                        }
+                    } @else {
+                        // For t, b, e, s: directly map to full properties
+                        #{$property}-#{map-get($sides, $side)}: $value !important;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Mixin to generate the spacing classes for all breakpoints
+@mixin generate-all-spacing-classes {
+    // Generate for all sides and breakpoints
+    @include generate-spacing-classes("padding");
+    @include generate-spacing-classes("margin");
+
+    // Generate for individual sides (t, e, b, s, x, y)
+    @include generate-spacing-classes("padding", "t");
+    @include generate-spacing-classes("padding", "e");
+    @include generate-spacing-classes("padding", "b");
+    @include generate-spacing-classes("padding", "s");
+    @include generate-spacing-classes("padding", "x");
+    @include generate-spacing-classes("padding", "y");
+
+    @include generate-spacing-classes("margin", "t");
+    @include generate-spacing-classes("margin", "e");
+    @include generate-spacing-classes("margin", "b");
+    @include generate-spacing-classes("margin", "s");
+    @include generate-spacing-classes("margin", "x");
+    @include generate-spacing-classes("margin", "y");
+}
+
+// Generate default (non-responsive) spacing classes
+@include generate-all-spacing-classes();
+
+// Generate responsive spacing classes for each breakpoint
+@each $breakpoint in map-keys($breakpoints) {
+    @include generate-spacing-classes("padding", null, $breakpoint);
+    @include generate-spacing-classes("margin", null, $breakpoint);
+
+    // For individual sides (t, e, b, s, x, y)
+    @include generate-spacing-classes("padding", "t", $breakpoint);
+    @include generate-spacing-classes("padding", "e", $breakpoint);
+    @include generate-spacing-classes("padding", "b", $breakpoint);
+    @include generate-spacing-classes("padding", "s", $breakpoint);
+    @include generate-spacing-classes("padding", "x", $breakpoint);
+    @include generate-spacing-classes("padding", "y", $breakpoint);
+
+    @include generate-spacing-classes("margin", "t", $breakpoint);
+    @include generate-spacing-classes("margin", "e", $breakpoint);
+    @include generate-spacing-classes("margin", "b", $breakpoint);
+    @include generate-spacing-classes("margin", "s", $breakpoint);
+    @include generate-spacing-classes("margin", "x", $breakpoint);
+    @include generate-spacing-classes("margin", "y", $breakpoint);
+}
+
+// Define the display properties you want to generate
+$display-properties: (
+    block,
+    inline,
+    inline-block,
+    flex,
+    inline-flex,
+    grid,
+    inline-grid,
+    table,
+    table-cell,
+    table-row,
+    none,
+    initial,
+    inherit,
+    unset
+);
+
+// Function to generate display classes
+@mixin generate-display-classes($breakpoint: null) {
+    $breakpoint-prefix: if($breakpoint == null, "", "-" + $breakpoint);
+
+    @each $display-value in $display-properties {
+        $class-name: x-d#{$breakpoint-prefix}-#{$display-value};
+
+        @if $breakpoint == null {
+            .#{$class-name} {
+                display: $display-value !important;
+            }
+        } @else {
+            @media (min-width: map-get($breakpoints, $breakpoint)) {
+                .#{$class-name} {
+                    display: $display-value !important;
+                }
+            }
+        }
+    }
+}
+
+// Mixin to generate display classes for all breakpoints
+@mixin generate-all-display-classes {
+    // Generate default display classes (for all screen sizes)
+    @include generate-display-classes();
+
+    // Generate responsive display classes for each breakpoint
+    @each $breakpoint in map-keys($breakpoints) {
+        @include generate-display-classes($breakpoint);
+    }
+}
+
+// Use the mixin to generate all display classes
+@include generate-all-display-classes;
+
+// Define possible values for justify-content with correct values like space-between, space-around, space-evenly
+$global-values: ("initial", "inherit", "unset");
+
+$justify-content-values: ("flex-start", "flex-end", "center", "space-between", "space-around", "space-evenly");
+
+// Define possible values for align-items
+$align-items-values: ("flex-start", "flex-end", "center", "baseline", "stretch");
+
+$position-values: ("static", "relative", "absolute", "fixed", "sticky");
+
+// Define possible values for flex-wrap
+$flex-wrap-values: ("wrap", "nowrap", "wrap-reverse");
+
+// Define possible values for flex-direction
+$flex-direction-values: ("row", "row-reverse", "column", "column-reverse");
+
+// Define all possible values for user-select
+$user-select-values: ("none", "auto", "text", "all", "contain");
+
+// Define all possible values for pointer-events
+$pointer-events-values: ("none", "auto", "all");
+
+$positioning-titles: ("top", "bottom", "left", "right");
+
+$positioning-values: ("0", "auto");
+
+// Mixin to generate flexbox utility classes
+@mixin generate-utilities($utility, $values, $property) {
+    @each $value in $values {
+        $class-name: x-#{$utility}-#{$value}; // e.g., justify-content-start, align-items-center, etc.
+        .#{$class-name} {
+            #{$property}: #{$value} !important;
+        }
+    }
+}
+
+@mixin generate-responsive($utility, $values, $property) {
+    // Generate responsive classes for each breakpoint
+    @each $breakpoint in map-keys($breakpoints) {
+        @each $value in $values {
+            $class-name: x-#{$utility}-#{$breakpoint}-#{$value};
+            @media (min-width: map-get($breakpoints, $breakpoint)) {
+                .#{$class-name} {
+                    #{$property}: #{$value} !important;
+                }
+            }
+        }
+    }
+}
+
+// Mixin for responsive flexbox utility classes
+@mixin generate-responsive-utilities($utility, $values, $property, $withGlobalValues: false) {
+    // Generate default (non-responsive) classes
+    @include generate-utilities($utility, $values, $property);
+
+    // Generate responsive classes for each breakpoint
+    @include generate-responsive($utility, $values, $property);
+
+    @if $withGlobalValues == true {
+        @include generate-utilities($utility, $global-values, $property);
+        @include generate-responsive($utility, $global-values, $property);
+    }
+}
+
+// Generate justify-content utility classes
+@include generate-responsive-utilities("justify-content", $justify-content-values, "justify-content", true);
+
+// Generate align-items utility classes
+@include generate-responsive-utilities("align-items", $align-items-values, "align-items", true);
+
+// Generate flex-wrap utility classes
+@include generate-responsive-utilities("flex", $flex-wrap-values, "flex-wrap", true);
+
+// Generate flex-direction utility classes
+@include generate-responsive-utilities("flex", $flex-direction-values, "flex-direction", true);
+
+@include generate-responsive-utilities("position", $position-values, "position", true);
+
+// Generate user-select utility classes (e.g., user-select-none, user-select-auto, etc.)
+@include generate-responsive-utilities("user-select", $user-select-values, "user-select", true);
+
+// Generate pointer-events utility classes (e.g., pointer-events-none, pointer-events-auto, etc.)
+@include generate-responsive-utilities("pointer-events", $pointer-events-values, "pointer-events", true);
+
+@each $title in $positioning-titles {
+    @include generate-responsive-utilities($title, $positioning-values, $title, true);
+}
+
+// Generate flex-fill utility class
+.x-flex-fill {
+    flex: 1 1 auto !important;
+}
+@each $breakpoint in map-keys($breakpoints) {
+    @media (min-width: map-get($breakpoints, $breakpoint)) {
+        .x-flex-#{$breakpoint}-fill {
+            flex: 1 1 auto !important;
+        }
+    }
+}
+
+// Define possible values for width, height, min/max-width, and min/max-height
+$sizes: (
+    "0": 0px,
+    // Zero value in pixels
+    "25": 25%,
+    // Percentage values
+    "50": 50%,
+    "75": 75%,
+    "100": 100%,
+    "auto": auto,
+    // Auto
+    "100vh": 100vh,
+    // Viewport height values
+    "100vw": 100vw,
+    // Viewport width values
+    "initial": initial,
+    "inherit": inherit,
+    "unset": unset
+);
+
+// Mixin to generate utility classes
+@mixin generate-size-utilities($utility, $values, $property) {
+    @each $key, $value in $values {
+        $class-name: x-#{$utility}-#{$key}; // e.g., w-25, h-100, mw-50, etc.
+        .#{$class-name} {
+            #{$property}: #{$value} !important;
+        }
+    }
+}
+
+// Mixin for responsive size utility classes
+@mixin generate-responsive-size-utilities($utility, $values, $property) {
+    // Generate default (non-responsive) classes
+    @include generate-size-utilities($utility, $values, $property);
+
+    // Generate responsive classes for each breakpoint
+    @each $breakpoint in map-keys($breakpoints) {
+        @each $key, $value in $values {
+            $class-name: x-#{$utility}-#{$breakpoint}-#{$key};
+            @media (min-width: map-get($breakpoints, $breakpoint)) {
+                .#{$class-name} {
+                    #{$property}: #{$value} !important;
+                }
+            }
+        }
+    }
+}
+
+// Generate width utility classes (e.g., w-25, w-50, w-100, w-100vw, w-0, etc.)
+@include generate-responsive-size-utilities("w", $sizes, "width");
+
+// Generate height utility classes (e.g., h-25, h-50, h-100, h-100vh, h-0, etc.)
+@include generate-responsive-size-utilities("h", $sizes, "height");
+
+// Generate min-width utility classes (e.g., min-w-25, min-w-50, min-w-100vw, min-w-0, etc.)
+@include generate-responsive-size-utilities("min-w", $sizes, "min-width");
+
+// Generate max-width utility classes (e.g., max-w-25, max-w-50, max-w-100vw, max-w-0, etc.)
+@include generate-responsive-size-utilities("max-w", $sizes, "max-width");
+
+// Generate min-height utility classes (e.g., min-h-25, min-h-50, min-h-100vh, min-h-0, etc.)
+@include generate-responsive-size-utilities("min-h", $sizes, "min-height");
+
+// Generate max-height utility classes (e.g., max-h-25, max-h-50, max-h-100vh, max-h-0, etc.)
+@include generate-responsive-size-utilities("max-h", $sizes, "max-height");

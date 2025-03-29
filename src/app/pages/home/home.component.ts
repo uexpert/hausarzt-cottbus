@@ -5,10 +5,11 @@ import { HeroComponent } from '../../components/hero/hero.component';
 import { ScrollTrackerService } from '../../core/services/scroll-tracker.service';
 import { RouterModule } from '@angular/router';
 import { fadeInRightExpert, fadeInLeftExpert } from '../../core/animations-lib';
+import { LatestNewsComponent } from '../../components/latest-news/latest-news.component';
 
 @Component({
   selector: 'page-home',
-  imports: [CommonModule, HeroComponent, RouterModule],
+  imports: [CommonModule, HeroComponent, RouterModule, LatestNewsComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   animations: [

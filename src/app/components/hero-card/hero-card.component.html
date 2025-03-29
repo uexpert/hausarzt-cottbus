@@ -1,40 +1,40 @@
 
-<div class="heroText d-flex flex-column justify-content-center">
+<div class="heroText d-flex flex-column justify-content-center" [ngClass]="{'heroText-inline': inline}">
 
-    <h4 class="mb-2 mt-auto text-primary"> Sprechzeiten </h4>
-    <div class="d-flex flex-wrap">
+    <h4 class="mb-2 mt-auto text-primary font-lg-25"> Sprechzeiten </h4>
+    <div class="d-flex flex-wrap font-sm-16">
         <!-- <div class="px-3 mb-2" style="border-right: 1px solid #717287"> -->
         <div class="px-3 mb-2" [ngStyle]="{'width': ws.mobile ? '100%' : '37%', 'border-right': ws.mobile ? 'none' : '1px solid #717287'}">
             <div class="mb-2">
-                <div class="font-16" style="font-weight: 600;">Akutsprechstunde</div>
+                <div style="font-weight: 600;">Akutsprechstunde</div>
                 <div>Mo-Fr 08:00 - 08:45 Uhr</div>
             </div>
             <div class="mb-2">
-                <div class="font-16" style="font-weight: 600;">Normale Sprechstunde</div>
+                <div style="font-weight: 600;">Normale Sprechstunde</div>
                 <div>Mo-Fr 09:00 - 12:00 Uhr</div>
             </div>
         </div>
         <div class="px-3 mb-2" [ngStyle]="{'width': ws.mobile ? '100%' : '63%'}">
             <div class="mb-2">
-                <div class="font-16" style="font-weight: 600;">Nach Vereinbarung</div>
+                <div style="font-weight: 600;">Nach Vereinbarung</div>
                 <div>Di, Do ab 14:00 Uhr</div>
             </div>
             <div class="mb-2">
-                <div class="font-16 text-break" style="font-weight: 600;">Hautarzt-Sprechstunde Nach Vereinbarung (nur Privatleistung)</div>
+                <div class="text-break" style="font-weight: 600;">Hautarzt-Sprechstunde Nach Vereinbarung (nur Privatleistung)</div>
                 <!-- <div>Di, Do ab 14:00 Uhr</div> -->
             </div>
         </div>
         <div class="px-3 w-100">
             <div class="mb-2">
-                <div class="font-16 text-primary" style="font-weight: 600;">Fremdsprachige Sprechstunde Mo, Mi, Fr nach Vereinbarung ab 14:00 Uhr
+                <div class="text-primary" style="font-weight: 600;">Fremdsprachige Sprechstunde Mo, Mi, Fr nach Vereinbarung ab 14:00 Uhr
                 </div>
                 <!-- <div>Di, Do ab 14:00 Uhr</div> -->
             </div>
         </div>
     </div>
 
-    <div class="heroLinks d-flex flex-wrap align-items-center" style="gap: 32px">
-        <span class="font-18 fw-bold p-2 text-primary" style="border: 1px solid var(--primary-color);">
+    <div class="heroLinks d-flex flex-wrap align-items-center" style="gap: 32px" *ngIf="!inline">
+        <span class="font-sm-18 fw-bold p-2 text-primary" style="border: 1px solid var(--primary-color);">
             Terminvereinbarung
         </span>
 

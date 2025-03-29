@@ -275,6 +275,13 @@ strong {
   backdrop-filter: blur(5px);
 }
 
+.heroText-inline {
+  padding: 0 12px;
+  background-color: transparent;
+  backdrop-filter: none;
+  position: static;
+}
+
 .contact-phone {
   font-weight: var(--font-weight-semibold);
 }
@@ -803,6 +810,12 @@ strong {
     background-color: #fff;
     backdrop-filter: none;
   }
+  
+  .heroText-inline {
+    padding: 0 12px;
+    background-color: transparent;
+    position: static;
+  }
 }
 
 @media screen and (max-width: 991px) {
@@ -862,6 +875,10 @@ strong {
     padding: 1.5rem;
   }
 
+  .heroText-inline {
+    padding: 0 12px;
+  }
+
   .animated-info {
     min-width: 125px;
   }
@@ -891,6 +908,10 @@ strong {
 @media screen and (max-width: 480px) {
   .heroText {
     padding: 1rem;
+  }
+  
+  .heroText-inline {
+    padding: 0 12px;
   }
 
   .heroLinks .custom-link {
