@@ -1,7 +1,7 @@
 
 <nav class="navbar navbar-expand-lg bg-light fixed-top shadow-lg">
     <div class="container">
-        <a class="navbar-brand mx-auto d-lg-none" href="index.html">
+        <a class="navbar-brand mx-auto d-lg-none" [routerLink]="['/home']">
             <!-- Medic Care
             <strong class="d-block">Health Specialist</strong> -->
             <img [src]="imagesPath + 'logo/praxis-logo.png'" alt="" srcset="" width="210px">
@@ -13,34 +13,34 @@
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="align-items-lg-center mx-auto navbar-nav">
-                <li class="nav-item" [class.active]="activeSection === 'hero'">
-                    <a class="nav-link" [routerLink]="['/home']" fragment="top">Home</a>
+                <li class="nav-item" [routerLinkActive]="'active'">
+                    <a class="nav-link" [routerLink]="['/home']">Home</a>
                 </li>
 
-                <li class="nav-item" [class.active]="activeSection === 'about'">
-                    <a class="nav-link" [routerLink]="['/home']" fragment="about">Unsere Praxis</a>
+                <li class="nav-item" [routerLinkActive]="'active'">
+                    <a class="nav-link" [routerLink]="['/about']">Unsere Praxis</a>
                 </li>
 
-                <li class="nav-item" [class.active]="activeSection === 'timeline'">
-                    <a class="nav-link" [routerLink]="['/home']" fragment="timeline">Leistungen</a>
+                <li class="nav-item" [routerLinkActive]="'active'">
+                    <a class="nav-link" [routerLink]="['/leistungen']">Leistungen</a>
                 </li>
 
-                <a class="navbar-brand d-none d-lg-block" href="index.html">
+                <a class="navbar-brand d-none d-lg-block" [routerLink]="['/home']">
                     <!-- Medic Care
                     <strong class="d-block">Health Specialist</strong> -->
                     <img [src]="imagesPath + 'logo/praxis-logo.png'" alt="" srcset="" width="250px">
                 </a>
 
-                <li class="nav-item" [class.active]="activeSection === 'reviews'">
-                    <a class="nav-link" [routerLink]="['/home']" fragment="reviews">Team</a>
+                <li class="nav-item" [routerLinkActive]="'active'">
+                    <a class="nav-link" [routerLink]="['/reviews']">Team</a>
                 </li>
 
-                <li class="nav-item" [class.active]="activeSection === 'booking'">
-                    <a class="nav-link" [routerLink]="['/home']" fragment="booking">Kontakt</a>
+                <li class="nav-item" [routerLinkActive]="'active'">
+                    <a class="nav-link" [routerLink]="['/booking']">Kontakt</a>
                 </li>
 
-                <li class="nav-item" [class.active]="activeSection === 'contact'">
-                    <a class="nav-link" [routerLink]="['/home']" fragment="contact">Anfahrt</a>
+                <li class="nav-item" [routerLinkActive]="'active'">
+                    <a class="nav-link" [routerLink]="['/contact']">Anfahrt</a>
                 </li>
             </ul>
         </div>

@@ -2,7 +2,6 @@ import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular
 import { environment } from '../../../environments/environment';
 import { CommonModule } from '@angular/common';
 import { HeroComponent } from '../../components/hero/hero.component';
-import { ScrollTrackerService } from '../../core/services/scroll-tracker.service';
 import { RouterModule } from '@angular/router';
 import { fadeInRightExpert, fadeInLeftExpert } from '../../core/animations-lib';
 import { LatestNewsComponent } from '../../components/latest-news/latest-news.component';
@@ -22,21 +21,21 @@ export class HomeComponent implements OnInit {
   imagesPath = environment.imagesPath;
   animateInRightState: string = 'hidden';
   animateInLeftState: string = 'hidden';
-  constructor(private scrollService: ScrollTrackerService) {}
-  @HostListener('window:scroll', [])
-  onWindowScroll() {
-    const sections = document.querySelectorAll('section');
-    let activeSectionId = '';
+  constructor() {}
+  // @HostListener('window:scroll', [])
+  // onWindowScroll() {
+  //   const sections = document.querySelectorAll('section');
+  //   let activeSectionId = '';
 
-    sections.forEach((section) => {
-      const rect = section.getBoundingClientRect();
-      if (rect.top >= 0 && rect.top <= 300) { // Detect when section is near the top
-        activeSectionId = section.id;
-      }
-    });
+  //   sections.forEach((section) => {
+  //     const rect = section.getBoundingClientRect();
+  //     if (rect.top >= 0 && rect.top <= 300) { // Detect when section is near the top
+  //       activeSectionId = section.id;
+  //     }
+  //   });
 
-    this.scrollService.setActiveSection(activeSectionId);
-  }
+  //   this.scrollService.setActiveSection(activeSectionId);
+  // }
 
   
   ngOnInit(): void {

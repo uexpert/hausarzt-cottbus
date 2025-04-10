@@ -1,0 +1,7 @@
+<nz-image-group class="owl-carousel owl-theme" style="padding: 50px 0">
+    @for (img of images; track img) {
+        <div class="item">
+            <img nz-image [nzSrc]="img.src" [alt]="img.alt" style="width: 100%; height: auto; border-radius: 10px;">
+        </div>
+    }
+</nz-image-group>

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { RouterModule } from '@angular/router';
-import { ScrollTrackerService } from '../../core/services/scroll-tracker.service';
 
 @Component({
   selector: 'header-component',
@@ -11,14 +10,10 @@ import { ScrollTrackerService } from '../../core/services/scroll-tracker.service
 })
 export class HeaderComponent {
   imagesPath = environment.imagesPath;
-  activeSection = '';
 
-  constructor(private scrollService: ScrollTrackerService) {}
+  constructor() {}
 
   ngOnInit() {
-    this.scrollService.activeSection$.subscribe((section) => {
-      this.activeSection = section;
-    });
   }
 
 }
