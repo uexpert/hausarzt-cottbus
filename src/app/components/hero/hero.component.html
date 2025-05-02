@@ -4,7 +4,7 @@
         <div class="row">
 
             <div class="col-12">
-                <div id="myCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                <!-- <div id="myCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item active">
                             <img [src]="imagesPath + 'clinic/clinic-004.jpg'" class="img-fluid" alt="">
@@ -18,7 +18,16 @@
                             <img [src]="imagesPath + 'clinic/clinic-007.jpg'" class="img-fluid" alt="">
                         </div>
                     </div>
+                </div> -->
+                <div class="carousel-container"
+                    (mouseenter)="pause()"
+                    (mouseleave)="resume()">
+                    <img *ngFor="let img of images; let i = index"
+                        [src]="imagesPath + img"
+                        class="carousel-image img-fluid"
+                        [class.active]="i === currentIndex" />
                 </div>
+
                 <hero-card></hero-card>
             </div>
 

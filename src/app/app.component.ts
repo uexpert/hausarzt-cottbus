@@ -63,10 +63,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     });
 
     // Banner Carousel
-    var myCarousel = document.querySelector('#myCarousel')
-    var carousel = new bootstrap.Carousel(myCarousel, {
-      interval: 1500,
-    })
+    // var myCarousel = document.querySelector('#myCarousel')
+    // var carousel = new bootstrap.Carousel(myCarousel, {
+    //   interval: 1500,
+    // })
 
     // REVIEWS NAVIGATION
     function ReviewsNavResize(){

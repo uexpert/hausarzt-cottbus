@@ -1,3 +1,103 @@
+@use "sass:map";
+
+// User Select
+@mixin user-select($value) {
+    -webkit-user-select: $value !important;
+    -moz-user-select: $value !important;
+    -ms-user-select: $value !important;
+    user-select: $value !important;
+}
+
+@mixin respond($breakpoint) {
+    // $breakpoint is simply a variable that can have several values
+    @if $breakpoint == xxl {
+        @media only screen and (max-width: 1411px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == xl {
+        @media only screen and (max-width: 1199px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == lg {
+        @media only screen and (max-width: 991px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == md {
+        @media only screen and (max-width: 767px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == sm {
+        @media only screen and (max-width: 575px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == xs {
+        @media only screen and (max-width: 359px) {
+            @content;
+        }
+    }
+}
+
+@mixin respond-min($breakpoint) {
+    // $breakpoint is simply a variable that can have several values
+    @if $breakpoint == xxl {
+        @media only screen and (min-width: 1412px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == xl {
+        @media only screen and (min-width: 1200px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == lg {
+        @media only screen and (min-width: 992px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == md {
+        @media only screen and (min-width: 768px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == sm {
+        @media only screen and (min-width: 576px) {
+            @content;
+        }
+    }
+
+    @if $breakpoint == xs {
+        @media only screen and (min-width: 360px) {
+            @content;
+        }
+    }
+}
+
+@mixin coarse() {
+    @media (pointer: coarse) {
+        @content;
+    }
+}
+
+@mixin fine() {
+    @media (pointer: fine) {
+        @content;
+    }
+}
+
 /* Style for the Scroll to Top Button */
 #scrollTopBtn {
     position: fixed;
@@ -31,4 +131,42 @@
 .cdk-overlay-container {
     z-index: 1031;
 }
+/* carousel.component.css */
+.carousel-container {
+    width: 100%;
+    height: 740px;
+    position: relative;
+    overflow: hidden;
 
+    @include respond(xl) {
+        height: 500px;
+    }
+    @include respond(md) {
+        height: 375px;
+    }
+  }
+  
+  .carousel-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 740px;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+    z-index: 0;
+    
+    @include respond(xl) {
+        height: 500px;
+    }
+    @include respond(md) {
+        height: 375px;
+    }
+  }
+  
+  .carousel-image.active {
+    opacity: 1;
+    z-index: 1;
+  }
+  

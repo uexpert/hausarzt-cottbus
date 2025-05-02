@@ -1,3 +1,5 @@
+@use "sass:map";
+
 // User Select
 @mixin user-select($value) {
     -webkit-user-select: $value !important;
@@ -824,27 +826,27 @@ $breakpoints: (
                     #{$property}: $value !important;
                 } @else if $side == "x" or $side == "y" {
                     // Horizontal or vertical axes: apply both left/right or top/bottom
-                    @each $individual-side in map-get($sides, $side) {
+                    @each $individual-side in map.get($sides, $side) {
                         #{$property}-#{$individual-side}: $value !important;
                     }
                 } @else {
                     // For t, b, e, s: directly map to full properties
-                    #{$property}-#{map-get($sides, $side)}: $value !important;
+                    #{$property}-#{map.get($sides, $side)}: $value !important;
                 }
             }
         } @else {
-            @media (min-width: map-get($breakpoints, $breakpoint)) {
+            @media (min-width: map.get($breakpoints, $breakpoint)) {
                 .#{$class-name} {
                     @if $side == null {
                         #{$property}: $value !important;
                     } @else if $side == "x" or $side == "y" {
                         // Horizontal or vertical axes: apply both left/right or top/bottom
-                        @each $individual-side in map-get($sides, $side) {
+                        @each $individual-side in map.get($sides, $side) {
                             #{$property}-#{$individual-side}: $value !important;
                         }
                     } @else {
                         // For t, b, e, s: directly map to full properties
-                        #{$property}-#{map-get($sides, $side)}: $value !important;
+                        #{$property}-#{map.get($sides, $side)}: $value !important;
                     }
                 }
             }
@@ -878,7 +880,7 @@ $breakpoints: (
 @include generate-all-spacing-classes();
 
 // Generate responsive spacing classes for each breakpoint
-@each $breakpoint in map-keys($breakpoints) {
+@each $breakpoint in map.keys($breakpoints) {
     @include generate-spacing-classes("padding", null, $breakpoint);
     @include generate-spacing-classes("margin", null, $breakpoint);
 
@@ -928,7 +930,7 @@ $display-properties: (
                 display: $display-value !important;
             }
         } @else {
-            @media (min-width: map-get($breakpoints, $breakpoint)) {
+            @media (min-width: map.get($breakpoints, $breakpoint)) {
                 .#{$class-name} {
                     display: $display-value !important;
                 }
@@ -943,7 +945,7 @@ $display-properties: (
     @include generate-display-classes();
 
     // Generate responsive display classes for each breakpoint
-    @each $breakpoint in map-keys($breakpoints) {
+    @each $breakpoint in map.keys($breakpoints) {
         @include generate-display-classes($breakpoint);
     }
 }
@@ -989,10 +991,10 @@ $positioning-values: ("0", "auto");
 
 @mixin generate-responsive($utility, $values, $property) {
     // Generate responsive classes for each breakpoint
-    @each $breakpoint in map-keys($breakpoints) {
+    @each $breakpoint in map.keys($breakpoints) {
         @each $value in $values {
             $class-name: x-#{$utility}-#{$breakpoint}-#{$value};
-            @media (min-width: map-get($breakpoints, $breakpoint)) {
+            @media (min-width: map.get($breakpoints, $breakpoint)) {
                 .#{$class-name} {
                     #{$property}: #{$value} !important;
                 }
@@ -1043,8 +1045,8 @@ $positioning-values: ("0", "auto");
 .x-flex-fill {
     flex: 1 1 auto !important;
 }
-@each $breakpoint in map-keys($breakpoints) {
-    @media (min-width: map-get($breakpoints, $breakpoint)) {
+@each $breakpoint in map.keys($breakpoints) {
+    @media (min-width: map.get($breakpoints, $breakpoint)) {
         .x-flex-#{$breakpoint}-fill {
             flex: 1 1 auto !important;
         }
@@ -1087,10 +1089,10 @@ $sizes: (
     @include generate-size-utilities($utility, $values, $property);
 
     // Generate responsive classes for each breakpoint
-    @each $breakpoint in map-keys($breakpoints) {
+    @each $breakpoint in map.keys($breakpoints) {
         @each $key, $value in $values {
             $class-name: x-#{$utility}-#{$breakpoint}-#{$key};
-            @media (min-width: map-get($breakpoints, $breakpoint)) {
+            @media (min-width: map.get($breakpoints, $breakpoint)) {
                 .#{$class-name} {
                     #{$property}: #{$value} !important;
                 }
