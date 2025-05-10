@@ -70,6 +70,7 @@ import { NzPipesModule } from 'ng-zorro-antd/pipes';
 import { NzElementPatchModule } from 'ng-zorro-antd/core/element-patch';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzCascaderModule } from 'ng-zorro-antd/cascader';
+import { NzFlexModule } from 'ng-zorro-antd/flex';
 
 
 @NgModule({
@@ -143,7 +144,8 @@ import { NzCascaderModule } from 'ng-zorro-antd/cascader';
     NzResizableModule,
     NzPipesModule,
     NzElementPatchModule,
-    NzSpaceModule
+    NzSpaceModule,
+    NzFlexModule
   ]
 })
 export class NgZorroAntdModule { }

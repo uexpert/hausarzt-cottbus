@@ -1,10 +1,13 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { fadeInRightExpert, fadeInLeftExpert } from '../../core/animations-lib';
+import { CommonModule } from '@angular/common';
+import { EmployeesSectionComponent } from '../../components/employees-section/team-employees.component';
+import { TeamEmployee } from '../../core/utils/models_interfaces';
 
 @Component({
   selector: 'page-team',
-  imports: [],
+  imports: [CommonModule, EmployeesSectionComponent],
   templateUrl: './team.component.html',
   styleUrl: './team.component.scss',
   animations: [
@@ -17,6 +20,11 @@ export class TeamComponent {
   imagesPath = environment.imagesPath;
   animateInRightState: string = 'hidden';
   animateInLeftState: string = 'hidden';
+  employeesList: Array<TeamEmployee> = [
+    new TeamEmployee('team/team-003.png', 'Nancy'),
+    new TeamEmployee('team/team-004.png', 'Andrea'),
+    new TeamEmployee('team/team-005.png', 'Susanne')
+  ];
 
   ngOnInit(): void {
     this.onInterSectionInRight();

@@ -1,0 +1,11 @@
+<div style="max-width: 360px;" class="employee-card-container" *ngIf="employee.url && employee.name">
+    <div style="overflow: hidden;" class="employee-card-image-container">
+        <img alt="" [src]="imagesPath + employee.url" style="width: 100%;" class="employee-card-image">
+    </div>
+
+    <div class="font-xs-20 p-3 text-center">
+        <div class="employee-card-title">
+            {{employee.name}}
+        </div>
+    </div>
+</div>

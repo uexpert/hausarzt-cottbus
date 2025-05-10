@@ -1,0 +1,40 @@
+<div class="x-d-flex x-justify-content-lg-space-evenly x-flex-wrap" style="padding: 0 44px; gap: 45px 16px;">
+    @for (item of [{id: 1, delay: '200ms'}, {id: 1, delay: '500ms'}, {id: 1, delay: '800ms'}]; track item) {
+        <div #zoomInElement1>
+            <div style="opacity: 0;" [@zoomInExpert]="{value: animateZoomInState1, params: {duration: '0.8s', delay: item.delay}}">
+                <div style="width: 340px; gap: 12px;" class="x-d-flex x-flex-column x-align-items-center">
+                    <div class="big-rounded-field big-rounded-field-primary">{{item.id}}</div>
+                    <div class="font-xs-16 text-primary x-font-semiBold text-center">Address Information</div>
+                    <div class="text-center">level13, 2Elizabeth St, Melbourne,Victor {{item.id}}</div>
+                </div>
+            </div>
+        </div>
+    }
+    <!-- <div #zoomInElement1>
+        <div style="opacity: 0;" [@zoomInExpert]="{value: animateZoomInState1, params: {duration: '0.8s', delay: '200ms'}}">
+            <div style="width: 340px; gap: 12px;" class="x-d-flex x-flex-column x-align-items-center">
+                <div class="big-rounded-field big-rounded-field-primary">A</div>
+                <div class="font-xs-16 text-primary x-font-semiBold text-center">Address Information</div>
+                <div class="text-center">level13, 2Elizabeth St, Melbourne,Victor 2000</div>
+            </div>
+        </div>
+    </div>
+    <div #zoomInElement2>
+        <div style="opacity: 0;" [@zoomInExpert]="{value: animateZoomInState2, params: {duration: '0.8s', delay: '500ms'}}">
+            <div style="width: 340px; gap: 12px;" class="x-d-flex x-flex-column x-align-items-center">
+                <div class="big-rounded-field big-rounded-field-primary">A</div>
+                <div class="font-xs-16 text-primary x-font-semiBold text-center">Address Information</div>
+                <div class="text-center">level13, 2Elizabeth St, Melbourne,Victor 2000</div>
+            </div>
+        </div>
+    </div>
+    <div #zoomInElement3>
+        <div style="opacity: 0;" [@zoomInExpert]="{value: animateZoomInState3, params: {duration: '0.8s', delay: '800ms'}}">
+            <div style="width: 340px; gap: 12px;" class="x-d-flex x-flex-column x-align-items-center">
+                <div class="big-rounded-field big-rounded-field-primary">A</div>
+                <div class="font-xs-16 text-primary x-font-semiBold text-center">Address Information</div>
+                <div class="text-center">level13, 2Elizabeth St, Melbourne,Victor 2000</div>
+            </div>
+        </div>
+    </div> -->
+</div>

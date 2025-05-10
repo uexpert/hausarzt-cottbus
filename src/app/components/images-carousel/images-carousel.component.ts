@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { CommonModule } from '@angular/common';
 import { NgZorroAntdModule } from '../../core/ng-zorro-antd/ng-zorro-antd.module';
+import { ImagesCarouselObject } from '../../core/utils/models_interfaces';
+import { WindowService } from '../../core/services/window.service';
+
 declare var $: any; // Declare jQuery
 
 @Component({
@@ -11,13 +14,11 @@ declare var $: any; // Declare jQuery
   styleUrl: './images-carousel.component.scss'
 })
 export class ImagesCarouselComponent {
+  @Input() imagesList: Array<ImagesCarouselObject> = [];
+
+  ws = inject(WindowService);
+
   imagesPath = environment.imagesPath;
-  images = [
-    { id: 1, src: this.imagesPath + 'clinic/clinic-01.jpeg', alt: 'clinic-01' },
-    { id: 2, src: 'https://picsum.photos/id/1015/1000/600/', alt: 'Image 2' },
-    { id: 3, src: 'https://picsum.photos/id/1019/1000/600/', alt: 'Image 3' },
-    { id: 4, src: 'https://picsum.photos/id/1020/1000/600/', alt: 'Image 4' }
-  ];
 
 
   ngAfterViewInit(): void {

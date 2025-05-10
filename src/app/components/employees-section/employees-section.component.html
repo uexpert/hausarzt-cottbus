@@ -1,0 +1,6 @@
+
+<div class="x-d-flex x-flex-wrap x-justify-content-space-around" style="gap: 60px 16px;">
+    @for (item of employeesList; track item.url) {
+            <team-employee [employee]="item"></team-employee>
+    }
+</div>

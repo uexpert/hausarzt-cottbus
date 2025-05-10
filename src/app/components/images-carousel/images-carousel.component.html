@@ -1,7 +1,18 @@
-<nz-image-group class="owl-carousel owl-theme" style="padding: 50px 0">
-    @for (img of images; track img) {
-        <div class="item">
-            <img nz-image [nzSrc]="img.src" [alt]="img.alt" style="width: 100%; height: auto; border-radius: 10px;">
-        </div>
-    }
-</nz-image-group>
+@if (ws.tablet) {
+    <div class="x-d-flex x-flex-column" style="gap: 48px;">
+        @for (img of imagesList; track img.id) {
+            <div>
+                <img nz-image [nzSrc]="imagesPath + img.url" [alt]="img.alt" style="width: 100%;">
+            </div>
+        }
+    </div>
+}
+@else {
+    <nz-image-group class="owl-carousel owl-theme" style="padding: 50px 0">
+        @for (img of imagesList; track img.id) {
+            <div class="item image-wrapper">
+                <img nz-image [nzSrc]="imagesPath + img.url" [alt]="img.alt" class="carousel-img">
+            </div>
+        }
+    </nz-image-group>
+}

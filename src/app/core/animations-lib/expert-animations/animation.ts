@@ -23,6 +23,15 @@ export const DivFadeAnimation = trigger('divFadeAnimation', [
     ])
 ]);
 
+export const zoomInExpert = 
+    trigger('zoomInExpert', [
+      state('hidden', style({ opacity: 0, transform: 'scale(0.3)' })),
+      state('visible', style({ opacity: 1, transform: 'scale(1)' })),
+      transition('hidden => visible', [
+    animate('{{duration}} {{delay}} ease-out')
+  ], { params: { duration: '0.5s', delay: '0s' } })
+    ]);
+
 export const fadeInRightExpert = 
     trigger('fadeInRightExpert', [
       state('hidden', style({ opacity: 0, transform: 'translateX(75%)' })),
