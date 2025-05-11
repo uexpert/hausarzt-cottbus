@@ -9,6 +9,18 @@ import de from '@angular/common/locales/de';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient } from '@angular/common/http';
+import { AccountBookFill, AlertFill, AlertOutline, WarningFill, EditFill, FilePdfTwoTone, PlusOutline, FilePdfOutline, DeleteFill,
+         SyncOutline, FileAddTwoTone, FileAddOutline, AppstoreFill, FolderFill, FolderOpenFill, EnvironmentOutline, MailOutline,
+         PhoneOutline } from '@ant-design/icons-angular/icons';
+import { IconDefinition } from '@ant-design/icons-angular';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+const icons: IconDefinition[] = [ AccountBookFill, AlertOutline, AlertFill,
+                                  WarningFill, EditFill, FilePdfTwoTone,
+                                  PlusOutline, DeleteFill, SyncOutline, FileAddTwoTone,
+                                  FilePdfOutline, FileAddOutline, AppstoreFill,
+                                  FolderFill, FolderOpenFill, EnvironmentOutline,
+                                  MailOutline, PhoneOutline
+                                ];
 
 registerLocaleData(de);
 
@@ -20,6 +32,7 @@ export function provideValue(token: any, value: any): Provider {
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withInMemoryScrolling({scrollPositionRestoration: 'enabled'})), importProvidersFrom(BrowserAnimationsModule),
-    provideValue('windowObject', window), provideNzI18n(de_DE), importProvidersFrom(FormsModule), provideAnimationsAsync(), provideHttpClient()
+    provideValue('windowObject', window), provideNzI18n(de_DE), importProvidersFrom(FormsModule), provideAnimationsAsync(), provideHttpClient(),
+    importProvidersFrom(NzIconModule.forRoot(icons))
   ]
 };

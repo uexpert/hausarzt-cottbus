@@ -1,7 +1,7 @@
 
 <footer class="site-footer section-padding nav-section" id="contact">
     <div class="container">
-        <div class="justify-content-between row" style="gap: 25px 40px;">
+        <div class="align-items-start justify-content-between row" style="gap: 25px 40px;">
 
             <hero-card [inline]="true" style="display: contents;"></hero-card>
             <!-- <div class="col-lg-5 me-auto col-12">
@@ -24,31 +24,57 @@
                 </ul>
             </div> -->
 
-            <div class="col-lg-2 col-md-6 col-12 my-4 my-lg-0">
-                <h5 class="mb-lg-4 mb-3">Our Clinic</h5>
+            <div class="col-12 col-xl-3 my-3 my-lg-0">
+                <h5 class="mb-3 text-primary">Unsere Praxis</h5>
+                <div class="x-px-4 text-dark">
 
-                <p><a href="mailto:hello@company.co">{{'hello@company.co'}}</a><p>
-
-                <p>123 Digital Art Street, San Diego, CA 92123</p>
+                    
+                    <p class="text-dark x-font-regular font-sm-16">
+                        Arztpraxis Dr. Gabriel Chosnis<br/>
+                        Ärztehaus Nord<br/>
+                        G.-Hauptmann-Str. 15<br/>
+                        03044 Cottbus
+                    <p>
+                    <p class="x-font-regular font-sm-16">
+                        <a class="x-link" href="mailto:kontakt@arztpraxis-chosnis.de">{{'kontakt@arztpraxis-chosnis.de'}}</a><br/>
+                        <a class="x-link" href="">{{'0355 - 822006'}}</a>
+                    </p>
+                </div>
             </div>
 
-            <div class="col-lg-3 col-md-6 col-12 ms-auto">
+            <div class="col-12 col-xl-2">
+                <h5 class="mb-3 text-primary">Wichtige Links</h5>
+                <div class="x-px-4 text-dark">
+                    <p class="x-font-regular font-sm-16">
+                        <a class="important-link x-font-semiBold" href="">Home</a><br/>
+                        <a class="important-link x-font-semiBold" href="">Unsere Praxis</a><br/>
+                        <a class="important-link x-font-semiBold" href="">Leistungen</a><br/>
+                        <a class="important-link x-font-semiBold" href="">Team</a><br/>
+                        <a class="important-link x-font-semiBold" href="">Kontakt</a><br/>
+                        <a class="important-link x-font-semiBold" href="">Anfahrt</a><br/>
+                        <a class="important-link x-font-semiBold" href="">Impressum</a><br/>
+                        <a class="important-link x-font-semiBold" href="">Datenschutzerklärung</a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 col-12 ms-auto" *ngIf="false">
                 <h5 class="mb-lg-4 mb-3">Socials</h5>
 
                 <ul class="social-icon">
-                    <li><a href="#" class="social-icon-link bi-facebook"></a></li>
+                    <li><a class="x-link" href="#" class="social-icon-link bi-facebook"></a></li>
 
-                    <li><a href="#" class="social-icon-link bi-twitter"></a></li>
+                    <li><a class="x-link" href="#" class="social-icon-link bi-twitter"></a></li>
 
-                    <li><a href="#" class="social-icon-link bi-instagram"></a></li>
+                    <li><a class="x-link" href="#" class="social-icon-link bi-instagram"></a></li>
 
-                    <li><a href="#" class="social-icon-link bi-youtube"></a></li>
+                    <li><a class="x-link" href="#" class="social-icon-link bi-youtube"></a></li>
                 </ul>
             </div>
 
             <div class="col-lg-3 col-12 ms-auto mt-4 mt-lg-0" *ngIf="false">
                 <p class="copyright-text">Copyright © Medic Care 2021 
-                <br><br>Design: <a href="https://templatemo.com" target="_parent">TemplateMo</a></p>
+                <br><br>Design: <a class="x-link" href="https://templatemo.com" target="_parent">TemplateMo</a></p>
             </div>
 
         </div>

@@ -239,3 +239,33 @@
     background-color: var(--bs-primary);
     color: white;
 }
+
+.map-container {
+  height: 650px;
+  width: 100%;
+  margin: auto;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Responsive design */
+
+@media (max-width: 768px) {
+  .map-container {
+    height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .map-container {
+    height: 250px;
+  }
+}
+
+a.x-link {
+    color: var(--bs-primary);
+    text-decoration: underline;
+}
+a.important-link {
+    color: var(--bs-primary);
+}
