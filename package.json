@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "copyHtaccess": "node copy-htaccess.js",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build && npm run copyHtaccess",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -25,10 +26,12 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
+    "@angular-builders/custom-webpack": "^19.0.1",
     "@angular-devkit/build-angular": "^19.2.0",
     "@angular/cli": "^19.2.0",
     "@angular/compiler-cli": "^19.2.0",
     "@types/jasmine": "~5.1.0",
+    "copy-webpack-plugin": "^13.0.0",
     "jasmine-core": "~5.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

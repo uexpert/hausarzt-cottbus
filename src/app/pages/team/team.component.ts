@@ -21,9 +21,9 @@ export class TeamComponent {
   animateInRightState: string = 'hidden';
   animateInLeftState: string = 'hidden';
   employeesList: Array<TeamEmployee> = [
-    new TeamEmployee('team/team-003.png', 'Nancy'),
-    new TeamEmployee('team/team-004.png', 'Andrea'),
-    new TeamEmployee('team/team-005.png', 'Susanne')
+    new TeamEmployee('team/team-003.jpg', 'Schwester Diana'),
+    new TeamEmployee('team/team-004.jpg', 'Schwester Janin'),
+    new TeamEmployee('team/team-005.jpg', 'Schwester Sylvia')
   ];
 
   ngOnInit(): void {

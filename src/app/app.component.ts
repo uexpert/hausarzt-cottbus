@@ -21,7 +21,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.ws.checkBreakpoints({width: window.innerWidth, height: window.innerHeight});
     setTimeout(() => {
       this.startCustomJS();
-      this.waitForOwlCarousel();
+      // this.waitForOwlCarousel();
     }, 500);
   }
 

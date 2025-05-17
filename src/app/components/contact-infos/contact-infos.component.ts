@@ -51,7 +51,7 @@ export class ContactInfosComponent implements OnInit, AfterViewInit {
       delay: '500ms',
       value: 'hidden',
       label: 'Mail',
-      data: 'kontakt@arztpraxis-chosnis.de',
+      data: `<a class="x-link" href="mailto:kontakt@arztpraxis-chosnis.de">kontakt@arztpraxis-chosnis.de</a>`,
       icon: this.san.bypassSecurityTrustHtml('<nz-icon nzType="environment" nzTheme="outline" />')
     },
     {

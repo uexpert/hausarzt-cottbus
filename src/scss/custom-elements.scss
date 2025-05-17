@@ -269,3 +269,8 @@ a.x-link {
 a.important-link {
     color: var(--bs-primary);
 }
+
+ul.dot-list {
+    list-style: disc;
+    padding-left: 36px;
+}
