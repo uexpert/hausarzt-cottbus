@@ -28,7 +28,9 @@
                         [class.active]="i === currentIndex" />
                 </div>
 
-                <hero-card></hero-card>
+                @if (!ws.laptop) {
+                    <hero-card></hero-card>
+                }
             </div>
 
         </div>

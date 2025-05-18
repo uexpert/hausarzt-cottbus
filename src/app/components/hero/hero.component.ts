@@ -12,6 +12,7 @@ import { WindowService } from '../../core/services/window.service';
   styleUrl: './hero.component.scss'
 })
 export class HeroComponent implements OnInit, OnDestroy {
+  ws = inject(WindowService);
   imagesPath = environment.imagesPath;
 
   images = [

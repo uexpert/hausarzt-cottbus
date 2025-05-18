@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HeroComponent } from '../../components/hero/hero.component';
 import { RouterModule } from '@angular/router';
 import { LatestNewsComponent } from '../../components/latest-news/latest-news.component';
+import { sommarUrlaub } from '../../core/utils/models_interfaces';
 
 @Component({
   selector: 'page-home',
@@ -13,6 +14,7 @@ import { LatestNewsComponent } from '../../components/latest-news/latest-news.co
 })
 export class HomeComponent implements OnInit {
   imagesPath = environment.imagesPath;
+  newsList = sommarUrlaub;
   constructor() {}
   // @HostListener('window:scroll', [])
   // onWindowScroll() {
