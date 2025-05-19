@@ -13,7 +13,7 @@ export class ImagesCarouselObject {
     ) { }
 }
 
-export const sommarUrlaub = [
+export const sommarUrlaubTest = [
     '<div class="text-primary x-font-bold font-sm-18">Praxisurlaub vom 26. Juli bis 15. August 2025</div>',
     'Liebe Patientinnen und Patienten,',
     'bitte beachten Sie, dass unsere Praxis vom <b>26.07.2025</b> bis einschließlich <b>15.08.2025</b> aufgrund unseres Sommerurlaubs geschlossen bleibt.',
@@ -21,6 +21,16 @@ export const sommarUrlaub = [
     '<b>Vertretungspraxen:</b>',
     '<ul class="dot-list"><li><b>Praxis Dr. med. Anna Müller</b><br/>Musterstraße 12, 12345 Musterstadt<br>Tel.: 01234 / 567890</li><li><b>Praxisgemeinschaft Dres. Schneider &amp; Becker</b><br/>Beispielweg 34, 12345 Musterstadt<br/>Tel.: 01234 / 987654</li></ul>',
     'Bitte melden Sie sich vorab telefonisch bei der jeweiligen Vertretungspraxis an.',
+    'In dringenden Fällen außerhalb der Sprechzeiten wenden Sie sich bitte an den <b>ärztlichen Bereitschaftsdienst unter der Telefonnummer 116 117</b> oder im Notfall an den <b>Rettungsdienst unter 112</b>.',
+    'Ab <b>Montag, den 18.08.2025</b> sind wir wieder wie gewohnt für Sie da.',
+    'Vielen Dank für Ihr Verständnis - wir wünschen Ihnen einen gesunden Sommer!',
+    'Dr. Gabriel Chosnis, Dr. Katharina Chosnis und Praxisteam',
+];
+
+export const sommarUrlaub = [
+    '<div class="text-primary x-font-bold font-sm-18">Praxisurlaub vom 26. Juli bis 15. August 2025</div>',
+    'Liebe Patientinnen und Patienten,',
+    'bitte beachten Sie, dass unsere Praxis vom <b>26.07.2025</b> bis einschließlich <b>15.08.2025</b> aufgrund unseres Sommerurlaubs geschlossen bleibt.',
     'In dringenden Fällen außerhalb der Sprechzeiten wenden Sie sich bitte an den <b>ärztlichen Bereitschaftsdienst unter der Telefonnummer 116 117</b> oder im Notfall an den <b>Rettungsdienst unter 112</b>.',
     'Ab <b>Montag, den 18.08.2025</b> sind wir wieder wie gewohnt für Sie da.',
     'Vielen Dank für Ihr Verständnis - wir wünschen Ihnen einen gesunden Sommer!',

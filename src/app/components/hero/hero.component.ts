@@ -16,9 +16,9 @@ export class HeroComponent implements OnInit, OnDestroy {
   imagesPath = environment.imagesPath;
 
   images = [
-    'clinic/clinic-homepage-01.jpg',
-    'clinic/clinic-homepage-02.jpg',
-    'clinic/clinic-homepage-03.jpg'
+    'clinic/clinic-homepage-01-HDH.jpg',
+    'clinic/clinic-homepage-02-HDH.jpg',
+    'clinic/clinic-homepage-03-HDH.jpg'
   ];
 
   currentIndex = 0;
