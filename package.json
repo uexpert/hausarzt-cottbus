@@ -6,6 +6,7 @@
     "copyHtaccess": "node copy-htaccess.js",
     "start": "ng serve",
     "build": "ng build && npm run copyHtaccess",
+    "build:usama-dev": "ng build --base-href /hausarzt-cottbus/ && npm run copyHtaccess",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
