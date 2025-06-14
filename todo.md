@@ -1,13 +1,16 @@
 # Telefon
 Make it able to call.
 
-# Google Map
+# Google Map ✅
 
 # Google search
 
 # SEO
+Optimizing
+<head><meta>
 
 # Google adcins
+Optimizing
 
 # svg icons
 

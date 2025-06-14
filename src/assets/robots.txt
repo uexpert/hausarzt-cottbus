@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://www.praxis-chosnis.de/sitemap.xml
