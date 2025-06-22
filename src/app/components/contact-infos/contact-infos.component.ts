@@ -43,7 +43,7 @@ export class ContactInfosComponent implements OnInit, AfterViewInit {
       delay: '200ms',
       value: 'hidden',
       label: 'Adressdaten',
-      data: this.san.bypassSecurityTrustHtml('Arztpraxis Dr. Gabriel Chosnis<br/>Ärztehaus Nord<br/>G.-Hauptmann-Str. 15<br/>03044 Cottbus'),
+      data: this.san.bypassSecurityTrustHtml('Arztpraxis Dr. Gabriel Chosnis<br/>Dr. Katherina Chosnis (FÄ für Dermatologie)<br/>Ärztehaus Nord<br/>G.-Hauptmann-Str. 15<br/>03044 Cottbus'),
       icon: this.san.bypassSecurityTrustHtml('<nz-icon nzType="environment" nzTheme="outline" />')
     },
     {
@@ -51,7 +51,7 @@ export class ContactInfosComponent implements OnInit, AfterViewInit {
       delay: '500ms',
       value: 'hidden',
       label: 'Mail',
-      data: `<a class="x-link" href="mailto:kontakt@arztpraxis-chosnis.de">kontakt@arztpraxis-chosnis.de</a>`,
+      data: `<a class="x-link" href="mailto:mail@praxis-chosnis.de">mail@praxis-chosnis.de</a>`,
       icon: this.san.bypassSecurityTrustHtml('<nz-icon nzType="environment" nzTheme="outline" />')
     },
     {

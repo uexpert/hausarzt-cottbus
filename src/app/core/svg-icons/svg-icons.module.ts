@@ -19,6 +19,7 @@ import { UpDownToggleIconComponent } from './components/up-down-toggle-icon.comp
 import { SpinnerADCLogoIconComponent } from './components/spinner-adc-logo-icon.component';
 import { ADCLogoIconComponent } from './components/adc-logo-icon.component';
 import { BytlockLogoIconComponent } from './components/bytlock-logo-icon/bytlock-logo-icon.component';
+import { SkinCancerIconComponent } from './components/skin-cancer-icon/skin-cancer-icon.component';
 
 
 
@@ -42,7 +43,8 @@ import { BytlockLogoIconComponent } from './components/bytlock-logo-icon/bytlock
     UpDownToggleIconComponent,
     SpinnerADCLogoIconComponent,
     ADCLogoIconComponent,
-    BytlockLogoIconComponent
+    BytlockLogoIconComponent,
+    SkinCancerIconComponent
   ],
   imports: [
     CommonModule
@@ -66,7 +68,8 @@ import { BytlockLogoIconComponent } from './components/bytlock-logo-icon/bytlock
     UpDownToggleIconComponent,
     SpinnerADCLogoIconComponent,
     ADCLogoIconComponent,
-    BytlockLogoIconComponent
+    BytlockLogoIconComponent,
+    SkinCancerIconComponent
   ]
 })
 export class SvgIconsModule { }

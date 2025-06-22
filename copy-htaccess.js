@@ -37,3 +37,14 @@ fs.copyFile(robotsSource, robotsDest, (err) => {
     console.log('robots copied to dist folder.');
   }
 });
+
+const googleSource = path.join(sourcePath, 'google20c1bc195e6a42b7.html');
+const googleDest = path.join(destPath, 'google20c1bc195e6a42b7.html');
+
+fs.copyFile(googleSource, googleDest, (err) => {
+  if (err) {
+    console.error('Failed to copy google20c1bc195e6a42b7:', err);
+  } else {
+    console.log('google20c1bc195e6a42b7 copied to dist folder.');
+  }
+});
