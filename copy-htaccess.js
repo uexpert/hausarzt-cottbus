@@ -48,3 +48,14 @@ fs.copyFile(googleSource, googleDest, (err) => {
     console.log('google20c1bc195e6a42b7 copied to dist folder.');
   }
 });
+
+const bingSource = path.join(sourcePath, 'BingSiteAuth.xml');
+const bingDest = path.join(destPath, 'BingSiteAuth.xml');
+
+fs.copyFile(bingSource, bingDest, (err) => {
+  if (err) {
+    console.error('Failed to copy BingSiteAuth:', err);
+  } else {
+    console.log('BingSiteAuth copied to dist folder.');
+  }
+});
