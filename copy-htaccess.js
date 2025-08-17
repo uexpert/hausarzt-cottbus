@@ -4,6 +4,7 @@ const path = require('path');
 const sourcePath = path.join(__dirname, 'src', 'assets');
 const destPath = path.join(__dirname, 'dist', 'hausarzt-cottbus', 'browser');
 
+// .htaccess
 const htaSource = path.join(sourcePath, '.htaccess');
 const htaDest = path.join(destPath, '.htaccess');
 fs.copyFile(htaSource, htaDest, (err) => {
@@ -14,7 +15,7 @@ fs.copyFile(htaSource, htaDest, (err) => {
   }
 });
 
-
+// sitemap.xml
 const siteSource = path.join(sourcePath, 'sitemap.xml');
 const siteDest = path.join(destPath, 'sitemap.xml');
 
@@ -26,7 +27,7 @@ fs.copyFile(siteSource, siteDest, (err) => {
   }
 });
 
-
+// robots.txt
 const robotsSource = path.join(sourcePath, 'robots.txt');
 const robotsDest = path.join(destPath, 'robots.txt');
 
@@ -38,6 +39,8 @@ fs.copyFile(robotsSource, robotsDest, (err) => {
   }
 });
 
+
+// Google search
 const googleSource = path.join(sourcePath, 'google20c1bc195e6a42b7.html');
 const googleDest = path.join(destPath, 'google20c1bc195e6a42b7.html');
 
@@ -49,6 +52,7 @@ fs.copyFile(googleSource, googleDest, (err) => {
   }
 });
 
+// Bing search
 const bingSource = path.join(sourcePath, 'BingSiteAuth.xml');
 const bingDest = path.join(destPath, 'BingSiteAuth.xml');
 
