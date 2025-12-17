@@ -37,6 +37,20 @@ export const sommarUrlaub = [
     'Dr. Gabriel Chosnis, Dr. Katharina Chosnis und Praxisteam',
 ];
 
+export const christmasUrlaub = [
+    '<div class="text-primary x-font-bold font-sm-18">Weihnachtsurlaub vom 23. Dezember 2025 bis 2. Januar 2026</div>',
+    'Liebe Patientinnen und Patienten,',
+    'bitte beachten Sie, dass unsere Praxis vom <b>23.12.2025</b> bis einschließlich <b>02.01.2026</b> aufgrund unseres Weihnachtsurlaubs geschlossen bleibt.',
+    'In dieser Zeit übernimmt die folgende Praxis freundlicherweise die ärztliche Vertretung:',
+    '<b>Vertretungspraxis:</b>',
+    '<ul class="dot-list"><li><b>Praxis Dr. Strenger/Blembel</b><br/>Bahnhofstraße 64, 03046 Cottbus</li></ul>',
+    'Bitte nehmen Sie für Rezeptwünsche Ihren Medikamentenplan mit.',
+    'In dringenden Fällen außerhalb der Sprechzeiten wenden Sie sich bitte an den <b>ärztlichen Bereitschaftsdienst unter der Telefonnummer 116 117</b> oder im Notfall an den <b>Rettungsdienst unter 112</b>.',
+    'Ab <b>Montag, den 05.01.2026</b> sind wir wieder wie gewohnt für Sie da.',
+    'Vielen Dank für Ihr Verständnis - wir wünschen Ihnen ein frohes und gesundes Weihnachtsfest sowie einen guten Start ins neue Jahr!',
+    'Dr. Gabriel Chosnis, Dr. Katharina Chosnis und Praxisteam',
+];
+
 // | Type           | Example Syntax                     |          |
 // | -------------- | ---------------------------------- | -------- |
 // | Constant       | `export const MY_LIST = [...]`     |          |
