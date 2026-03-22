@@ -49,6 +49,8 @@ Comprehensive documentation is available in the `/docs` folder:
 
 ## Key Features
 
+- **Dynamic News Management**: Admin dashboard to create, edit, and publish news notices
+- **Admin Panel**: Password-protected at `/admin/login`, with route guard protection
 - **Responsive Design**: Mobile-first approach with Bootstrap 5
 - **Standalone Components**: Modern Angular architecture with no NgModule
 - **Rich Animations**: 60+ custom animations library
@@ -56,7 +58,7 @@ Comprehensive documentation is available in the `/docs` folder:
 - **SEO Friendly**: Semantic HTML and proper structure
 - **Google Maps**: Interactive location map
 - **Image Galleries**: Owl Carousel integration
-- **Form Validation**: Comprehensive client-side validation
+- **PHP Backend**: Simple API endpoint for persisting news data
 
 ## Tech Stack
 
@@ -93,14 +95,17 @@ ng generate service name   # Create new service
 ```
 src/
 ├── app/
-│   ├── pages/         # Route components (home, about, team, etc.)
+│   ├── pages/         # Route components (home, about, team, admin, etc.)
 │   ├── components/    # Reusable UI components
-│   ├── core/         # Services and utilities
+│   ├── core/         # Services, guards, models, utilities
 │   └── app.component.ts
 ├── assets/           # Images and static files
 ├── styles.scss       # Global styles
 └── index.html        # Entry point
 
+public/
+├── api/              # PHP backend (save-news.php)
+└── data/             # Dynamic data (news.json)
 dist/                 # Production build output
 docs/                 # Comprehensive documentation
 ```

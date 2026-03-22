@@ -95,10 +95,12 @@ If appointment booking exists:
 - Highlights corresponding nav link
 - Updates as user scrolls
 
-### Route Guards (Future Implementation)
+### Route Guards
 
-Recommended guards:
-- `CanActivate`: Prevent direct access to admin routes
+**Implemented**:
+- `authGuard` (`CanActivateFn`): Protects `/admin/dashboard`. Checks `localStorage` for `admin_token`. Redirects to `/admin/login` if missing or invalid.
+
+**Not yet implemented**:
 - `CanDeactivate`: Warn user before leaving unsaved form
 
 ### Link Validation
@@ -134,17 +136,43 @@ All internal links validated:
 
 ## Content Management Rules
 
-### News/Updates Display
+### News/Updates Display (Dynamic)
 
-**Sorting**: By date, newest first
+**Data Source**: `public/data/news.json` loaded via `NewsService`
 
-**Filtering**:
-- By category/tag (if applicable)
-- By date range (optional)
+**Active Notice Resolution**:
+- `NewsService.getActiveNotice()` finds the first notice where:
+  - `isActive === true`, AND
+  - Today's date falls within `startDate` (inclusive) to `endDate` (inclusive, end of day)
+- If no notice matches, `newsList` is empty and the news section shows "Keine Aktuelles!"
 
-**Display Limits**:
-- Homepage: Latest 3-5 news items
-- News page: All items with pagination (10 per page)
+**Display**:
+- Homepage shows the content array of the single active notice
+- Each string in `content[]` is rendered as a separate `<div>` via `[innerHTML]`
+- HTML formatting (bold, lists, divs with CSS classes) is supported
+
+### News Admin Dashboard
+
+**Location**: `/admin/dashboard` (protected by `authGuard`)
+
+**CRUD Operations**:
+- **Create**: New notice with title, start/end dates, active flag, and multi-line HTML content
+- **Read**: Lists all notices with status badges
+- **Update**: Edit any field of an existing notice
+- **Delete**: Confirmation dialog before removal
+
+**Status Badges**:
+- "Aktiv & Sichtbar" (green): `isActive === true` AND today is within date range
+- "Aktiviert (außerhalb Zeitraum)" (yellow): `isActive === true` BUT today is outside date range
+- "Deaktiviert" (grey): `isActive === false`
+
+**Persistence Workflow**:
+1. In-memory state updated via `NewsService` methods
+2. `saveNotices()` sends POST to `/api/save-news.php` with `X-API-Key` header
+3. PHP endpoint writes JSON to `public/data/news.json`
+4. Save status shown to admin: saving → saved / error
+
+**Live Preview**: Admin can preview a notice using the same `LatestNewsComponent` used on the public site
 
 ### Team Member Display
 
@@ -176,11 +204,25 @@ All internal links validated:
 
 ## Security Rules
 
+### Admin Authentication
+
+- **Login**: Password checked against hardcoded value client-side
+- **Token**: On success, `admin_token` stored in `localStorage`
+- **Guard**: `authGuard` checks for valid token before allowing dashboard access
+- **Logout**: Clears `localStorage` token and redirects to `/admin/login`
+
+### API Security
+
+- **Endpoint**: `/api/save-news.php` accepts POST only
+- **Authentication**: `X-API-Key` header validated against server-side secret
+- **CORS**: Restricted to `https://www.hausarzt-cottbus.de`
+- **Input Validation**: JSON body decoded and validated as array before writing
+
 ### Input Sanitization
 
-- **XSS Prevention**: All user input sanitized before display
-- **HTML Escaping**: Dynamic content escaped by default
-- **No Inline Scripts**: No user input treated as HTML/JavaScript
+- **News Content**: `LatestNewsComponent` uses `DomSanitizer.bypassSecurityTrustHtml()` — content is trusted (admin-authored)
+- **Other Content**: Angular built-in sanitization for all dynamic content
+- **No Inline Scripts**: No user input treated as executable JavaScript
 
 ### GDPR & Privacy
 

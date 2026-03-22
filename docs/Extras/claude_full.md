@@ -69,5 +69,19 @@ Update the relevant file in `/docs` folder. The PROJECT_OVERVIEW.md serves as th
 
 ---
 
+## Sync History
+
+### 2026-03-22 — Docs Sync #1
+Updated PROJECT_OVERVIEW, Architecture, Angular_Structure, Business_Rules, CHANGELOG, and README to reflect:
+- Admin system (login + dashboard pages)
+- NewsService with HTTP load/save and BehaviorSubject state
+- authGuard route protection
+- PHP backend endpoint (save-news.php)
+- Dynamic news data (news.json)
+- HomeComponent migrated from static constants to NewsService
+- Updated routing table with admin child routes
+
+---
+
 Last Updated: 2026-03-22
-Documentation Version: 1.0
+Documentation Version: 1.1

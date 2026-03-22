@@ -44,13 +44,16 @@ Purpose: Root container that includes header and footer for all pages.
 ### HomeComponent
 **File**: `src/app/pages/home/home.component.ts`
 
-Purpose: Landing/home page with practice overview.
+Purpose: Landing/home page with practice overview and dynamic news.
 
 Sections:
 - Hero banner with practice name/tagline
-- Featured services overview
-- Latest news section
-- Call-to-action buttons
+- Latest news section (dynamically loaded from `news.json` via `NewsService`)
+
+Key Logic:
+- Injects `NewsService`
+- On init, calls `newsService.loadNotices()` then sets `newsList` from `getActiveNotice()?.content`
+- Only displays the notice whose date range includes today and is marked active
 
 ### AboutComponent
 **File**: `src/app/pages/about/about.component.ts`
@@ -128,6 +131,36 @@ Content:
 - Owner/responsible person
 - Disclaimer
 - Legal notices
+
+### AdminLoginComponent
+**File**: `src/app/pages/admin/admin-login/admin-login.component.ts`
+
+Purpose: Password-based admin authentication.
+
+Features:
+- Password input field with enter-key submission
+- Validates password against hardcoded value
+- On success: stores token in localStorage, navigates to `/admin/dashboard`
+- On failure: shows error message, clears input
+- Styled with Bootstrap card layout
+
+### AdminDashboardComponent
+**File**: `src/app/pages/admin/admin-dashboard/admin-dashboard.component.ts`
+
+Purpose: Full CRUD interface for managing news notices.
+
+Features:
+- Lists all notices with status badges (active/inactive/outside date range)
+- Create new notice form with title, date range, active toggle, and multi-line content editor
+- Edit existing notices
+- Delete notices with confirmation dialog
+- Toggle activate/deactivate per notice
+- Live preview using `LatestNewsComponent`
+- Auto-persists changes to server via `NewsService.saveNotices()`
+- Save status indicators (saving/saved/error)
+- Logout button clears token and redirects
+
+Imports: `CommonModule`, `FormsModule`, `LatestNewsComponent`
 
 ## Shared Components
 
@@ -213,13 +246,21 @@ Uses: Owl Carousel jQuery library
 ### LatestNewsComponent
 **File**: `src/app/components/latest-news/latest-news.component.ts`
 
-Purpose: Display recent news and updates.
+Purpose: Display news notices with rich HTML content.
+
+Input Properties:
+- `textsList`: `Array<string>` — array of HTML strings to render
 
 Features:
-- News list with title, date, and summary
-- News categories/tags
-- Date sorting
-- Optional "read more" links
+- Sanitizes each string via `DomSanitizer.bypassSecurityTrustHtml()`
+- Renders items with `[innerHTML]` binding
+- Shows "Keine Aktuelles!" when empty
+- Header "Aktuelles!" displayed above content
+- Styled card with blue border
+
+Used by:
+- `HomeComponent` (public-facing news display)
+- `AdminDashboardComponent` (live preview during editing)
 
 ### TeamEmployeesComponent
 **File**: `src/app/components/employees-section/team-employees.component.ts`
@@ -287,6 +328,24 @@ Features:
 ## Core Services
 
 Services for application logic and utilities.
+
+### NewsService
+**File**: `src/app/core/services/news.service.ts`
+
+Purpose: Central service for loading, caching, and persisting news notices.
+
+Key Methods:
+- `loadNotices()`: GET request to `/data/news.json` (cache-busted with timestamp), updates BehaviorSubject and localStorage
+- `getNotices()`: Returns `Observable<NewsNotice[]>` from BehaviorSubject
+- `getActiveNotice()`: Synchronously finds the first notice where `isActive === true` and today falls within `startDate`–`endDate`
+- `saveNotices(notices)`: Updates local state + localStorage, then POSTs to `/api/save-news.php` with `X-API-Key` header
+- `addNotice(notice)`: Adds to in-memory array
+- `updateNotice(updated)`: Replaces matching notice by `id`
+- `deleteNotice(id)`: Removes notice by `id`
+
+State: `BehaviorSubject<NewsNotice[]>` with localStorage backup key `hausarzt_news`
+
+Usage: Injected by `HomeComponent` and `AdminDashboardComponent`
 
 ### ScrollTrackerService
 **File**: `src/app/core/services/scroll-tracker.service.ts`

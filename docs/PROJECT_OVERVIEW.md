@@ -46,14 +46,16 @@ Located in `src/app/pages/`:
 | Page | Purpose | Route |
 |------|---------|-------|
 | **main** | Root container for all pages | Root |
-| **home** | Landing page with hero section and key info | / |
-| **about** | About the practice and team intro | /about |
+| **home** | Landing page with hero section and dynamic news | /home |
+| **about** | About the practice and team intro | /our_praxis |
 | **team** | Detailed team member profiles | /team |
-| **performances** | Medical services and specializations | /performances |
+| **performances** | Medical services and specializations | /leistungen |
 | **contact** | Contact form and inquiries | /contact |
 | **arrival** | Location, directions, parking info | /arrival |
-| **privacy-policy** | GDPR and privacy information | /privacy-policy |
+| **privacy-policy** | GDPR and privacy information | /privacy_policy |
 | **impressum** | Legal information (required in Germany) | /impressum |
+| **admin-login** | Admin authentication page | /admin/login |
+| **admin-dashboard** | News CRUD management with live preview | /admin/dashboard |
 
 ### Layout & Shared Components
 Located in `src/app/components/`:
@@ -76,10 +78,27 @@ Located in `src/app/components/`:
 ### Core Services & Utilities
 Located in `src/app/core/`:
 
-| Service | Purpose |
-|---------|---------|
-| **scroll-tracker** | Tracks scroll position for active navigation |
-| **window** | Window resize breakpoint detection |
+| Service / Utility | Purpose |
+|-------------------|---------|
+| **NewsService** | Loads, caches, and persists news notices via HTTP; date-based active notice resolution |
+| **ScrollTrackerService** | Tracks scroll position for active navigation highlighting |
+| **WindowService** | Window resize breakpoint detection |
+| **authGuard** | Functional `CanActivateFn` guard protecting `/admin/dashboard` route |
+| **NewsNotice** (model) | TypeScript interface for news data (`id`, `title`, `content[]`, `startDate`, `endDate`, `isActive`, `createdAt`) |
+
+### Backend (PHP)
+Located in `public/api/`:
+
+| File | Purpose |
+|------|---------|
+| **save-news.php** | POST endpoint that validates `X-API-Key` header and writes news JSON to `public/data/news.json` |
+
+### Data Files
+Located in `public/data/`:
+
+| File | Purpose |
+|------|---------|
+| **news.json** | JSON array of `NewsNotice` objects, read by frontend and written by PHP backend |
 
 ### Animation Library
 Located in `src/app/core/animations-lib/`:
@@ -104,20 +123,31 @@ src/
 │   │   ├── arrival/
 │   │   ├── privacy-policy/
 │   │   ├── impressum/
-│   │   └── main/          # Root container
-│   ├── components/         # Reusable UI components
-│   ├── core/              # Services & utilities
-│   │   ├── services/
+│   │   ├── main/           # Root container
+│   │   └── admin/          # Admin area
+│   │       ├── admin-login/
+│   │       └── admin-dashboard/
+│   ├── components/          # Reusable UI components
+│   ├── core/               # Services, guards & utilities
+│   │   ├── services/       # NewsService, ScrollTracker, WindowService
+│   │   ├── guards/         # authGuard
+│   │   ├── utils/          # Models (NewsNotice), constants
 │   │   └── animations-lib/
-│   ├── app.component.ts   # Root component
-│   └── app.component.html
-├── assets/                # Static assets (images, JS libs)
-├── environments/          # Environment configuration
-├── styles.scss           # Global styles
-├── index.html           # HTML entry point
-└── main.ts              # Bootstrap file
-public/                   # Public static files
-dist/                     # Build output
+│   ├── app.component.ts    # Root component
+│   ├── app.routes.ts       # Route definitions (incl. admin)
+│   └── app.config.ts       # Application providers
+├── assets/                 # Static assets (images, JS libs)
+├── environments/           # Environment configuration
+├── styles.scss            # Global styles
+├── index.html            # HTML entry point
+└── main.ts               # Bootstrap file
+public/                    # Public static files
+├── api/
+│   └── save-news.php     # PHP endpoint for saving news
+├── data/
+│   └── news.json         # Dynamic news data
+└── favicon.ico
+dist/                      # Build output
 ```
 
 ## Quick Start
@@ -159,6 +189,19 @@ npm run test
 
 ## Key Features
 
+### Dynamic News Management
+- Admin dashboard for creating, editing, and deleting news notices
+- Date-range based activation (notices auto-show/hide by date)
+- Live preview of news before publishing
+- PHP backend persists changes to `news.json` on server
+- API key secured save endpoint
+
+### Admin Panel
+- Password-protected admin login at `/admin/login`
+- Route guard (`authGuard`) protects dashboard
+- CRUD interface for news notices with toggle activate/deactivate
+- localStorage-based session token
+
 ### Responsive Design
 - Mobile-first approach
 - Bootstrap grid system for layout
@@ -167,9 +210,10 @@ npm run test
 
 ### Performance Optimizations
 - Standalone Angular components (no NgModule)
+- Lazy-loaded routes via `loadComponent()`
+- Cache-busted news data fetching
 - Angular CLI production build optimizations
 - Asset minification and bundling
-- Tree-shaking for unused code
 
 ### Rich Animations
 - Custom animation library with 60+ animations

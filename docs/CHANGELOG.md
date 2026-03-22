@@ -15,12 +15,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - UI_Design.md for styling guidelines
 - Business_Rules.md for validation workflows
 - Setup.md for development environment setup
+- `NewsNotice` interface model (`src/app/core/utils/news.model.ts`)
+- `NewsService` with HTTP load/save, BehaviorSubject state, localStorage cache, and API key auth
+- `authGuard` functional route guard for admin area (`src/app/core/guards/auth.guard.ts`)
+- Admin login page (`/admin/login`) with password authentication
+- Admin dashboard (`/admin/dashboard`) with full CRUD for news notices, live preview, and server persistence
+- Admin routes added to `app.routes.ts` with lazy loading and guard protection
+- PHP save endpoint (`public/api/save-news.php`) with `X-API-Key` validation
+- Static news data file (`public/data/news.json`) replacing hardcoded constants
 
 ### Changed
+- `HomeComponent` now loads news dynamically via `NewsService` instead of static `christmasUrlaub` constant
+- `app.routes.ts` restructured with admin child routes and `authGuard`
+- Documentation synced: PROJECT_OVERVIEW, Architecture, Angular_Structure, Business_Rules updated to reflect admin system, NewsService, guards, and PHP backend
 
 ### Fixed
 
 ### Removed
+- `HomeComponent` no longer imports `christmasUrlaub` / `sommarUrlaub` constants (still exist in `models_interfaces.ts` but unused)
 
 ---
 
@@ -71,7 +83,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Planned Features
 
 #### Phase 1: Enhanced Content
-- [ ] Blog/news section with dynamic content
+- [x] Dynamic news section with admin management
 - [ ] Staff member search and filtering
 - [ ] Advanced search functionality
 - [ ] Image gallery with lightbox
@@ -91,7 +103,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [ ] Internationalization (i18n) support
 
 #### Phase 4: Administration
-- [ ] Admin dashboard for content management
+- [x] Admin dashboard for news content management
+- [x] Admin login with route guard protection
 - [ ] Appointment management system
 - [ ] Staff scheduling system
 - [ ] Analytics dashboard
