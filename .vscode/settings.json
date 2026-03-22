@@ -1,0 +1,4 @@
+{
+    "gemini.commitLanguage": "de", // for German
+    "gemini.commitMessagePrompt": "Schreibe die Commit-Nachricht auf Deutsch in Vergangenheit ohne Sie oder du und ohne wurden, und fasse die Änderungen kurz zusammen."
+}

@@ -1,10 +1,10 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, OnInit, ViewChild } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { CommonModule } from '@angular/common';
 import { HeroComponent } from '../../components/hero/hero.component';
 import { RouterModule } from '@angular/router';
 import { LatestNewsComponent } from '../../components/latest-news/latest-news.component';
-import { christmasUrlaub, sommarUrlaub } from '../../core/utils/models_interfaces';
+import { NewsService } from '../../core/services/news.service';
 
 @Component({
   selector: 'page-home',
@@ -14,7 +14,8 @@ import { christmasUrlaub, sommarUrlaub } from '../../core/utils/models_interface
 })
 export class HomeComponent implements OnInit {
   imagesPath = environment.imagesPath;
-  newsList = christmasUrlaub;
+  newsList: string[] = [];
+  private newsService = inject(NewsService);
   constructor() {}
   // @HostListener('window:scroll', [])
   // onWindowScroll() {
@@ -33,6 +34,9 @@ export class HomeComponent implements OnInit {
 
   
   ngOnInit(): void {
+    this.newsService.loadNotices().subscribe(() => {
+      this.newsList = this.newsService.getActiveNotice()?.content ?? [];
+    });
   }
 
 }

@@ -1,0 +1,30 @@
+<div class="min-vh-100 d-flex align-items-center justify-content-center"
+     style="background: #f8f9fa;">
+  <div class="card shadow" style="width: 360px; border-top: 4px solid var(--bs-blue);">
+    <div class="card-body p-4">
+      <h4 class="text-primary fw-bold mb-1">Admin Login</h4>
+      <p class="text-muted mb-4" style="font-size:14px;">Hausarzt Cottbus — Verwaltung</p>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Passwort</label>
+        <input
+          type="password"
+          class="form-control"
+          [(ngModel)]="password"
+          (keyup.enter)="login()"
+          placeholder="Passwort eingeben"
+          autofocus />
+      </div>
+
+      @if (error) {
+        <div class="alert alert-danger py-2 mb-3" style="font-size:14px;">
+          Falsches Passwort. Bitte erneut versuchen.
+        </div>
+      }
+
+      <button class="btn btn-primary w-100 fw-semibold" (click)="login()">
+        Anmelden
+      </button>
+    </div>
+  </div>
+</div>

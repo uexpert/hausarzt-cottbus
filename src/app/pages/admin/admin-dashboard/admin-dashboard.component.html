@@ -1,0 +1,170 @@
+<div class="min-vh-100" style="background:#f8f9fa;">
+
+  <!-- Header -->
+  <nav class="navbar navbar-light bg-white shadow-sm px-4">
+    <span class="navbar-brand fw-bold text-primary mb-0">
+      🏥 Hausarzt Cottbus — Admin
+    </span>
+    <button class="btn btn-outline-danger btn-sm" (click)="logout()">
+      Abmelden
+    </button>
+  </nav>
+
+  <div class="container py-4">
+
+    <!-- Save Status -->
+    @if (saveStatus === 'saving') {
+      <div class="alert alert-info py-2">💾 Wird gespeichert...</div>
+    }
+    @if (saveStatus === 'saved') {
+      <div class="alert alert-success py-2">✅ Erfolgreich gespeichert!</div>
+    }
+    @if (saveStatus === 'error') {
+      <div class="alert alert-danger py-2">❌ Fehler beim Speichern. Bitte erneut versuchen.</div>
+    }
+
+    <!-- Notices List -->
+    @if (!showForm) {
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold mb-0">Aktuelles verwalten</h5>
+        <button class="btn btn-primary btn-sm fw-semibold" (click)="openCreateForm()">
+          + Neue Meldung
+        </button>
+      </div>
+
+      @if (notices.length === 0) {
+        <div class="card text-center py-5 text-muted">
+          Keine Meldungen vorhanden.
+        </div>
+      }
+
+      @for (notice of notices; track notice.id) {
+        <div class="card mb-3 shadow-sm"
+             [style.border-left]="isCurrentlyActive(notice) ? '4px solid #0d6efd' : '4px solid #dee2e6'">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+              <div>
+                <h6 class="fw-bold mb-1">{{ notice.title }}</h6>
+                <small class="text-muted">
+                  📅 {{ notice.startDate }} → {{ notice.endDate }}
+                </small>
+              </div>
+              <div class="d-flex gap-2 flex-wrap">
+                @if (isCurrentlyActive(notice)) {
+                  <span class="badge bg-success">Aktiv & Sichtbar</span>
+                } @else if (notice.isActive) {
+                  <span class="badge bg-warning text-dark">Aktiviert (außerhalb Zeitraum)</span>
+                } @else {
+                  <span class="badge bg-secondary">Deaktiviert</span>
+                }
+                <button class="btn btn-outline-secondary btn-sm"
+                        (click)="toggleActive(notice)">
+                  {{ notice.isActive ? 'Deaktivieren' : 'Aktivieren' }}
+                </button>
+                <button class="btn btn-outline-primary btn-sm"
+                        (click)="openEditForm(notice)">
+                  Bearbeiten
+                </button>
+                <button class="btn btn-outline-danger btn-sm"
+                        (click)="deleteNotice(notice.id)">
+                  Löschen
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    }
+
+    <!-- Create / Edit Form -->
+    @if (showForm) {
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h5 class="fw-bold mb-4">
+            {{ isEditing ? 'Meldung bearbeiten' : 'Neue Meldung erstellen' }}
+          </h5>
+
+          <!-- Title -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Titel *</label>
+            <input type="text" class="form-control"
+                   [(ngModel)]="currentNotice.title"
+                   placeholder="z.B. Sommerurlaub 2026" />
+          </div>
+
+          <!-- Date Range -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Startdatum *</label>
+              <input type="date" class="form-control"
+                     [(ngModel)]="currentNotice.startDate" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Enddatum *</label>
+              <input type="date" class="form-control"
+                     [(ngModel)]="currentNotice.endDate" />
+            </div>
+          </div>
+
+          <!-- Active Toggle -->
+          <div class="mb-4">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox"
+                     [(ngModel)]="currentNotice.isActive"
+                     id="activeToggle" />
+              <label class="form-check-label fw-semibold" for="activeToggle">
+                Meldung aktivieren
+              </label>
+            </div>
+          </div>
+
+          <!-- Content Lines -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Inhalt (HTML erlaubt)</label>
+            @for (line of currentNotice.content; track trackByIndex($index); let i = $index) {
+              <div class="d-flex gap-2 mb-2">
+                <textarea class="form-control"
+                          rows="2"
+                          [value]="line"
+                          (input)="updateContentLine(i, $any($event.target).value)"
+                          placeholder="z.B. Liebe Patientinnen und Patienten,">
+                </textarea>
+                <button class="btn btn-outline-danger btn-sm align-self-start"
+                        (click)="removeContentLine(i)"
+                        [disabled]="currentNotice.content.length === 1">
+                  ✕
+                </button>
+              </div>
+            }
+            <button class="btn btn-outline-secondary btn-sm mt-1"
+                    (click)="addContentLine()">
+              + Zeile hinzufügen
+            </button>
+          </div>
+
+          <!-- Actions -->
+          <div class="d-flex gap-2 flex-wrap mt-4">
+            <button class="btn btn-outline-primary" (click)="preview()">
+              👁 Vorschau
+            </button>
+            <button class="btn btn-primary fw-semibold" (click)="saveNotice()">
+              💾 Speichern
+            </button>
+            <button class="btn btn-outline-secondary" (click)="cancelForm()">
+              Abbrechen
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Preview -->
+      @if (showPreview) {
+        <div class="mt-4">
+          <h6 class="fw-bold mb-3 text-muted">Vorschau — so wird es auf der Webseite aussehen:</h6>
+          <latest-news [textsList]="previewList"></latest-news>
+        </div>
+      }
+    }
+
+  </div>
+</div>

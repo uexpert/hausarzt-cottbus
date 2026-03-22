@@ -1,59 +1,146 @@
 # HausarztCottbus
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.0.
+Professional website for a medical practice (Hausarzt) in Cottbus, Germany. Built with Angular 19 and modern web technologies.
 
-## Development server
+**Documentation**: See the [docs folder](/docs/) for comprehensive project documentation.
 
-To start a local development server, run:
+## Quick Start
 
-```bash
-ng serve
-```
+### Prerequisites
+- Node.js 18+ and npm 9+
+- Git
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Installation & Development
 
 ```bash
-ng generate component component-name
+# Install dependencies
+npm install
+
+# Start development server
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+The application will be available at `http://localhost:4200/` and automatically reload on file changes.
+
+### Production Build
 
 ```bash
-ng generate --help
+# Standard production build
+npm run build
+
+# Build for subfolder deployment
+npm run build:usama-dev
 ```
 
-## Building
+## Project Documentation
 
-To build the project run:
+Comprehensive documentation is available in the `/docs` folder:
+
+### Quick References
+- **[PROJECT_OVERVIEW.md](/docs/PROJECT_OVERVIEW.md)** - Main reference with project purpose, tech stack, and structure
+- **[Setup.md](/docs/Setup.md)** - Development environment setup and common tasks
+- **[Architecture.md](/docs/Architecture.md)** - Project structure, routing, and build pipeline
+
+### Detailed Guides
+- **[Angular_Structure.md](/docs/Angular_Structure.md)** - Components, services, and modules documentation
+- **[UI_Design.md](/docs/UI_Design.md)** - Styling conventions, CSS variables, and responsive design
+- **[Business_Rules.md](/docs/Business_Rules.md)** - Frontend validation, workflows, and business logic
+- **[CHANGELOG.md](/docs/CHANGELOG.md)** - Version history and release notes
+
+## Key Features
+
+- **Responsive Design**: Mobile-first approach with Bootstrap 5
+- **Standalone Components**: Modern Angular architecture with no NgModule
+- **Rich Animations**: 60+ custom animations library
+- **UI Components**: ng-zorro-antd for enterprise components
+- **SEO Friendly**: Semantic HTML and proper structure
+- **Google Maps**: Interactive location map
+- **Image Galleries**: Owl Carousel integration
+- **Form Validation**: Comprehensive client-side validation
+
+## Tech Stack
+
+- **Angular**: 19.2.0
+- **TypeScript**: 5.7.2
+- **SCSS**: Custom styling
+- **ng-zorro-antd**: UI components
+- **Bootstrap 5**: Grid and utilities
+- **Owl Carousel**: Image carousels
+- **Testing**: Karma & Jasmine
+
+## Common Commands
 
 ```bash
-ng build
+# Development
+npm start                    # Start dev server
+npm run test               # Run unit tests
+
+# Production
+npm run build              # Build for production
+npm run build:usama-dev    # Build with custom base-href
+
+# Code Quality
+ng lint                    # Check code style
+ng lint --fix             # Fix auto-fixable issues
+
+# Scaffolding
+ng generate component name # Create new component
+ng generate service name   # Create new service
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Project Structure
 
-## Running unit tests
+```
+src/
+├── app/
+│   ├── pages/         # Route components (home, about, team, etc.)
+│   ├── components/    # Reusable UI components
+│   ├── core/         # Services and utilities
+│   └── app.component.ts
+├── assets/           # Images and static files
+├── styles.scss       # Global styles
+└── index.html        # Entry point
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+dist/                 # Production build output
+docs/                 # Comprehensive documentation
+```
+
+## Browser Support
+
+- Chrome, Firefox, Safari, Edge (latest versions)
+- Angular 19 requires ES2022+ support
+- IE11 not supported
+
+## Performance
+
+- Production build with optimization enabled
+- Bundle size budgets: 4MB initial, 8MB total
+- Asset minification and tree-shaking
+- Source maps in development
+
+## Deployment
+
+Build output is in `dist/hausarzt-cottbus/`. Include the `.htaccess` file for proper routing support on Apache servers.
+
+## Testing
 
 ```bash
-ng test
+ng test               # Run tests in watch mode
+ng test --watch=false # Run tests once
+ng test --code-coverage # Generate coverage report
 ```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
 ## Additional Resources
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- [Angular Documentation](https://angular.dev)
+- [Angular CLI Documentation](https://angular.dev/tools/cli)
+- [ng-zorro-antd Documentation](https://ng.ant.design/)
+- [Bootstrap 5 Documentation](https://getbootstrap.com/)
+
+## License
+
+See LICENSE file for details.
+
+---
+
+**For detailed development guidelines, setup instructions, and architecture information, please see the [documentation](/docs/) folder.**
