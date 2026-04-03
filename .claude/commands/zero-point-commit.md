@@ -1,0 +1,1 @@
+consider from here the zero point of commit messages is.

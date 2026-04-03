@@ -1,10 +1,21 @@
 <hero></hero>
 
-<section class="section-padding nav-section">
+@if (activeNotices.length > 0) {
+  <section class="section-padding nav-section">
     <div class="container">
-        <latest-news [textsList]="newsList"></latest-news>
+      <p class="text-primary font-lg-25 fw-bold mb-3 d-block"><strong>Aktuelles!</strong></p>
+      @for (notice of activeNotices; track notice.id) {
+        <div class="mb-3">
+          <latest-news [blocks]="notice.content"
+                       [title]="notice.title"
+                       [startDate]="notice.startDate"
+                       [endDate]="notice.endDate">
+          </latest-news>
+        </div>
+      }
     </div>
-</section>
+  </section>
+}
 
 <!-- <section class="section-padding nav-section" id="about">
     <div class="container">

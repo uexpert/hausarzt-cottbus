@@ -2,18 +2,13 @@
 <div class="owl-item">
     <figure class="reviews-thumb d-flex flex-wrap align-items-center"
         style="background: #fff;border: 2px solid var(--bs-blue);padding: 16px;">
-    
-        <p class="text-primary d-block mt-2 mb-2 w-100 font-lg-25"><strong>Aktuelles!</strong></p>
-    
-        @if (finalList) {
-            @for (item of finalList; track item) {
-                <div class="w-100 text-dark font-sm-16 mb-2" [innerHTML]="item"></div>
-            }
+
+        @if (title) {
+            <p class="text-primary d-block mt-1 mb-2 w-100 font-sm-18 fw-bold">{{ renderedTitle }}</p>
         }
-        @else {
-            <div class="reviews-text w-100 text-dark font-sm-16">
-                Keine Aktuelles!
-            </div>
+
+        @if (renderedHtml) {
+            <div class="w-100" [innerHTML]="renderedHtml"></div>
         }
     </figure>
 </div>

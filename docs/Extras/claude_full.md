@@ -81,7 +81,35 @@ Updated PROJECT_OVERVIEW, Architecture, Angular_Structure, Business_Rules, CHANG
 - HomeComponent migrated from static constants to NewsService
 - Updated routing table with admin child routes
 
+### 2026-03-27 — Docs Sync #2
+Updated PROJECT_OVERVIEW, Angular_Structure, Business_Rules, and CHANGELOG to reflect:
+- `ContentBlock` interface and `BlockType` union type added to `news.model.ts`
+- `NewsNotice.content` changed from `string[]` to `ContentBlock[]`
+- New `content-block.renderer.ts` utility — pure `renderBlocks()` function with HTML escaping and whitelisted tags
+- `LatestNewsComponent` input renamed `textsList` → `blocks`; `bypassSecurityTrustHtml` removed; uses `DomSanitizer.sanitize(SecurityContext.HTML, ...)`
+- Admin dashboard textarea replaced by block-builder (type dropdown + plain text input)
+- `news.json` migrated to `ContentBlock[]` format
+
+### 2026-04-03 — Docs Sync #3
+Updated PROJECT_OVERVIEW, Angular_Structure, Business_Rules, CHANGELOG, and session file to reflect all changes from continuation sessions:
+- **Block formatting**: per-block alignment, indent (left/right, 1–10 em), line-height (7 steps); CSS-class-only approach (no `style=""`)
+- **Inline bold**: `**text**` → `<strong>` in `processText()` after HTML-escape
+- **Date parameters**: `{startDate}`/`{endDate}` in block text (short format) and notice title (long German format `dd. MonthName yyyy`)
+- **`RenderContext`** + `processText()` + `blockClasses()` added to `content-block.renderer.ts`
+- **Text templates** and **title templates** stored in localStorage; multi-block template support; `TextTemplate.blocks[]` migration
+- **`TextAlign`, `IndentDir`, `LineHeight`** types; `TextTemplate`, `TitleTemplate` interfaces added to `news.model.ts`
+- **Drag-and-drop + up/down buttons** for block reordering
+- **Multiple active notices**: `getActiveNotices()` (plural) in `NewsService`; `HomeComponent` renders all with `@for`
+- **"Aktuelles!" section hidden** when no notices active (`@if (activeNotices.length > 0)`)
+- **Global `DialogService`** + **`DialogComponent`** replacing browser `prompt()`/`confirm()` in admin dashboard
+- **`NG5002` fix**: `@if` inside `<button>` → `[class.d-none]`; bare `{`/`}` → HTML entities
+- **`TS2322` fix**: `DialogState.resolve` typed as `any`
+- **Title date substitution fix**: `renderedTitle` computed in `LatestNewsComponent.ngOnChanges`
+- SCSS `@for` loops for `indent-left-N`/`indent-right-N` and `lh-*` classes in `styles.scss`
+- Session file `session_2026-03-22_07-30_Change latest news by deployee.md` updated with tasks 16–33
+- Security: XSS prevention and typography enforcement now consolidated in `content-block.renderer.ts`
+
 ---
 
-Last Updated: 2026-03-22
-Documentation Version: 1.1
+Last Updated: 2026-03-27
+Documentation Version: 1.2

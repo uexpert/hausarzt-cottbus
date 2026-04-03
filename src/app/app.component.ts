@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, inject, OnDestroy } from '@angular/core';
 import { MainComponent } from './pages/main/main.component';
+import { DialogComponent } from './core/components/dialog/dialog.component';
 import { environment } from '../environments/environment';
 import { WindowService } from './core/services/window.service';
 
@@ -8,7 +9,7 @@ declare var bootstrap: any; // Declare jQuery
 
 @Component({
   selector: 'app-root',
-  imports: [MainComponent],
+  imports: [MainComponent, DialogComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

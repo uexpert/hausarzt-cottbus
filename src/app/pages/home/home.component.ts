@@ -1,10 +1,11 @@
-import { Component, ElementRef, HostListener, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { CommonModule } from '@angular/common';
 import { HeroComponent } from '../../components/hero/hero.component';
 import { RouterModule } from '@angular/router';
 import { LatestNewsComponent } from '../../components/latest-news/latest-news.component';
 import { NewsService } from '../../core/services/news.service';
+import { NewsNotice } from '../../core/utils/news.model';
 
 @Component({
   selector: 'page-home',
@@ -14,29 +15,13 @@ import { NewsService } from '../../core/services/news.service';
 })
 export class HomeComponent implements OnInit {
   imagesPath = environment.imagesPath;
-  newsList: string[] = [];
+  activeNotices: NewsNotice[] = [];
   private newsService = inject(NewsService);
   constructor() {}
-  // @HostListener('window:scroll', [])
-  // onWindowScroll() {
-  //   const sections = document.querySelectorAll('section');
-  //   let activeSectionId = '';
 
-  //   sections.forEach((section) => {
-  //     const rect = section.getBoundingClientRect();
-  //     if (rect.top >= 0 && rect.top <= 300) { // Detect when section is near the top
-  //       activeSectionId = section.id;
-  //     }
-  //   });
-
-  //   this.scrollService.setActiveSection(activeSectionId);
-  // }
-
-  
   ngOnInit(): void {
     this.newsService.loadNotices().subscribe(() => {
-      this.newsList = this.newsService.getActiveNotice()?.content ?? [];
+      this.activeNotices = this.newsService.getActiveNotices();
     });
   }
-
 }

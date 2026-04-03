@@ -1,0 +1,37 @@
+@if (state$ | async; as dialog) {
+  <div class="dialog-backdrop" (click)="cancel()">
+    <div class="dialog-box card shadow-lg" (click)="$event.stopPropagation()">
+
+      <div class="card-header d-flex justify-content-between align-items-center py-2 px-3">
+        <h6 class="mb-0 fw-bold">{{ dialog.title }}</h6>
+        <button type="button" class="btn-close btn-sm" aria-label="Schließen"
+                (click)="cancel()"></button>
+      </div>
+
+      <div class="card-body px-3 py-3">
+        @if (dialog.message) {
+          <p class="mb-3 text-dark">{{ dialog.message }}</p>
+        }
+        @if (dialog.type === 'prompt') {
+          <input type="text" class="form-control"
+                 [(ngModel)]="inputValue"
+                 [placeholder]="dialog.placeholder ?? ''"
+                 (keydown.enter)="confirm()"
+                 (keydown.escape)="cancel()"
+                 autofocus />
+        }
+      </div>
+
+      <div class="card-footer d-flex gap-2 justify-content-end py-2 px-3">
+        <button class="btn btn-outline-secondary btn-sm"
+                (click)="cancel()">Abbrechen</button>
+        <button [class]="dialog.confirmClass"
+                (click)="confirm()"
+                [disabled]="dialog.type === 'prompt' && !inputValue.trim()">
+          {{ dialog.confirmLabel }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

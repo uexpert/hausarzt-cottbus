@@ -141,25 +141,43 @@ All internal links validated:
 **Data Source**: `public/data/news.json` loaded via `NewsService`
 
 **Active Notice Resolution**:
-- `NewsService.getActiveNotice()` finds the first notice where:
+- `NewsService.getActiveNotices()` returns **all** notices where:
   - `isActive === true`, AND
   - Today's date falls within `startDate` (inclusive) to `endDate` (inclusive, end of day)
-- If no notice matches, `newsList` is empty and the news section shows "Keine Aktuelles!"
+- If no notices match, the "Aktuelles" section is hidden entirely (`@if (activeNotices.length > 0)`)
 
 **Display**:
-- Homepage shows the content array of the single active notice
-- Each string in `content[]` is rendered as a separate `<div>` via `[innerHTML]`
-- HTML formatting (bold, lists, divs with CSS classes) is supported
+- "Aktuelles!" heading appears once as a section heading above all active notice cards
+- Each active notice is rendered by its own `<latest-news>` card, showing the notice `title` below "Aktuelles!"
+- `renderBlocks()` converts each block's plain text to HTML using its `type` and optional formatting (alignment, indent, line-height)
+- Typography is enforced by the renderer — hardcoded project CSS classes only, no inline styles
+
+**Date Parameters in Content**:
+- Block text may contain `{startDate}` and `{endDate}` markers — replaced at render time with short German format (`dd.MM.yyyy`)
+- Notice `title` may contain `{startDate}` and `{endDate}` markers — replaced at render time with long German format (`dd. MonthName yyyy`, e.g. `03. Januar 2026`)
 
 ### News Admin Dashboard
 
 **Location**: `/admin/dashboard` (protected by `authGuard`)
 
 **CRUD Operations**:
-- **Create**: New notice with title, start/end dates, active flag, and multi-line HTML content
+- **Create**: New notice with title, start/end dates, active flag, and block-builder content
 - **Read**: Lists all notices with status badges
 - **Update**: Edit any field of an existing notice
-- **Delete**: Confirmation dialog before removal
+- **Delete**: Confirmation via `DialogService.confirm()` (no browser `confirm()`)
+
+**Block-Builder Content Editor**:
+- Admin selects a block type per row (dropdown): `Absatz`, `Überschrift`, `Fettgedruckt`, `Listenpunkt`, `Notfallhinweis`
+- Admin enters plain text only — no HTML tags or styles are accepted or rendered
+- Formatting applied automatically by `renderBlocks()` using the chosen block type
+- Per-block formatting controls: alignment (left/center/right via Bootstrap utilities), indent (left/right, 1–10 em, via SCSS-generated classes), line-height (7 steps, via SCSS-generated classes)
+- Inline bold: `**text**` within block text → `<strong>` at render time
+- Date parameters: `{startDate}` / `{endDate}` in block text → replaced with short German date at render time
+- Block order: drag-and-drop (HTML5 DnD) + up/down buttons
+
+**Templates**:
+- **Text templates** (localStorage `hac_text_templates`): Save one block (⭐ per block) or all blocks ("⭐ Alle als Vorlage") as a named reusable template; insert via "+ Einfügen"
+- **Title templates** (localStorage `hac_title_templates`): Save the current title text with optional `{startDate}`/`{endDate}` markers; on "Übernehmen" markers are substituted with the notice's current dates (German long format)
 
 **Status Badges**:
 - "Aktiv & Sichtbar" (green): `isActive === true` AND today is within date range
@@ -172,7 +190,12 @@ All internal links validated:
 3. PHP endpoint writes JSON to `public/data/news.json`
 4. Save status shown to admin: saving → saved / error
 
-**Live Preview**: Admin can preview a notice using the same `LatestNewsComponent` used on the public site
+**Live Preview**: Admin can preview a notice using the same `LatestNewsComponent` used on the public site; preview section includes "Aktuelles!" heading above the card
+
+**Dialog System**:
+- All interactive confirmations and text prompts use `DialogService` (application-specific modal overlays)
+- No browser `prompt()`, `confirm()`, or `alert()` calls exist in the admin dashboard
+- `DialogService` is global — future components get the same dialog styling automatically by injecting the service
 
 ### Team Member Display
 
@@ -220,9 +243,11 @@ All internal links validated:
 
 ### Input Sanitization
 
-- **News Content**: `LatestNewsComponent` uses `DomSanitizer.bypassSecurityTrustHtml()` — content is trusted (admin-authored)
-- **Other Content**: Angular built-in sanitization for all dynamic content
-- **No Inline Scripts**: No user input treated as executable JavaScript
+- **News Content**: Admin enters plain text only. `renderBlocks()` processing order: HTML-escape → `{startDate}`/`{endDate}` substitution (dates are also escaped) → `**bold**` → `<strong>`. Output is then passed through `DomSanitizer.sanitize(SecurityContext.HTML, ...)`. `bypassSecurityTrustHtml` is **not** used anywhere.
+- **XSS Prevention**: `<script>`, event handlers (`onerror`, `onclick`, …), `<iframe>`, and inline `style=""` attributes cannot appear in rendered news content — the renderer never writes them.
+- **CSS Classes Only**: All formatting (alignment, indent, line-height) uses whitelisted CSS class names. `DomSanitizer` allows `class=""` attributes; `style=""` is intentionally avoided and would be stripped anyway.
+- **Typography Constraints**: CSS classes are hardcoded in `content-block.renderer.ts`. Users cannot inject custom colors, font sizes, or styles.
+- **Other Content**: Angular built-in sanitization for all other dynamic content
 
 ### GDPR & Privacy
 

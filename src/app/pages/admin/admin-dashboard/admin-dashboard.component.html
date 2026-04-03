@@ -5,9 +5,7 @@
     <span class="navbar-brand fw-bold text-primary mb-0">
       🏥 Hausarzt Cottbus — Admin
     </span>
-    <button class="btn btn-outline-danger btn-sm" (click)="logout()">
-      Abmelden
-    </button>
+    <button class="btn btn-outline-danger btn-sm" (click)="logout()">Abmelden</button>
   </nav>
 
   <div class="container py-4">
@@ -23,19 +21,17 @@
       <div class="alert alert-danger py-2">❌ Fehler beim Speichern. Bitte erneut versuchen.</div>
     }
 
-    <!-- Notices List -->
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <!-- Notices List                                                           -->
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
     @if (!showForm) {
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold mb-0">Aktuelles verwalten</h5>
-        <button class="btn btn-primary btn-sm fw-semibold" (click)="openCreateForm()">
-          + Neue Meldung
-        </button>
+        <button class="btn btn-primary btn-sm fw-semibold" (click)="openCreateForm()">+ Neue Meldung</button>
       </div>
 
       @if (notices.length === 0) {
-        <div class="card text-center py-5 text-muted">
-          Keine Meldungen vorhanden.
-        </div>
+        <div class="card text-center py-5 text-muted">Keine Meldungen vorhanden.</div>
       }
 
       @for (notice of notices; track notice.id) {
@@ -45,9 +41,7 @@
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
               <div>
                 <h6 class="fw-bold mb-1">{{ notice.title }}</h6>
-                <small class="text-muted">
-                  📅 {{ notice.startDate }} → {{ notice.endDate }}
-                </small>
+                <small class="text-muted">📅 {{ notice.startDate }} → {{ notice.endDate }}</small>
               </div>
               <div class="d-flex gap-2 flex-wrap">
                 @if (isCurrentlyActive(notice)) {
@@ -57,18 +51,11 @@
                 } @else {
                   <span class="badge bg-secondary">Deaktiviert</span>
                 }
-                <button class="btn btn-outline-secondary btn-sm"
-                        (click)="toggleActive(notice)">
+                <button class="btn btn-outline-secondary btn-sm" (click)="toggleActive(notice)">
                   {{ notice.isActive ? 'Deaktivieren' : 'Aktivieren' }}
                 </button>
-                <button class="btn btn-outline-primary btn-sm"
-                        (click)="openEditForm(notice)">
-                  Bearbeiten
-                </button>
-                <button class="btn btn-outline-danger btn-sm"
-                        (click)="deleteNotice(notice.id)">
-                  Löschen
-                </button>
+                <button class="btn btn-outline-primary btn-sm" (click)="openEditForm(notice)">Bearbeiten</button>
+                <button class="btn btn-outline-danger btn-sm" (click)="deleteNotice(notice.id)">Löschen</button>
               </div>
             </div>
           </div>
@@ -76,83 +63,259 @@
       }
     }
 
-    <!-- Create / Edit Form -->
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <!-- Create / Edit Form                                                     -->
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
     @if (showForm) {
       <div class="card shadow-sm">
         <div class="card-body p-4">
-          <h5 class="fw-bold mb-4">
-            {{ isEditing ? 'Meldung bearbeiten' : 'Neue Meldung erstellen' }}
-          </h5>
+          <h5 class="fw-bold mb-4">{{ isEditing ? 'Meldung bearbeiten' : 'Neue Meldung erstellen' }}</h5>
 
-          <!-- Title -->
+          <!-- ── Titel ─────────────────────────────────────────────────────── -->
           <div class="mb-3">
             <label class="form-label fw-semibold">Titel *</label>
-            <input type="text" class="form-control"
-                   [(ngModel)]="currentNotice.title"
-                   placeholder="z.B. Sommerurlaub 2026" />
+            <div class="d-flex gap-2 align-items-center">
+              <input type="text" class="form-control flex-grow-1"
+                     [(ngModel)]="currentNotice.title"
+                     placeholder="z.B. Sommerurlaub 2026" />
+              <!-- Save current title as template -->
+              <button class="btn btn-outline-warning btn-sm flex-shrink-0"
+                      title="Aktuellen Titel als Vorlage speichern"
+                      (click)="saveTitleTemplate()">⭐</button>
+              <!-- Toggle title-template panel -->
+              <button class="btn btn-outline-secondary btn-sm flex-shrink-0"
+                      title="Titelvorlagen"
+                      (click)="showTitleTemplates = !showTitleTemplates">
+                📋 {{ showTitleTemplates ? '▲' : '▼' }}
+                <span class="badge bg-secondary ms-1"
+                      [class.d-none]="titleTemplates.length === 0">{{ titleTemplates.length }}</span>
+              </button>
+            </div>
+
+            <!-- Title-template panel -->
+            @if (showTitleTemplates) {
+              <div class="border rounded p-3 mt-2" style="background:#fff;">
+                <small class="text-muted d-block mb-2">
+                  Verwende <code>&#123;startDate&#125;</code> und <code>&#123;endDate&#125;</code> im Titeltext —
+                  sie werden beim Übernehmen automatisch mit den gewählten Daten ersetzt.
+                </small>
+                @if (titleTemplates.length === 0) {
+                  <small class="text-muted">
+                    Noch keine Titelvorlagen. Schreibe einen Titel (z.&nbsp;B.
+                    <em>Urlaub vom &#123;startDate&#125; bis &#123;endDate&#125;</em>) und klicke ⭐.
+                  </small>
+                }
+                @for (t of titleTemplates; track t.id) {
+                  <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                    <span class="flex-grow-1 small text-truncate" style="max-width:320px;"
+                          title="{{ t.text }}">{{ t.text }}</span>
+                    <button class="btn btn-outline-primary btn-sm text-nowrap"
+                            (click)="applyTitleTemplate(t)">Übernehmen</button>
+                    <button class="btn btn-outline-danger btn-sm"
+                            (click)="deleteTitleTemplate(t.id)">✕</button>
+                  </div>
+                }
+              </div>
+            }
           </div>
 
-          <!-- Date Range -->
+          <!-- ── Datumsbereich ──────────────────────────────────────────────── -->
           <div class="row mb-3">
             <div class="col-md-6">
               <label class="form-label fw-semibold">Startdatum *</label>
-              <input type="date" class="form-control"
-                     [(ngModel)]="currentNotice.startDate" />
+              <input type="date" class="form-control" [(ngModel)]="currentNotice.startDate" />
             </div>
             <div class="col-md-6">
               <label class="form-label fw-semibold">Enddatum *</label>
-              <input type="date" class="form-control"
-                     [(ngModel)]="currentNotice.endDate" />
+              <input type="date" class="form-control" [(ngModel)]="currentNotice.endDate" />
             </div>
           </div>
 
-          <!-- Active Toggle -->
+          <!-- ── Aktiv-Schalter ─────────────────────────────────────────────── -->
           <div class="mb-4">
             <div class="form-check form-switch">
               <input class="form-check-input" type="checkbox"
-                     [(ngModel)]="currentNotice.isActive"
-                     id="activeToggle" />
-              <label class="form-check-label fw-semibold" for="activeToggle">
-                Meldung aktivieren
-              </label>
+                     [(ngModel)]="currentNotice.isActive" id="activeToggle" />
+              <label class="form-check-label fw-semibold" for="activeToggle">Meldung aktivieren</label>
             </div>
           </div>
 
-          <!-- Content Lines -->
+          <!-- ── Textvorlagen (Block-Gruppen) ──────────────────────────────── -->
           <div class="mb-3">
-            <label class="form-label fw-semibold">Inhalt (HTML erlaubt)</label>
-            @for (line of currentNotice.content; track trackByIndex($index); let i = $index) {
-              <div class="d-flex gap-2 mb-2">
-                <textarea class="form-control"
-                          rows="2"
-                          [value]="line"
-                          (input)="updateContentLine(i, $any($event.target).value)"
-                          placeholder="z.B. Liebe Patientinnen und Patienten,">
-                </textarea>
-                <button class="btn btn-outline-danger btn-sm align-self-start"
-                        (click)="removeContentLine(i)"
-                        [disabled]="currentNotice.content.length === 1">
-                  ✕
-                </button>
+            <button class="btn btn-outline-secondary btn-sm" type="button"
+                    (click)="showTemplates = !showTemplates">
+              📋 Textvorlagen
+              <span class="badge bg-secondary ms-1">{{ templates.length }}</span>
+              {{ showTemplates ? '▲' : '▼' }}
+            </button>
+
+            @if (showTemplates) {
+              <div class="border rounded p-3 mt-2" style="background:#fff;">
+                @if (templates.length === 0) {
+                  <small class="text-muted">
+                    Noch keine Vorlagen. Klicken Sie bei einem Block auf ⭐ (Einzelblock) oder
+                    nutzen Sie „⭐ Alle als Vorlage" für mehrzeilige Inhalte (z.&nbsp;B. Vertretungsinfos).
+                  </small>
+                }
+                @for (t of templates; track t.id) {
+                  <div class="d-flex align-items-start gap-2 mb-2">
+                    <div class="flex-grow-1 min-width-0">
+                      <!-- Template name -->
+                      <div class="fw-semibold small text-truncate" title="{{ t.name }}">{{ t.name }}</div>
+                      <!-- Content preview: first block text + block count hint -->
+                      <div class="text-muted" style="font-size:0.78em; line-height:1.3;">
+                        {{ t.blocks[0]?.text | slice:0:80 }}{{ (t.blocks[0]?.text?.length ?? 0) > 80 ? '…' : '' }}
+                        @if (t.blocks.length > 1) {
+                          <span class="text-primary ms-1">
+                            +{{ t.blocks.length - 1 }}&nbsp;weitere{{ t.blocks.length > 2 ? ' Blöcke' : ' Block' }}
+                          </span>
+                        }
+                      </div>
+                    </div>
+                    <small class="text-muted text-nowrap flex-shrink-0">[{{ t.blocks[0]?.type }}]</small>
+                    <button class="btn btn-outline-primary btn-sm text-nowrap flex-shrink-0"
+                            (click)="insertTemplate(t)">+ Einfügen</button>
+                    <button class="btn btn-outline-danger btn-sm flex-shrink-0"
+                            (click)="deleteTemplate(t.id)">✕</button>
+                  </div>
+                }
               </div>
             }
-            <button class="btn btn-outline-secondary btn-sm mt-1"
-                    (click)="addContentLine()">
-              + Zeile hinzufügen
-            </button>
           </div>
 
-          <!-- Actions -->
+          <!-- ── Inhalt / Blöcke ─────────────────────────────────────────────── -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Inhalt</label>
+            <small class="text-muted d-block mb-2">
+              Wählen Sie für jeden Block den Stiltyp. Sonderformatierungen:
+              <code>**Text**</code> → fett innerhalb eines Absatzes ·
+              <code>&#123;startDate&#125;</code> / <code>&#123;endDate&#125;</code> → werden mit den gewählten Daten ersetzt.
+            </small>
+
+            @for (block of currentNotice.content; track trackByIndex($index); let i = $index) {
+              <div class="border rounded p-2 mb-2 block-item"
+                   style="background:#fafafa;"
+                   [class.drag-over]="dragOverIndex === i && dragSrcIndex !== i"
+                   [class.drag-src]="dragSrcIndex === i"
+                   (dragover)="onDragOver($event, i)"
+                   (dragleave)="onDragLeave($event, i)"
+                   (drop)="onDrop($event, i)">
+
+                <!-- Row 1: drag handle · up/down · type · textarea · ⭐ · ✕ -->
+                <div class="d-flex gap-2 align-items-start">
+
+                  <!-- Drag handle + move buttons -->
+                  <div class="d-flex flex-column align-items-center gap-1 flex-shrink-0 pt-1">
+                    <span class="drag-handle"
+                          draggable="true"
+                          (dragstart)="onDragStart($event, i)"
+                          (dragend)="onDragEnd()"
+                          title="Ziehen zum Verschieben">⠿</span>
+                    <button type="button" class="btn btn-outline-secondary move-btn"
+                            [disabled]="i === 0"
+                            (click)="moveBlockUp(i)" title="Nach oben">▲</button>
+                    <button type="button" class="btn btn-outline-secondary move-btn"
+                            [disabled]="i === currentNotice.content.length - 1"
+                            (click)="moveBlockDown(i)" title="Nach unten">▼</button>
+                  </div>
+
+                  <select class="form-select form-select-sm" style="width:200px; flex-shrink:0;"
+                          [value]="block.type"
+                          (change)="updateBlockType(i, $any($event.target).value)">
+                    @for (bt of blockTypes; track bt.value) {
+                      <option [value]="bt.value" [selected]="bt.value === block.type">{{ bt.label }}</option>
+                    }
+                  </select>
+
+                  <textarea class="form-control form-control-sm" rows="2"
+                            [value]="block.text"
+                            (input)="updateBlockText(i, $any($event.target).value)"
+                            placeholder="Text eingeben. Fett: **Text** · Datum: {startDate} {endDate}">
+                  </textarea>
+
+                  <button class="btn btn-outline-warning btn-sm flex-shrink-0"
+                          title="Diesen Block als Vorlage speichern"
+                          (click)="saveBlockAsTemplate(i)">⭐</button>
+
+                  <button class="btn btn-outline-danger btn-sm flex-shrink-0"
+                          (click)="removeBlock(i)"
+                          [disabled]="currentNotice.content.length === 1">✕</button>
+                </div>
+
+                <!-- Row 2: alignment · indent · line-height -->
+                <div class="d-flex gap-3 align-items-center mt-2 flex-wrap">
+
+                  <!-- Alignment -->
+                  <div class="d-flex align-items-center gap-1">
+                    <small class="text-muted">Ausrichtung:</small>
+                    <div class="btn-group btn-group-sm">
+                      <button type="button" class="btn btn-outline-secondary"
+                              [class.active]="block.align === 'left'"
+                              (click)="updateBlockAlign(i, 'left')" title="Links">⬅ Li</button>
+                      <button type="button" class="btn btn-outline-secondary"
+                              [class.active]="block.align === 'center'"
+                              (click)="updateBlockAlign(i, 'center')" title="Mitte">Mi</button>
+                      <button type="button" class="btn btn-outline-secondary"
+                              [class.active]="block.align === 'right'"
+                              (click)="updateBlockAlign(i, 'right')" title="Rechts">Re ➡</button>
+                    </div>
+                  </div>
+
+                  <!-- Indent -->
+                  <div class="d-flex align-items-center gap-1">
+                    <small class="text-muted">Einzug:</small>
+                    <select class="form-select form-select-sm" style="width:120px;"
+                            [value]="block.indentDir || ''"
+                            (change)="updateBlockIndentDir(i, $any($event.target).value)">
+                      <option value="">– keiner –</option>
+                      <option value="left">Links</option>
+                      <option value="right">Rechts</option>
+                    </select>
+                    @if (block.indentDir) {
+                      <input type="number" class="form-control form-control-sm" style="width:68px;"
+                             min="1" max="10" title="Einzugstiefe in em (1–10)"
+                             [value]="block.indent ?? 2"
+                             (input)="updateBlockIndent(i, +$any($event.target).value)" />
+                      <small class="text-muted">em</small>
+                    }
+                  </div>
+
+                  <!-- Line height -->
+                  <div class="d-flex align-items-center gap-1">
+                    <small class="text-muted">Zeilenabstand:</small>
+                    <select class="form-select form-select-sm" style="width:150px;"
+                            [value]="block.lineHeight ?? ''"
+                            (change)="updateBlockLineHeight(i, $any($event.target).value)">
+                      @for (opt of lineHeightOptions; track opt.value) {
+                        <option [value]="opt.value"
+                                [selected]="(block.lineHeight?.toString() ?? '') === opt.value">
+                          {{ opt.label }}
+                        </option>
+                      }
+                    </select>
+                  </div>
+
+                </div>
+              </div>
+            }
+
+            <!-- Block actions -->
+            <div class="d-flex gap-2 mt-2 flex-wrap">
+              <button class="btn btn-outline-secondary btn-sm" (click)="addBlock()">
+                + Block hinzufügen
+              </button>
+              <button class="btn btn-outline-warning btn-sm" (click)="saveAllBlocksAsTemplate()"
+                      title="Alle Blöcke als Vorlage speichern (z.B. Vertretungsinfos)">
+                ⭐ Alle als Vorlage
+              </button>
+            </div>
+          </div>
+
+          <!-- ── Aktionen ────────────────────────────────────────────────────── -->
           <div class="d-flex gap-2 flex-wrap mt-4">
-            <button class="btn btn-outline-primary" (click)="preview()">
-              👁 Vorschau
-            </button>
-            <button class="btn btn-primary fw-semibold" (click)="saveNotice()">
-              💾 Speichern
-            </button>
-            <button class="btn btn-outline-secondary" (click)="cancelForm()">
-              Abbrechen
-            </button>
+            <button class="btn btn-outline-primary" (click)="preview()">👁 Vorschau</button>
+            <button class="btn btn-primary fw-semibold" (click)="saveNotice()">💾 Speichern</button>
+            <button class="btn btn-outline-secondary" (click)="cancelForm()">Abbrechen</button>
           </div>
         </div>
       </div>
@@ -161,10 +324,17 @@
       @if (showPreview) {
         <div class="mt-4">
           <h6 class="fw-bold mb-3 text-muted">Vorschau — so wird es auf der Webseite aussehen:</h6>
-          <latest-news [textsList]="previewList"></latest-news>
+          <p class="text-primary font-lg-25 fw-bold mb-2"><strong>Aktuelles!</strong></p>
+          <latest-news [blocks]="previewBlocks"
+                       [title]="previewTitle"
+                       [startDate]="previewStartDate"
+                       [endDate]="previewEndDate">
+          </latest-news>
         </div>
       }
     }
 
   </div>
+
+
 </div>

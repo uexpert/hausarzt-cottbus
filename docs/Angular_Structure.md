@@ -52,8 +52,11 @@ Sections:
 
 Key Logic:
 - Injects `NewsService`
-- On init, calls `newsService.loadNotices()` then sets `newsList` from `getActiveNotice()?.content`
-- Only displays the notice whose date range includes today and is marked active
+- On init, calls `newsService.loadNotices()` then sets `activeNotices: NewsNotice[]` from `getActiveNotices()`
+- All currently active notices are shown (multiple notices can be active simultaneously)
+- The "Aktuelles!" heading appears once as a section heading above all notice cards
+- Entire section is hidden with `@if (activeNotices.length > 0)` when no notices are active
+- Each notice rendered by its own `<latest-news>` instance with `[blocks]`, `[title]`, `[startDate]`, `[endDate]`
 
 ### AboutComponent
 **File**: `src/app/pages/about/about.component.ts`
@@ -151,16 +154,24 @@ Purpose: Full CRUD interface for managing news notices.
 
 Features:
 - Lists all notices with status badges (active/inactive/outside date range)
-- Create new notice form with title, date range, active toggle, and multi-line content editor
-- Edit existing notices
-- Delete notices with confirmation dialog
-- Toggle activate/deactivate per notice
-- Live preview using `LatestNewsComponent`
+- Create/edit form with title, date range, active toggle, and block-builder content editor
+- Block-builder: each content row has a **type selector** + **plain text textarea** — no HTML entry permitted
+- Block types: `paragraph`, `heading` (blue/bold), `bold`, `list-item`, `emergency` (red)
+- Per-block formatting controls: alignment (left/center/right), indent direction + depth (1–10 em), line-height (7 steps)
+- Inline bold via `**text**` syntax; `{startDate}` / `{endDate}` parameters replaced at render time
+- Drag-and-drop block reordering (HTML5 native DnD) + up/down buttons
+- Reusable text templates (single-block via ⭐, or all-blocks via "⭐ Alle als Vorlage"); stored in localStorage `hac_text_templates`
+- Title templates with `{startDate}`/`{endDate}` placeholders; stored in localStorage `hac_title_templates`; applied with German-locale date substitution
+- Delete notices via `DialogService.confirm()` (async, application-specific dialog — no browser `confirm()`)
+- Save-as-template via `DialogService.prompt()` (async — no browser `prompt()`)
+- Live preview using `LatestNewsComponent` with "Aktuelles!" heading above the card
 - Auto-persists changes to server via `NewsService.saveNotices()`
 - Save status indicators (saving/saved/error)
 - Logout button clears token and redirects
 
-Imports: `CommonModule`, `FormsModule`, `LatestNewsComponent`
+Key properties: `blockTypes[]`, `lineHeightOptions[]`, `templates: TextTemplate[]`, `titleTemplates: TitleTemplate[]`, `previewBlocks`, `previewTitle`, `previewStartDate`, `previewEndDate`, `dragSrcIndex`, `dragOverIndex`
+
+Imports: `CommonModule`, `FormsModule`, `LatestNewsComponent`; injects `NewsService`, `Router`, `DialogService`
 
 ## Shared Components
 
@@ -246,21 +257,30 @@ Uses: Owl Carousel jQuery library
 ### LatestNewsComponent
 **File**: `src/app/components/latest-news/latest-news.component.ts`
 
-Purpose: Display news notices with rich HTML content.
+Purpose: Display a single news notice as styled HTML, enforcing project typography.
 
 Input Properties:
-- `textsList`: `Array<string>` — array of HTML strings to render
+- `blocks: ContentBlock[]` — typed plain-text blocks from `NewsNotice.content`
+- `title: string` — announcement sub-title shown inside the card (below the section-level "Aktuelles!" heading); may contain `{startDate}`/`{endDate}` placeholders
+- `startDate?: string` — ISO date string (YYYY-MM-DD) used for date substitution
+- `endDate?: string` — ISO date string (YYYY-MM-DD) used for date substitution
+
+Rendering pipeline (`ngOnChanges`):
+1. Two date formats are computed from `startDate`/`endDate`:
+   - **Short** (`dd.MM.yyyy`): used as `RenderContext` for `{startDate}`/`{endDate}` in block text
+   - **Long** (`dd. MonthName yyyy`, German locale): used to substitute `{startDate}`/`{endDate}` in the `title`
+2. `renderedTitle` computed by replacing placeholders in `title` with the long-format dates
+3. `renderBlocks(blocks, ctx)` called — produces HTML; all user text HTML-escaped; `**bold**` → `<strong>`; CSS class names only (no `style=""`)
+4. Result passed through `DomSanitizer.sanitize(SecurityContext.HTML, ...)` — `bypassSecurityTrustHtml` is **not** used
+5. `renderedHtml` bound to `[innerHTML]`; `renderedTitle` bound to `{{ renderedTitle }}`
 
 Features:
-- Sanitizes each string via `DomSanitizer.bypassSecurityTrustHtml()`
-- Renders items with `[innerHTML]` binding
-- Shows "Keine Aktuelles!" when empty
-- Header "Aktuelles!" displayed above content
 - Styled card with blue border
+- Title hidden when empty (`@if (title)`)
 
 Used by:
-- `HomeComponent` (public-facing news display)
-- `AdminDashboardComponent` (live preview during editing)
+- `HomeComponent` (public-facing news display — "Aktuelles!" heading in parent, title/blocks from notice)
+- `AdminDashboardComponent` (live preview — "Aktuelles!" heading above card in admin template)
 
 ### TeamEmployeesComponent
 **File**: `src/app/components/employees-section/team-employees.component.ts`
@@ -337,7 +357,8 @@ Purpose: Central service for loading, caching, and persisting news notices.
 Key Methods:
 - `loadNotices()`: GET request to `/data/news.json` (cache-busted with timestamp), updates BehaviorSubject and localStorage
 - `getNotices()`: Returns `Observable<NewsNotice[]>` from BehaviorSubject
-- `getActiveNotice()`: Synchronously finds the first notice where `isActive === true` and today falls within `startDate`–`endDate`
+- `getActiveNotices()`: Synchronously returns **all** notices where `isActive === true` and today falls within `startDate`–`endDate` (inclusive)
+- `getActiveNotice()`: Returns the first result of `getActiveNotices()` or `null` (backwards-compatibility alias)
 - `saveNotices(notices)`: Updates local state + localStorage, then POSTs to `/api/save-news.php` with `X-API-Key` header
 - `addNotice(notice)`: Adds to in-memory array
 - `updateNotice(updated)`: Replaces matching notice by `id`
@@ -346,6 +367,32 @@ Key Methods:
 State: `BehaviorSubject<NewsNotice[]>` with localStorage backup key `hausarzt_news`
 
 Usage: Injected by `HomeComponent` and `AdminDashboardComponent`
+
+### DialogService
+**File**: `src/app/core/services/dialog.service.ts`
+
+Purpose: Application-wide replacement for browser `prompt()` and `confirm()` dialogs.
+
+Key Methods:
+- `prompt(title, placeholder?)`: Opens a text-input dialog; returns `Promise<string | null>` (null = cancelled)
+- `confirm(title, message)`: Opens a yes/no dialog; returns `Promise<boolean>` (false = cancelled)
+- `_resolve(value)`: Called internally by `DialogComponent` to close the dialog and resolve the Promise
+
+State: `BehaviorSubject<DialogState | null>` — `DialogComponent` subscribes to this to show/hide the overlay.
+
+Usage: Inject in any component and use `await this.dialogService.prompt(...)` / `await this.dialogService.confirm(...)`. The dialog host `<app-dialog>` must be present in `AppComponent` (it is).
+
+### DialogComponent
+**File**: `src/app/core/components/dialog/dialog.component.ts`
+
+Purpose: Global dialog overlay host, mounted once in `AppComponent`.
+
+Features:
+- Subscribes to `DialogService.state$`
+- Renders prompt (text input + Enter/Escape keybindings) or confirm (message + action buttons) variants
+- Backdrop click cancels the dialog
+- Confirm button disabled when prompt input is empty
+- Styles in global `styles.scss` (`.dialog-backdrop`, `.dialog-box`, `dlg-fade-in`/`dlg-slide-in` keyframes)
 
 ### ScrollTrackerService
 **File**: `src/app/core/services/scroll-tracker.service.ts`

@@ -1,3 +1,45 @@
 /* You can add global styles to this file, and also import other style files */
 @use './scss/general.scss';
 @use './scss/custom-elements.scss';
+
+// News content — indentation utilities (applied via class on [innerHTML] elements)
+// Steps 1–10 correspond to 1em–10em padding on the chosen side.
+@for $i from 1 through 10 {
+  .indent-left-#{$i}  { padding-left:  #{$i}em; }
+  .indent-right-#{$i} { padding-right: #{$i}em; }
+}
+
+// ── Global application dialog ──────────────────────────────────────────────
+// Rendered by DialogComponent at the app root level.
+// Any component that injects DialogService gets this styling automatically.
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  animation: dlg-fade-in 0.1s ease;
+}
+
+.dialog-box {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 8px;
+  animation: dlg-slide-in 0.15s ease;
+}
+
+@keyframes dlg-fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dlg-slide-in { from { transform: translateY(-12px); opacity: 0; }
+                          to   { transform: translateY(0);      opacity: 1; } }
+
+// News content — line-height utilities (applied via class on [innerHTML] elements)
+.lh-10  { line-height: 1; }
+.lh-125 { line-height: 1.25; }
+.lh-15  { line-height: 1.5; }
+.lh-175 { line-height: 1.75; }
+.lh-20  { line-height: 2; }
+.lh-25  { line-height: 2.5; }
+.lh-30  { line-height: 3; }

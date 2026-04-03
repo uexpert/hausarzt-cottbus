@@ -84,7 +84,12 @@ Located in `src/app/core/`:
 | **ScrollTrackerService** | Tracks scroll position for active navigation highlighting |
 | **WindowService** | Window resize breakpoint detection |
 | **authGuard** | Functional `CanActivateFn` guard protecting `/admin/dashboard` route |
-| **NewsNotice** (model) | TypeScript interface for news data (`id`, `title`, `content[]`, `startDate`, `endDate`, `isActive`, `createdAt`) |
+| **NewsNotice** (model) | TypeScript interface for news data (`id`, `title`, `content: ContentBlock[]`, `startDate`, `endDate`, `isActive`, `createdAt`) |
+| **ContentBlock** (model) | `{ type, text, align?, indent?, indentDir?, lineHeight? }` — typed plain-text block; `BlockType` is `'paragraph' \| 'heading' \| 'bold' \| 'list-item' \| 'emergency'`; supports `**bold**` inline markers and `{startDate}`/`{endDate}` date parameters |
+| **TextTemplate** (model) | `{ id, name, blocks: ContentBlock[] }` — saved reusable block group (single or multi-block); stored in localStorage under `hac_text_templates` |
+| **TitleTemplate** (model) | `{ id, text }` — saved title template; may contain `{startDate}`/`{endDate}` placeholders; stored in localStorage under `hac_title_templates` |
+| **renderBlocks** (utility) | Pure function in `content-block.renderer.ts` — maps `ContentBlock[]` + optional `RenderContext` to safe HTML; pipeline: HTML-escape → date substitution → `**bold**` → CSS classes; no `style=""` attributes |
+| **DialogService** | Root-level injectable returning `Promise<string\|null>` from `prompt()` and `Promise<boolean>` from `confirm()`; `DialogComponent` at `AppComponent` level renders the overlay |
 
 ### Backend (PHP)
 Located in `public/api/`:
@@ -129,9 +134,10 @@ src/
 │   │       └── admin-dashboard/
 │   ├── components/          # Reusable UI components
 │   ├── core/               # Services, guards & utilities
-│   │   ├── services/       # NewsService, ScrollTracker, WindowService
+│   │   ├── services/       # NewsService, ScrollTracker, WindowService, DialogService
+│   │   ├── components/     # DialogComponent (global dialog host)
 │   │   ├── guards/         # authGuard
-│   │   ├── utils/          # Models (NewsNotice), constants
+│   │   ├── utils/          # Models (NewsNotice, ContentBlock, TextTemplate, TitleTemplate), content-block.renderer.ts, constants
 │   │   └── animations-lib/
 │   ├── app.component.ts    # Root component
 │   ├── app.routes.ts       # Route definitions (incl. admin)
@@ -191,8 +197,9 @@ npm run test
 
 ### Dynamic News Management
 - Admin dashboard for creating, editing, and deleting news notices
-- Date-range based activation (notices auto-show/hide by date)
-- Live preview of news before publishing
+- Multiple notices can be active simultaneously; all are shown on the home page under a single "Aktuelles!" heading
+- Date-range based activation (notices auto-show/hide by date); section hidden entirely when no notices are active
+- Live preview of news before publishing (shows "Aktuelles!" heading above card, just like public page)
 - PHP backend persists changes to `news.json` on server
 - API key secured save endpoint
 
@@ -201,6 +208,11 @@ npm run test
 - Route guard (`authGuard`) protects dashboard
 - CRUD interface for news notices with toggle activate/deactivate
 - localStorage-based session token
+- Block-builder content editor with per-block type, alignment, indent (1–10 em, left/right), and line-height controls
+- Inline bold via `**text**` syntax; date parameters `{startDate}`/`{endDate}` in block text and titles
+- Reusable text templates (single-block and multi-block) and title templates stored in localStorage
+- Drag-and-drop and up/down button block reordering
+- Application-specific dialog system (no browser `prompt()`/`confirm()` calls)
 
 ### Responsive Design
 - Mobile-first approach

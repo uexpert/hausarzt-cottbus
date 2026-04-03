@@ -7,14 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+### Added (2026-04-03)
+- **Inline bold**: `**text**` syntax in block text → `<strong>` at render time; XSS-safe (HTML-escape runs first)
+- **Per-block text alignment**: left/center/right via Bootstrap utilities (`text-start`/`text-center`/`text-end`); admin UI toggles
+- **Per-block indentation**: left or right, 1–10 em steps; SCSS-generated `indent-left-N`/`indent-right-N` classes; admin UI select + number input
+- **Per-block line-height**: 7 steps (1.0–3.0); SCSS-generated `lh-*` classes; admin UI select
+- **Date parameters in block text**: `{startDate}` and `{endDate}` in block text replaced at render time with short German date (`dd.MM.yyyy`) via `RenderContext`
+- **Date parameters in titles**: `{startDate}` and `{endDate}` in notice title replaced at render time with long German date (`dd. MonthName yyyy`, e.g. `03. Januar 2026`)
+- **Text templates** (localStorage `hac_text_templates`): save single block or all blocks as named reusable template; multi-block templates support full clinic-info formatting; migration from old `block` to `blocks[]` format included
+- **Title templates** (localStorage `hac_title_templates`): save title text with optional date placeholders; apply with automatic date substitution
+- **Drag-and-drop block reordering**: HTML5 native DnD API; `dragSrcIndex`/`dragOverIndex` visual feedback; `dragleave` jitter fix via `el.contains(relatedTarget)`
+- **Up/down block reorder buttons** alongside drag handle
+- **Multiple simultaneous active notices**: `NewsService.getActiveNotices()` returns all currently matching notices; `HomeComponent` renders all of them with `@for`
+- **Hide "Aktuelles" section when empty**: `@if (activeNotices.length > 0)` in `HomeComponent` template
+- **"Aktuelles!" once above all cards**: section-level heading in `HomeComponent`; each card shows only its own announcement title
+- **Global DialogService** (`src/app/core/services/dialog.service.ts`): `prompt()` → `Promise<string|null>`, `confirm()` → `Promise<boolean>`; replaces all browser dialogs
+- **DialogComponent** (`src/app/core/components/dialog/dialog.component.ts/.html`): global overlay host mounted in `AppComponent`; styled card with prompt/confirm variants
+- **Admin preview "Aktuelles!" heading**: preview section in admin dashboard now shows the section heading above the notice card
+- `TextTemplate` and `TitleTemplate` interfaces added to `news.model.ts`
+- `TextAlign`, `IndentDir`, `LineHeight` types added to `news.model.ts`
+- `align?`, `indent?`, `indentDir?`, `lineHeight?` fields added to `ContentBlock`
+- `RenderContext` interface and `processText()` function added to `content-block.renderer.ts`
+- `blockClasses()` helper added to `content-block.renderer.ts`
+- Global dialog styles (`.dialog-backdrop`, `.dialog-box`, `dlg-fade-in`/`dlg-slide-in` keyframes) added to `styles.scss`
+- SCSS `@for` loops for `indent-left-N`/`indent-right-N` and `lh-*` classes added to `styles.scss`
+
+### Added (2026-03-27 and earlier)
+- `ContentBlock` interface and `BlockType` union type in `news.model.ts` — typed plain-text block replacing raw HTML strings in `NewsNotice.content`
+- `content-block.renderer.ts` — pure `renderBlocks()` function; maps `ContentBlock[]` to safe HTML using only whitelisted tags and hardcoded project CSS classes; HTML-escapes all user text
+- Block-builder UI in admin dashboard: type selector dropdown + plain text input per block row; available types: `paragraph`, `heading`, `bold`, `list-item`, `emergency`
 - Documentation structure and guides in `/docs` folder
-- PROJECT_OVERVIEW.md for main project reference
-- Architecture.md for project structure details
-- Angular_Structure.md for components and services documentation
-- UI_Design.md for styling guidelines
-- Business_Rules.md for validation workflows
-- Setup.md for development environment setup
 - `NewsNotice` interface model (`src/app/core/utils/news.model.ts`)
 - `NewsService` with HTTP load/save, BehaviorSubject state, localStorage cache, and API key auth
 - `authGuard` functional route guard for admin area (`src/app/core/guards/auth.guard.ts`)
@@ -24,14 +46,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PHP save endpoint (`public/api/save-news.php`) with `X-API-Key` validation
 - Static news data file (`public/data/news.json`) replacing hardcoded constants
 
-### Changed
+### Changed (2026-04-03)
+- `LatestNewsComponent` inputs extended: added `title`, `startDate`, `endDate`; `ngOnChanges` now computes `renderedTitle` (long German date format) and passes `RenderContext` to `renderBlocks()`
+- `AdminDashboardComponent` migrated from embedded dialog state to `DialogService`; `saveBlockAsTemplate`, `saveAllBlocksAsTemplate`, `deleteNotice` are now `async`
+- `AdminDashboardComponent` embedded `@if (dialog)` overlay block removed from template
+- `AdminDashboardComponent` SCSS dialog styles removed (moved to global `styles.scss`)
+- `HomeComponent` uses `activeNotices: NewsNotice[]` (plural) instead of single `newsList: ContentBlock[]`
+- `NewsService.getActiveNotice()` now delegates to `getActiveNotices()[0]` for backwards compatibility
+- `AppComponent` imports `DialogComponent` and mounts `<app-dialog>` in template
+
+### Changed (2026-03-27 and earlier)
+- `NewsNotice.content` type changed from `string[]` (raw HTML) to `ContentBlock[]` (typed plain-text blocks)
+- `LatestNewsComponent` input renamed from `textsList: string[]` to `blocks: ContentBlock[]`; now uses `renderBlocks()` + `DomSanitizer.sanitize()` instead of `bypassSecurityTrustHtml`
+- `AdminDashboardComponent` content editor replaced: free-text HTML textarea → block-builder (type selector + plain text)
 - `HomeComponent` now loads news dynamically via `NewsService` instead of static `christmasUrlaub` constant
 - `app.routes.ts` restructured with admin child routes and `authGuard`
-- Documentation synced: PROJECT_OVERVIEW, Architecture, Angular_Structure, Business_Rules updated to reflect admin system, NewsService, guards, and PHP backend
 
-### Fixed
+### Fixed (2026-04-03)
+- `NG5002: Unclosed block 'if'` — `@if` inside `<button>` replaced with `[class.d-none]` binding; bare `{`/`}` in template text replaced with HTML entities `&#123;`/`&#125;`
+- `TS2322` in `DialogService` — `resolve` field typed as `any` to satisfy both `Promise<string|null>` and `Promise<boolean>` resolve function signatures
+- `{startDate}`/`{endDate}` in notice title not being substituted — `renderedTitle` computed in `ngOnChanges` with long German format
 
-### Removed
+### Removed (2026-04-03)
+- Browser `prompt()` and `confirm()` calls removed from `AdminDashboardComponent`
+- Embedded dialog state (`dialog`, `dialogInputValue`, `openPrompt`, `openConfirm`, `closeDialog`, `confirmDialog`) removed from `AdminDashboardComponent`
+
+### Removed (2026-03-27 and earlier)
 - `HomeComponent` no longer imports `christmasUrlaub` / `sommarUrlaub` constants (still exist in `models_interfaces.ts` but unused)
 
 ---

@@ -28,17 +28,21 @@ export class NewsService {
   }
 
   getActiveNotice(): NewsNotice | null {
+    return this.getActiveNotices()[0] ?? null;
+  }
+
+  /** Returns ALL notices that are currently active (isActive + within date range). */
+  getActiveNotices(): NewsNotice[] {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const notices = this.notices$.getValue();
-    return notices.find(notice => {
+    return this.notices$.getValue().filter(notice => {
       if (!notice.isActive) return false;
       const start = new Date(notice.startDate);
-      const end = new Date(notice.endDate);
+      const end   = new Date(notice.endDate);
       start.setHours(0, 0, 0, 0);
       end.setHours(23, 59, 59, 999);
       return today >= start && today <= end;
-    }) ?? null;
+    });
   }
 
   saveNotices(notices: NewsNotice[]): Observable<any> {
