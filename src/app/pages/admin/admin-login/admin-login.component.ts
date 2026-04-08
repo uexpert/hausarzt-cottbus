@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { hashPassword, ADMIN_PASSWORD_HASH } from '../../../core/utils/auth.utils';
 
 @Component({
   selector: 'app-admin-login',
@@ -19,9 +20,10 @@ export class AdminLoginComponent {
     this.router = r;
   }
 
-  login() {
-    if (this.password === 'hausarzt_admin_2024') {
-      localStorage.setItem('admin_token', 'hausarzt_admin_2024');
+  async login() {
+    const hash = await hashPassword(this.password);
+    if (hash === ADMIN_PASSWORD_HASH) {
+      localStorage.setItem('admin_token', hash);
       this.router.navigate(['/admin/dashboard']);
     } else {
       this.error = true;

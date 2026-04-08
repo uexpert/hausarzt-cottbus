@@ -36,10 +36,7 @@
                           to   { transform: translateY(0);      opacity: 1; } }
 
 // News content — line-height utilities (applied via class on [innerHTML] elements)
-.lh-10  { line-height: 1; }
-.lh-125 { line-height: 1.25; }
-.lh-15  { line-height: 1.5; }
-.lh-175 { line-height: 1.75; }
-.lh-20  { line-height: 2; }
-.lh-25  { line-height: 2.5; }
-.lh-30  { line-height: 3; }
+// Generates .lh-50 (0.50) through .lh-400 (4.00) in steps of 0.05
+@for $i from 10 through 80 {
+  .lh-#{$i * 5} { line-height: #{$i * 5 / 100}; }
+}

@@ -45,20 +45,11 @@ function processText(raw: string, ctx?: RenderContext): string {
  * Only whitelisted class names are emitted:
  * - text-start / text-center / text-end  (Bootstrap 5 alignment utilities)
  * - indent-left-N / indent-right-N       (N clamped 1–10; defined in styles.scss)
- * - lh-10 / lh-125 / lh-15 / …          (line-height utilities; defined in styles.scss)
+ * - lh-50 / lh-75 / lh-100 / …          (line-height utilities; SCSS-generated in styles.scss)
  *
  * Angular's DomSanitizer allows class attributes — these survive sanitization.
  * Inline style="" is intentionally avoided.
  */
-const LINE_HEIGHT_CLASS: Record<string, string> = {
-  '1':    'lh-10',
-  '1.25': 'lh-125',
-  '1.5':  'lh-15',
-  '1.75': 'lh-175',
-  '2':    'lh-20',
-  '2.5':  'lh-25',
-  '3':    'lh-30',
-};
 
 function blockClasses(block: ContentBlock): string {
   const cls: string[] = [];
@@ -74,10 +65,10 @@ function blockClasses(block: ContentBlock): string {
     cls.push(`indent-${block.indentDir}-${step}`);
   }
 
-  // Line height
-  if (block.lineHeight !== undefined) {
-    const lhCls = LINE_HEIGHT_CLASS[String(block.lineHeight)];
-    if (lhCls) cls.push(lhCls);
+  // Line height — value clamped to 0.50–4.00, rounded to nearest 0.05, mapped to lh-{N} class
+  if (block.lineHeight !== undefined && block.lineHeight >= 0.5 && block.lineHeight <= 4) {
+    const rounded = Math.round(block.lineHeight * 20) * 5; // e.g. 1.25 → 125, 0.75 → 75
+    cls.push(`lh-${rounded}`);
   }
 
   return cls.length ? ' ' + cls.join(' ') : '';
@@ -89,7 +80,7 @@ function blockClasses(block: ContentBlock): string {
  * Maps a ContentBlock[] to a sanitizer-safe HTML string.
  *
  * Rules enforced here (and only here):
- * - Only whitelisted tags: p, strong, b, ul, li
+ * - Only whitelisted tags: p, strong, b, ul, li, hr
  * - All CSS classes are hardcoded or generated from controlled numeric inputs
  * - User text is HTML-escaped before any other processing
  * - {startDate} / {endDate} substitution uses pre-escaped date strings
@@ -131,6 +122,12 @@ export function renderBlocks(blocks: ContentBlock[], ctx?: RenderContext): strin
         break;
       case 'emergency':
         parts.push(`<p class="text-danger fw-semibold font-sm-16${cls}">${safe}</p>`);
+        break;
+      case 'separator':
+        parts.push('<hr class="my-2">');
+        break;
+      case 'spacer':
+        parts.push('<p class="mb-0">&nbsp;</p>');
         break;
       case 'paragraph':
       default:

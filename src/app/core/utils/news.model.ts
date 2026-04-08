@@ -1,12 +1,12 @@
 // The only allowed block types. Adding a type here requires a matching
 // case in content-block.renderer.ts — nowhere else.
-export type BlockType = 'paragraph' | 'heading' | 'bold' | 'list-item' | 'emergency';
+export type BlockType = 'paragraph' | 'heading' | 'bold' | 'list-item' | 'emergency' | 'separator' | 'spacer';
 
 export type TextAlign  = 'left' | 'center' | 'right';
 export type IndentDir  = 'left' | 'right';
 
-/** Allowed line-height steps (stored as a number, mapped to CSS class in renderer). */
-export type LineHeight = 1 | 1.25 | 1.5 | 1.75 | 2 | 2.5 | 3;
+/** Line-height value: any number from 0.5 to 4.0 (mapped to CSS class in renderer). */
+export type LineHeight = number;
 
 export interface ContentBlock {
   type: BlockType;

@@ -55,17 +55,32 @@ export class AdminDashboardComponent implements OnInit {
     { value: 'bold',      label: 'Fettgedruckt' },
     { value: 'list-item', label: 'Listenpunkt' },
     { value: 'emergency', label: 'Notfallhinweis (rot)' },
+    { value: 'separator', label: '── Trennlinie ──' },
+    { value: 'spacer',    label: '↕ Leerzeile' },
   ];
 
   readonly lineHeightOptions: { value: string; label: string }[] = [
-    { value: '',     label: 'Standard' },
-    { value: '1',    label: '1.0 — engst' },
-    { value: '1.25', label: '1.25' },
-    { value: '1.5',  label: '1.5 — normal' },
-    { value: '1.75', label: '1.75' },
-    { value: '2',    label: '2.0 — doppelt' },
-    { value: '2.5',  label: '2.5' },
-    { value: '3',    label: '3.0 — weitest' },
+    { value: '',       label: 'Standard' },
+    { value: '0.5',    label: '0.5 — minimal' },
+    { value: '0.6',    label: '0.6' },
+    { value: '0.7',    label: '0.7' },
+    { value: '0.75',   label: '0.75' },
+    { value: '0.8',    label: '0.8' },
+    { value: '0.9',    label: '0.9' },
+    { value: '1',      label: '1.0 — eng' },
+    { value: '1.1',    label: '1.1' },
+    { value: '1.15',   label: '1.15' },
+    { value: '1.2',    label: '1.2' },
+    { value: '1.25',   label: '1.25' },
+    { value: '1.3',    label: '1.3' },
+    { value: '1.35',   label: '1.35' },
+    { value: '1.4',    label: '1.4' },
+    { value: '1.5',    label: '1.5 — normal' },
+    { value: '1.75',   label: '1.75' },
+    { value: '2',      label: '2.0 — doppelt' },
+    { value: '2.5',    label: '2.5' },
+    { value: '3',      label: '3.0 — weitest' },
+    { value: 'custom', label: 'Benutzerdefiniert…' },
   ];
 
   // ── Lifecycle ──────────────────────────────────────────────────────────────
@@ -251,12 +266,36 @@ export class AdminDashboardComponent implements OnInit {
     this.currentNotice.content[index] = { ...this.currentNotice.content[index], indent: clamped };
   }
 
+  /** Tracks which block indices have custom line-height input open */
+  customLineHeightBlocks = new Set<number>();
+
   updateBlockLineHeight(index: number, value: string) {
+    if (value === 'custom') {
+      this.customLineHeightBlocks.add(index);
+      return;
+    }
+    this.customLineHeightBlocks.delete(index);
     const num = parseFloat(value);
     this.currentNotice.content[index] = {
       ...this.currentNotice.content[index],
       lineHeight: isNaN(num) ? undefined : num as LineHeight,
     };
+  }
+
+  updateBlockLineHeightCustom(index: number, value: string) {
+    const num = parseFloat(value);
+    if (isNaN(num) || num < 0.5 || num > 4) return;
+    // Round to nearest 0.05 to match generated CSS classes
+    const rounded = Math.round(num * 20) / 20;
+    this.currentNotice.content[index] = {
+      ...this.currentNotice.content[index],
+      lineHeight: rounded as LineHeight,
+    };
+  }
+
+  isCustomLineHeight(block: ContentBlock): boolean {
+    if (block.lineHeight === undefined) return false;
+    return !this.lineHeightOptions.some(o => o.value === String(block.lineHeight));
   }
 
   // ── Notice CRUD ────────────────────────────────────────────────────────────

@@ -1,3 +1,27 @@
+# ── Cache Control ──────────────────────────────────────────────
+<IfModule mod_headers.c>
+  # index.html — always revalidate (picks up new hashed asset refs)
+  <FilesMatch "^index\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+
+  # Hashed JS/CSS — immutable, cache for 1 year
+  <FilesMatch "\.(js|css)$">
+    Header set Cache-Control "max-age=31536000, immutable"
+  </FilesMatch>
+
+  # Dynamic data — never cache
+  <FilesMatch "\.json$">
+    Header set Cache-Control "no-store"
+  </FilesMatch>
+
+  # Images & fonts — cache 30 days
+  <FilesMatch "\.(png|jpg|jpeg|gif|svg|ico|woff2?|ttf|eot)$">
+    Header set Cache-Control "max-age=2592000, public"
+  </FilesMatch>
+</IfModule>
+
+# ── SPA Routing ────────────────────────────────────────────────
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /

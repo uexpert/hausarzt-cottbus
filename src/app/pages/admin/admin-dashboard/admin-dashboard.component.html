@@ -227,23 +227,26 @@
                     }
                   </select>
 
-                  <textarea class="form-control form-control-sm" rows="2"
-                            [value]="block.text"
-                            (input)="updateBlockText(i, $any($event.target).value)"
-                            placeholder="Text eingeben. Fett: **Text** · Datum: {startDate} {endDate}">
-                  </textarea>
+                  @if (block.type !== 'separator' && block.type !== 'spacer') {
+                    <textarea class="form-control form-control-sm" rows="2"
+                              [value]="block.text"
+                              (input)="updateBlockText(i, $any($event.target).value)"
+                              placeholder="Text eingeben. Fett: **Text** · Datum: &#123;startDate&#125; &#123;endDate&#125;">
+                    </textarea>
 
-                  <button class="btn btn-outline-warning btn-sm flex-shrink-0"
-                          title="Diesen Block als Vorlage speichern"
-                          (click)="saveBlockAsTemplate(i)">⭐</button>
+                    <button class="btn btn-outline-warning btn-sm flex-shrink-0"
+                            title="Diesen Block als Vorlage speichern"
+                            (click)="saveBlockAsTemplate(i)">⭐</button>
+                  }
 
                   <button class="btn btn-outline-danger btn-sm flex-shrink-0"
                           (click)="removeBlock(i)"
                           [disabled]="currentNotice.content.length === 1">✕</button>
                 </div>
 
-                <!-- Row 2: alignment · indent · line-height -->
-                <div class="d-flex gap-3 align-items-center mt-2 flex-wrap">
+                <!-- Row 2: alignment · indent · line-height (hidden for separator/spacer) -->
+                <div class="d-flex gap-3 align-items-center mt-2 flex-wrap"
+                     [class.d-none]="block.type === 'separator' || block.type === 'spacer'">
 
                   <!-- Alignment -->
                   <div class="d-flex align-items-center gap-1">
@@ -283,16 +286,23 @@
                   <!-- Line height -->
                   <div class="d-flex align-items-center gap-1">
                     <small class="text-muted">Zeilenabstand:</small>
-                    <select class="form-select form-select-sm" style="width:150px;"
-                            [value]="block.lineHeight ?? ''"
+                    <select class="form-select form-select-sm" style="width:180px;"
+                            [value]="isCustomLineHeight(block) ? 'custom' : (block.lineHeight ?? '')"
                             (change)="updateBlockLineHeight(i, $any($event.target).value)">
                       @for (opt of lineHeightOptions; track opt.value) {
                         <option [value]="opt.value"
-                                [selected]="(block.lineHeight?.toString() ?? '') === opt.value">
+                                [selected]="opt.value === 'custom' ? isCustomLineHeight(block) : (block.lineHeight?.toString() ?? '') === opt.value">
                           {{ opt.label }}
                         </option>
                       }
                     </select>
+                    <input type="number" class="form-control form-control-sm"
+                           style="width:80px;"
+                           [class.d-none]="!isCustomLineHeight(block) && !customLineHeightBlocks.has(i)"
+                           [value]="block.lineHeight ?? ''"
+                           min="0.5" max="4" step="0.05"
+                           placeholder="z.B. 1.1"
+                           (input)="updateBlockLineHeightCustom(i, $any($event.target).value)">
                   </div>
 
                 </div>
