@@ -85,7 +85,8 @@ Located in `src/app/core/`:
 | **WindowService** | Window resize breakpoint detection |
 | **authGuard** | Functional `CanActivateFn` guard protecting `/admin/dashboard` route |
 | **NewsNotice** (model) | TypeScript interface for news data (`id`, `title`, `content: ContentBlock[]`, `startDate`, `endDate`, `isActive`, `createdAt`) |
-| **ContentBlock** (model) | `{ type, text, align?, indent?, indentDir?, lineHeight? }` — typed plain-text block; `BlockType` is `'paragraph' \| 'heading' \| 'bold' \| 'list-item' \| 'emergency'`; supports `**bold**` inline markers and `{startDate}`/`{endDate}` date parameters |
+| **ContentBlock** (model) | `{ type, text, align?, indent?, indentDir?, lineHeight? }` — typed plain-text block; `BlockType` is `'paragraph' \| 'heading' \| 'bold' \| 'list-item' \| 'emergency' \| 'separator' \| 'spacer'`; supports `**bold**` inline markers and `{startDate}`/`{endDate}` date parameters |
+| **auth.utils** (utility) | `hashPassword()` — SHA-256 hashing via native `crypto.subtle`; `ADMIN_PASSWORD_HASH` — pre-computed hash constant for admin authentication |
 | **TextTemplate** (model) | `{ id, name, blocks: ContentBlock[] }` — saved reusable block group (single or multi-block); stored in localStorage under `hac_text_templates` |
 | **TitleTemplate** (model) | `{ id, text }` — saved title template; may contain `{startDate}`/`{endDate}` placeholders; stored in localStorage under `hac_title_templates` |
 | **renderBlocks** (utility) | Pure function in `content-block.renderer.ts` — maps `ContentBlock[]` + optional `RenderContext` to safe HTML; pipeline: HTML-escape → date substitution → `**bold**` → CSS classes; no `style=""` attributes |
@@ -204,11 +205,12 @@ npm run test
 - API key secured save endpoint
 
 ### Admin Panel
-- Password-protected admin login at `/admin/login`
-- Route guard (`authGuard`) protects dashboard
+- Password-protected admin login at `/admin/login` with SHA-256 hashed credential storage
+- Route guard (`authGuard`) protects dashboard; checks hashed token
 - CRUD interface for news notices with toggle activate/deactivate
-- localStorage-based session token
-- Block-builder content editor with per-block type, alignment, indent (1–10 em, left/right), and line-height controls
+- localStorage-based session token (SHA-256 hash, not plaintext)
+- Block-builder content editor with per-block type, alignment, indent (1–10 em, left/right), and line-height controls (preset steps + custom values 0.5–4.0)
+- Separator line and empty line (spacer) block types for visual structuring
 - Inline bold via `**text**` syntax; date parameters `{startDate}`/`{endDate}` in block text and titles
 - Reusable text templates (single-block and multi-block) and title templates stored in localStorage
 - Drag-and-drop and up/down button block reordering
@@ -224,6 +226,7 @@ npm run test
 - Standalone Angular components (no NgModule)
 - Lazy-loaded routes via `loadComponent()`
 - Cache-busted news data fetching
+- Apache `.htaccess` Cache-Control headers: `no-cache` for `index.html`, immutable 1yr for hashed JS/CSS, `no-store` for JSON data, 30d for images/fonts
 - Angular CLI production build optimizations
 - Asset minification and bundling
 

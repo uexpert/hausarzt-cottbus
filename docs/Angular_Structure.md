@@ -156,8 +156,9 @@ Features:
 - Lists all notices with status badges (active/inactive/outside date range)
 - Create/edit form with title, date range, active toggle, and block-builder content editor
 - Block-builder: each content row has a **type selector** + **plain text textarea** — no HTML entry permitted
-- Block types: `paragraph`, `heading` (blue/bold), `bold`, `list-item`, `emergency` (red)
-- Per-block formatting controls: alignment (left/center/right), indent direction + depth (1–10 em), line-height (7 steps)
+- Block types: `paragraph`, `heading` (blue/bold), `bold`, `list-item`, `emergency` (red), `separator` (horizontal rule), `spacer` (empty line)
+- Per-block formatting controls: alignment (left/center/right), indent direction + depth (1–10 em), line-height (preset steps + custom 0.5–4.0 in 0.05 increments)
+- Separator and spacer blocks hide text input and formatting controls in the UI
 - Inline bold via `**text**` syntax; `{startDate}` / `{endDate}` parameters replaced at render time
 - Drag-and-drop block reordering (HTML5 native DnD) + up/down buttons
 - Reusable text templates (single-block via ⭐, or all-blocks via "⭐ Alle als Vorlage"); stored in localStorage `hac_text_templates`

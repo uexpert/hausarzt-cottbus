@@ -109,7 +109,15 @@ Updated PROJECT_OVERVIEW, Angular_Structure, Business_Rules, CHANGELOG, and sess
 - Session file `session_2026-03-22_07-30_Change latest news by deployee.md` updated with tasks 16–33
 - Security: XSS prevention and typography enforcement now consolidated in `content-block.renderer.ts`
 
+### 2026-04-09 — Docs Sync #4
+Updated PROJECT_OVERVIEW, Architecture, Angular_Structure, Business_Rules, CHANGELOG to reflect:
+- **Custom line-height**: `LineHeight` type now `number` (0.5–4.0); SCSS loop generates `.lh-50`–`.lh-400`; renderer uses dynamic class computation; admin has finer presets + "Benutzerdefiniert…" custom input
+- **Separator & spacer block types**: `'separator'` → `<hr>`, `'spacer'` → empty line; admin hides text/formatting controls for these types
+- **Cache-Control headers in `.htaccess`**: `no-cache` for `index.html`, `immutable` 1yr for hashed JS/CSS, `no-store` for JSON, 30d for images/fonts
+- **SHA-256 password hashing**: `auth.utils.ts` with `hashPassword()` + `ADMIN_PASSWORD_HASH`; login stores only hash in localStorage; authGuard checks hash
+- Architecture.md: fixed outdated XSS section (was still referencing `bypassSecurityTrustHtml`); added `auth.utils.ts` and `content-block.renderer.ts` to directory tree
+
 ---
 
-Last Updated: 2026-03-27
-Documentation Version: 1.2
+Last Updated: 2026-04-09
+Documentation Version: 1.3

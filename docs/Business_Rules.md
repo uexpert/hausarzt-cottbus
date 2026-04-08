@@ -167,10 +167,11 @@ All internal links validated:
 - **Delete**: Confirmation via `DialogService.confirm()` (no browser `confirm()`)
 
 **Block-Builder Content Editor**:
-- Admin selects a block type per row (dropdown): `Absatz`, `Überschrift`, `Fettgedruckt`, `Listenpunkt`, `Notfallhinweis`
+- Admin selects a block type per row (dropdown): `Absatz`, `Überschrift`, `Fettgedruckt`, `Listenpunkt`, `Notfallhinweis`, `── Trennlinie ──`, `↕ Leerzeile`
+- `Trennlinie` renders a horizontal rule (`<hr>`); `Leerzeile` renders an empty line — both hide the text input and formatting controls
 - Admin enters plain text only — no HTML tags or styles are accepted or rendered
 - Formatting applied automatically by `renderBlocks()` using the chosen block type
-- Per-block formatting controls: alignment (left/center/right via Bootstrap utilities), indent (left/right, 1–10 em, via SCSS-generated classes), line-height (7 steps, via SCSS-generated classes)
+- Per-block formatting controls: alignment (left/center/right via Bootstrap utilities), indent (left/right, 1–10 em, via SCSS-generated classes), line-height (preset steps + custom 0.5–4.0 in 0.05 increments, via SCSS-generated `.lh-50` through `.lh-400` classes)
 - Inline bold: `**text**` within block text → `<strong>` at render time
 - Date parameters: `{startDate}` / `{endDate}` in block text → replaced with short German date at render time
 - Block order: drag-and-drop (HTML5 DnD) + up/down buttons
@@ -229,9 +230,9 @@ All internal links validated:
 
 ### Admin Authentication
 
-- **Login**: Password checked against hardcoded value client-side
-- **Token**: On success, `admin_token` stored in `localStorage`
-- **Guard**: `authGuard` checks for valid token before allowing dashboard access
+- **Login**: Password hashed with SHA-256 via native `crypto.subtle` and compared against pre-computed `ADMIN_PASSWORD_HASH` (in `core/utils/auth.utils.ts`)
+- **Token**: On success, only the SHA-256 hash is stored in `localStorage` as `admin_token` — plaintext password is never persisted
+- **Guard**: `authGuard` checks stored hash against `ADMIN_PASSWORD_HASH` before allowing dashboard access
 - **Logout**: Clears `localStorage` token and redirects to `/admin/login`
 
 ### API Security
@@ -363,7 +364,11 @@ All interactive elements keyboard accessible:
 
 ### Caching
 
-- **Browser Cache**: Long cache expiration for versioned assets
+- **Browser Cache**: Apache `.htaccess` Cache-Control headers enforce a three-tier strategy:
+  - `index.html` → `no-cache` (always revalidate to pick up new hashed asset references)
+  - Hashed JS/CSS → `max-age=31536000, immutable` (1 year; safe because filenames change per build)
+  - JSON data (`news.json`) → `no-store` (never cached; dynamic admin content)
+  - Images/fonts → `max-age=2592000, public` (30 days)
 - **CDN Cache**: Static assets cached on CDN if applicable
 - **Service Worker**: Future: offline support and caching strategy
 

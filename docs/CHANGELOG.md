@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (2026-04-09)
+- **Custom line-height**: `LineHeight` type changed from fixed union to `number` (0.5–4.0); SCSS loop generates `.lh-50` through `.lh-400` in 0.05 steps; renderer computes class name dynamically; admin dropdown includes finer presets (0.5–1.4) and "Benutzerdefiniert…" option with custom number input
+- **Separator block type**: New `'separator'` BlockType renders `<hr class="my-2">`; added to admin dropdown as "── Trennlinie ──"
+- **Spacer block type**: New `'spacer'` BlockType renders `<p class="mb-0">&nbsp;</p>`; added to admin dropdown as "↕ Leerzeile"
+- **`auth.utils.ts`**: New utility with `hashPassword()` (SHA-256 via `crypto.subtle`) and `ADMIN_PASSWORD_HASH` constant
+- **Cache-Control headers**: `.htaccess` now includes `mod_headers` directives — `no-cache` for `index.html`, `immutable` 1yr for hashed JS/CSS, `no-store` for JSON, 30d for images/fonts
+
+### Changed (2026-04-09)
+- `AdminLoginComponent.login()` is now `async` — hashes password with SHA-256 before comparing; stores only the hash in `localStorage`
+- `authGuard` checks `localStorage` token against `ADMIN_PASSWORD_HASH` instead of plaintext password
+- Separator and spacer blocks hide textarea and formatting controls (alignment, indent, line-height) in admin UI
+- `content-block.renderer.ts` line-height handling changed from static `LINE_HEIGHT_CLASS` lookup table to dynamic class computation (`lh-{value*100}`)
+- `styles.scss` line-height classes replaced: 7 hand-written rules → SCSS `@for` loop generating 71 classes
+
 ### Added (2026-04-03)
 - **Inline bold**: `**text**` syntax in block text → `<strong>` at render time; XSS-safe (HTML-escape runs first)
 - **Per-block text alignment**: left/center/right via Bootstrap utilities (`text-start`/`text-center`/`text-end`); admin UI toggles

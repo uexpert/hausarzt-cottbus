@@ -50,8 +50,10 @@ src/
 │   │   ├── guards/               # Route guards
 │   │   │   └── auth.guard.ts
 │   │   │
-│   │   ├── utils/                # Models and constants
-│   │   │   ├── news.model.ts     # NewsNotice interface
+│   │   ├── utils/                # Models, renderers, and auth
+│   │   │   ├── news.model.ts     # NewsNotice, ContentBlock, template interfaces
+│   │   │   ├── content-block.renderer.ts  # renderBlocks() — ContentBlock[] → safe HTML
+│   │   │   ├── auth.utils.ts     # hashPassword() (SHA-256) + ADMIN_PASSWORD_HASH
 │   │   │   └── models_interfaces.ts
 │   │   │
 │   │   └── animations-lib/       # Custom animation library
@@ -142,7 +144,7 @@ AppComponent (root)
 **File**: `src/app/core/guards/auth.guard.ts`
 **Type**: Functional `CanActivateFn`
 
-Checks `localStorage` for `admin_token`. If missing or invalid, redirects to `/admin/login`.
+Checks `localStorage` for `admin_token` (SHA-256 hash). If missing or not matching `ADMIN_PASSWORD_HASH`, redirects to `/admin/login`.
 
 ## Dependency Injection
 
@@ -235,8 +237,10 @@ Error handling patterns:
 ## Security Considerations
 
 ### Admin Authentication
-- Password-based login stored as localStorage token (`admin_token`)
-- `authGuard` checks token before allowing access to `/admin/dashboard`
+- Password hashed with SHA-256 (`crypto.subtle`) before comparison and storage
+- Only the hash is stored in `localStorage` as `admin_token` — plaintext password never persisted
+- `ADMIN_PASSWORD_HASH` constant and `hashPassword()` utility in `core/utils/auth.utils.ts`
+- `authGuard` checks stored hash against `ADMIN_PASSWORD_HASH` before allowing access to `/admin/dashboard`
 - Logout clears token and redirects to login
 
 ### API Security
@@ -246,7 +250,8 @@ Error handling patterns:
 - HTTPS enforced in production
 
 ### XSS Handling
-- `LatestNewsComponent` uses `DomSanitizer.bypassSecurityTrustHtml()` to render trusted HTML content from admin-managed news data
+- `LatestNewsComponent` uses `DomSanitizer.sanitize(SecurityContext.HTML, ...)` — no `bypassSecurityTrustHtml`
+- `renderBlocks()` HTML-escapes all user text before any processing; only whitelisted tags (`p`, `strong`, `b`, `ul`, `li`, `hr`) and CSS classes appear in output
 - All other dynamic content uses Angular's built-in sanitization
 
 ## Build & Deployment Pipeline
@@ -265,7 +270,8 @@ ng build --base-href /hausarzt-cottbus/
 ```
 
 ### Asset Handling
-- `.htaccess` file copied to dist via custom webpack plugin
+- `.htaccess` file copied to dist via `copy-htaccess.js` post-build script
+- `.htaccess` includes `Cache-Control` headers: `no-cache` for `index.html`, `max-age=31536000, immutable` for hashed JS/CSS, `no-store` for JSON data, `max-age=2592000` for images/fonts
 - Static assets from `public/` and `src/assets/` included
 
 ## Environment Configuration
