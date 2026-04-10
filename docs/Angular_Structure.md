@@ -167,10 +167,17 @@ Features:
 - Save-as-template via `DialogService.prompt()` (async — no browser `prompt()`)
 - Live preview using `LatestNewsComponent` with "Aktuelles!" heading above the card
 - Auto-persists changes to server via `NewsService.saveNotices()`
-- Save status indicators (saving/saved/error)
+- Save status indicators (saving/saved/error) + inline form validation alert (`formError`)
 - Logout button clears token and redirects
 
-Key properties: `blockTypes[]`, `lineHeightOptions[]`, `templates: TextTemplate[]`, `titleTemplates: TitleTemplate[]`, `previewBlocks`, `previewTitle`, `previewStartDate`, `previewEndDate`, `dragSrcIndex`, `dragOverIndex`
+State ownership & persistence flow:
+- Component owns `notices: NewsNotice[]` as local source of truth for the list rendered in the UI
+- Each CRUD action (`saveNotice`, `deleteNotice`, `toggleActive`) mutates via `NewsService` (`addNotice`/`updateNotice`/`deleteNotice` keep the service's `BehaviorSubject` in sync for the home page) then refreshes `this.notices` via `newsService.getNoticesSnapshot()`
+- `persistToServer()` is a fire-and-forget helper: reads the current snapshot, POSTs via `saveNotices()`, and drives the global `saveStatus` banner
+- This pattern avoids subscribing to `notices$` from inside a save callback, eliminating the re-entrancy and subscription leaks that existed in earlier versions
+- Validation errors (empty title / no content blocks) set `formError` and surface a Bootstrap `alert-warning`; separator/spacer blocks are preserved by the content filter regardless of text
+
+Key properties: `notices: NewsNotice[]`, `formError: string | null`, `saveStatus`, `isFormSaving`, `pendingNoticeId`, `blockTypes[]`, `lineHeightOptions[]`, `templates: TextTemplate[]`, `titleTemplates: TitleTemplate[]`, `previewBlocks`, `previewTitle`, `previewStartDate`, `previewEndDate`, `dragSrcIndex`, `dragOverIndex`
 
 Imports: `CommonModule`, `FormsModule`, `LatestNewsComponent`; injects `NewsService`, `Router`, `DialogService`
 
@@ -358,6 +365,7 @@ Purpose: Central service for loading, caching, and persisting news notices.
 Key Methods:
 - `loadNotices()`: GET request to `/data/news.json` (cache-busted with timestamp), updates BehaviorSubject and localStorage
 - `getNotices()`: Returns `Observable<NewsNotice[]>` from BehaviorSubject
+- `getNoticesSnapshot()`: Synchronous helper returning the current `notices$.getValue()` — used by `AdminDashboardComponent` to read the list without subscribing
 - `getActiveNotices()`: Synchronously returns **all** notices where `isActive === true` and today falls within `startDate`–`endDate` (inclusive)
 - `getActiveNotice()`: Returns the first result of `getActiveNotices()` or `null` (backwards-compatibility alias)
 - `saveNotices(notices)`: Updates local state + localStorage, then POSTs to `/api/save-news.php` with `X-API-Key` header

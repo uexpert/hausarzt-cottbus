@@ -53,21 +53,36 @@ npm list @angular/core
 
 ### Starting the Development Server
 
+Local development requires **two processes running in parallel**: the Angular dev server for the frontend and a PHP process for the admin save endpoint. Without the PHP process, saving/activating/deleting announcements in the admin dashboard will fail because `ng serve` cannot execute PHP files.
+
+**Terminal 1 — PHP backend:**
+```bash
+npm run start:php
+```
+Runs `php -S localhost:8001 -t public` — serves the `public/` folder with real PHP execution. Leave it running. Requires PHP on `PATH` (XAMPP's `C:\xampp\php` works out of the box on Windows).
+
+**Terminal 2 — Angular dev server (with proxy):**
 ```bash
 npm start
 # or
-ng serve
+ng serve --proxy-config proxy.conf.json
 ```
 
 The application will be available at:
 - **Local**: `http://localhost:4200/`
 - **Network**: `http://[your-ip]:4200/`
 
+The `proxy.conf.json` forwards requests to `/api/**` from Angular (`:4200`) to PHP (`:8001`), so `/api/save-news.php` is executed by PHP and writes to `public/data/news.json` exactly as it does in production. Static files (including `/data/news.json` and all assets) continue to be served directly by `ng serve`.
+
 The development server includes:
 - Hot module replacement (HMR)
 - Automatic recompilation on file changes
 - Browser live reload
 - Detailed error messages
+
+### Frontend-only quick start (no admin persistence)
+
+If you only need to view public pages and do not need to save admin changes, you can run `ng serve` alone — but the admin dashboard save/toggle/delete actions will show an error because `/api/save-news.php` will not execute.
 
 ### Development Server Options
 

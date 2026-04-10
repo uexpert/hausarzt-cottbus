@@ -185,11 +185,18 @@ All internal links validated:
 - "Aktiviert (außerhalb Zeitraum)" (yellow): `isActive === true` BUT today is outside date range
 - "Deaktiviert" (grey): `isActive === false`
 
+**Form Validation (Save)**:
+- Title must not be empty (after `trim()`) → alert: "Bitte geben Sie einen Titel ein."
+- Content must contain at least one block → alert: "Mindestens ein Inhaltsblock ist erforderlich."
+- Content-block filter on save: **structural blocks** (`separator`, `spacer`) are always preserved; text blocks (`paragraph`, `heading`, `bold`, `list-item`, `emergency`) are dropped only if their text is empty. A notice built entirely from separators/spacers is valid.
+- Validation errors are shown inline as a Bootstrap `alert-warning` inside the form (`formError` field); the save does **not** proceed until resolved.
+
 **Persistence Workflow**:
-1. In-memory state updated via `NewsService` methods
-2. `saveNotices()` sends POST to `/api/save-news.php` with `X-API-Key` header
-3. PHP endpoint writes JSON to `public/data/news.json`
-4. Save status shown to admin: saving → saved / error
+1. Component mutates its local `notices` list and mirrors the change through `NewsService` (`addNotice`/`updateNotice`/`deleteNotice`) so the home page's `BehaviorSubject` cache stays in sync
+2. `persistToServer()` reads the current state via `getNoticesSnapshot()` and calls `saveNotices()`
+3. `saveNotices()` writes to localStorage and POSTs to `/api/save-news.php` with `X-API-Key` header
+4. PHP endpoint validates the key, decodes the JSON body, and writes to `public/data/news.json`
+5. Save status shown to admin via a top-of-page banner: "💾 Wird gespeichert…" → "✅ Erfolgreich gespeichert!" / "❌ Fehler beim Speichern."
 
 **Live Preview**: Admin can preview a notice using the same `LatestNewsComponent` used on the public site; preview section includes "Aktuelles!" heading above the card
 

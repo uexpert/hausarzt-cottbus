@@ -117,7 +117,16 @@ Updated PROJECT_OVERVIEW, Architecture, Angular_Structure, Business_Rules, CHANG
 - **SHA-256 password hashing**: `auth.utils.ts` with `hashPassword()` + `ADMIN_PASSWORD_HASH`; login stores only hash in localStorage; authGuard checks hash
 - Architecture.md: fixed outdated XSS section (was still referencing `bypassSecurityTrustHtml`); added `auth.utils.ts` and `content-block.renderer.ts` to directory tree
 
+### 2026-04-10 — Docs Sync #5
+Updated PROJECT_OVERVIEW, Architecture, Angular_Structure, Business_Rules, Setup, CHANGELOG to reflect:
+- **Admin persistence refactor**: `AdminDashboardComponent` now owns `notices` as local state; `persistToServer()` rewritten to use new `NewsService.getNoticesSnapshot()` helper instead of subscribing to `getNotices()` inside a callback. Eliminates the re-entrancy bug (synchronous `notices$.next()` inside a live subscriber) and the subscription leak (one per CRUD op).
+- **Content filter fix**: `saveNotice()` filter now preserves `separator` / `spacer` blocks regardless of text — previously dropped because they have no text field, causing silent save failures for notices with those block types.
+- **Form validation UX**: new `formError` field + Bootstrap `alert-warning` in the admin form replaces silent `return`s; surfaces "Bitte geben Sie einen Titel ein." / "Mindestens ein Inhaltsblock ist erforderlich.".
+- **Loading state scaffolding**: `isFormSaving`, `pendingNoticeId` fields wired to button bindings in template (flags remain inert with the current fire-and-forget `persistToServer()` but are in place for future per-button spinner support).
+- **Local dev with real PHP backend**: new `proxy.conf.json` forwards `/api/**` from `ng serve` (`:4200`) to `php -S localhost:8001 -t public`; `start:php` npm script added; `start` script now uses the proxy config. `save-news.php` CORS header switched from a hardcoded production origin to an Origin whitelist including `localhost:4200` and `localhost:8001`, reflecting the request Origin only when it matches.
+- **Build warning cleanup**: `styles.scss` `.lh-*` generator wrapped division in `calc()` (Dart Sass 2.0 deprecation); `admin-dashboard.component.html` removed redundant `?.` optional chains on non-nullable `ContentBlock` fields (NG8107).
+
 ---
 
-Last Updated: 2026-04-09
-Documentation Version: 1.3
+Last Updated: 2026-04-10
+Documentation Version: 1.4

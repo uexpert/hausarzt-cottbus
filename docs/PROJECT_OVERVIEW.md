@@ -168,13 +168,24 @@ dist/                      # Build output
 # Install dependencies
 npm install
 
-# Start development server
+# Terminal 1 — PHP backend (required for admin save/toggle/delete)
+npm run start:php
+# == php -S localhost:8001 -t public
+# Requires PHP on PATH (XAMPP's C:\xampp\php is fine)
+
+# Terminal 2 — Angular dev server with proxy
 npm start
-# or
-ng serve
+# == ng serve --proxy-config proxy.conf.json
 
 # Navigate to http://localhost:4200/
 # App auto-reloads on file changes
+# /api/** requests are proxied to the PHP server on :8001
+```
+
+Frontend-only mode (public pages only, no admin persistence):
+```bash
+ng serve
+# Admin save/toggle/delete will fail without the PHP process running
 ```
 
 ### Building for Production

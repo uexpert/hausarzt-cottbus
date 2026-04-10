@@ -34,11 +34,13 @@ Welcome to the complete documentation for the Hausarzt Cottbus Angular project.
 
 ### Essential Commands
 ```bash
-npm start           # Start development server
+npm run start:php   # Start PHP backend (terminal 1) — required for admin save/toggle/delete
+npm start           # Start Angular dev server with /api proxy (terminal 2)
 npm run build       # Production build
 npm run test        # Run unit tests
 ng generate         # Create new components
 ```
+See [Setup.md](./Setup.md#starting-the-development-server) for the full local dev workflow (two-terminal PHP + Angular proxy setup).
 
 ### Key Locations
 - **Source Code**: `src/app/`

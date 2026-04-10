@@ -98,6 +98,7 @@ public/                          # Static files served as-is
 ├── data/
 │   └── news.json               # Dynamic news data (JSON)
 └── favicon.ico
+proxy.conf.json                  # Angular dev proxy: /api/** → http://localhost:8001
 dist/                           # Build output (generated)
 ```
 
@@ -245,7 +246,7 @@ Error handling patterns:
 
 ### API Security
 - PHP save endpoint validates `X-API-Key` header against server-side secret
-- CORS restricted to `https://www.hausarzt-cottbus.de`
+- CORS uses an Origin whitelist: `https://www.hausarzt-cottbus.de` (production), plus `http://localhost:4200` and `http://localhost:8001` for local development. The response reflects the request `Origin` header only when it matches a whitelist entry
 - Only POST method accepted; OPTIONS handled for preflight
 - HTTPS enforced in production
 
@@ -258,8 +259,20 @@ Error handling patterns:
 
 ### Development Build
 ```bash
+# Terminal 1 — PHP backend (serves public/ with real PHP execution on :8001)
+npm run start:php
+
+# Terminal 2 — Angular dev server with proxy (:4200 → :8001 for /api/**)
+npm start
+# == ng serve --proxy-config proxy.conf.json
+```
+
+`proxy.conf.json` forwards `/api/**` from the Angular dev server to PHP's built-in server so `save-news.php` executes locally and writes to `public/data/news.json` on disk, matching production behavior.
+
+Frontend-only (no admin persistence):
+```bash
 ng serve
-# Hot module reloading, source maps enabled
+# Public pages work; admin save/toggle/delete will fail because PHP isn't running
 ```
 
 ### Production Build

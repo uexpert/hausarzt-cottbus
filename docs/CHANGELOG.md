@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (2026-04-10)
+- **`NewsService.getNoticesSnapshot()`**: Synchronous helper returning `this.notices$.getValue()` — lets the admin component read the current notices list without subscribing to the BehaviorSubject
+- **Form validation error display**: `AdminDashboardComponent` has a new `formError: string | null` field and a Bootstrap `alert-warning` block at the top of the form — surfaces "Bitte geben Sie einen Titel ein." / "Mindestens ein Inhaltsblock ist erforderlich." instead of silently aborting
+- **Loading-state fields in admin**: `isFormSaving`, `pendingNoticeId` (referenced by HTML for future per-button spinner bindings)
+- **Dev-mode PHP backend via XAMPP**:
+  - New `proxy.conf.json` at project root — forwards `/api/**` from Angular (`:4200`) to PHP (`:8001`)
+  - New `start:php` npm script → `php -S localhost:8001 -t public`
+  - `start` script now uses `ng serve --proxy-config proxy.conf.json`
+
+### Changed (2026-04-10)
+- **`AdminDashboardComponent.saveNotice()` content filter**: now preserves structural blocks regardless of text. Filter: `b.type === 'separator' || b.type === 'spacer' || b.text.trim() !== ''` (previously dropped separator/spacer blocks because they have no text)
+- **`AdminDashboardComponent.persistToServer()` rewritten**: no longer subscribes to `getNotices()` from inside a callback. Now reads via `getNoticesSnapshot()` once, POSTs directly, and manages `saveStatus` itself. Fire-and-forget (returns `void`)
+- **`AdminDashboardComponent.saveNotice()` / `deleteNotice()` / `toggleActive()`**: follow a consistent pattern — mutate via `NewsService`, refresh local state via `getNoticesSnapshot()`, call `persistToServer()`. Eliminates the leaked `getNotices().subscribe(n => this.notices = n)` lines that accumulated one subscription per CRUD op
+- **`save-news.php` CORS header**: Origin whitelist instead of hardcoded production domain — accepts `https://www.hausarzt-cottbus.de`, `http://localhost:4200`, `http://localhost:8001`; reflects the request `Origin` only when it matches
+
+### Fixed (2026-04-10)
+- **Saving a new announcement silently failed** when content contained separator or spacer blocks — the old content filter dropped them and, if no text blocks remained, `return`ed without any user feedback
+- **Activate/Deactivate unreliable** — `persistToServer()` subscribed to `getNotices()` and inside the callback invoked `saveNotices()`, which synchronously calls `notices$.next()`. The re-emission re-entered the callback, producing duplicate POSTs and subscription leaks that compounded with every CRUD op. Replaced by the snapshot-based rewrite above
+- **Dart Sass 2.0 deprecation warning** in `src/styles.scss:41`: wrapped `$i * 5 / 100` in `calc()` inside the `.lh-*` generator loop
+- **Angular template warnings (NG8107)** in `admin-dashboard.component.html`: removed redundant `?.` optional chains on `t.blocks[0].text` / `.type` (non-nullable `ContentBlock` fields)
+- **`saveStatus` stuck on 'error' in local dev**: caused by `ng serve` having no PHP interpreter — requests to `/api/save-news.php` returned raw PHP source as text and `HttpClient` failed to parse it as JSON. Fixed by running PHP's built-in server on `:8001` and proxying `/api/**` through Angular's dev proxy
+
 ### Added (2026-04-09)
 - **Custom line-height**: `LineHeight` type changed from fixed union to `number` (0.5–4.0); SCSS loop generates `.lh-50` through `.lh-400` in 0.05 steps; renderer computes class name dynamically; admin dropdown includes finer presets (0.5–1.4) and "Benutzerdefiniert…" option with custom number input
 - **Separator block type**: New `'separator'` BlockType renders `<hr class="my-2">`; added to admin dropdown as "── Trennlinie ──"
