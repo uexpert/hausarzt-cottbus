@@ -4,7 +4,8 @@
   "scripts": {
     "ng": "ng",
     "copyHtaccess": "node copy-htaccess.js",
-    "start": "ng serve",
+    "start": "ng serve --proxy-config proxy.conf.json",
+    "start:php": "php -S localhost:8001 -t public",
     "build": "ng build && npm run copyHtaccess",
     "build:usama-dev": "ng build --base-href /hausarzt-cottbus/ && npm run copyHtaccess",
     "watch": "ng build --watch --configuration development",

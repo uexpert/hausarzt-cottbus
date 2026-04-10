@@ -27,7 +27,9 @@
     @if (!showForm) {
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold mb-0">Aktuelles verwalten</h5>
-        <button class="btn btn-primary btn-sm fw-semibold" (click)="openCreateForm()">+ Neue Meldung</button>
+        <button class="btn btn-primary btn-sm fw-semibold"
+                [disabled]="pendingNoticeId !== null"
+                (click)="openCreateForm()">+ Neue Meldung</button>
       </div>
 
       @if (notices.length === 0) {
@@ -51,11 +53,25 @@
                 } @else {
                   <span class="badge bg-secondary">Deaktiviert</span>
                 }
-                <button class="btn btn-outline-secondary btn-sm" (click)="toggleActive(notice)">
+                <button class="btn btn-outline-secondary btn-sm"
+                        [disabled]="pendingNoticeId === notice.id"
+                        (click)="toggleActive(notice)">
+                  @if (pendingNoticeId === notice.id) {
+                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                  }
                   {{ notice.isActive ? 'Deaktivieren' : 'Aktivieren' }}
                 </button>
-                <button class="btn btn-outline-primary btn-sm" (click)="openEditForm(notice)">Bearbeiten</button>
-                <button class="btn btn-outline-danger btn-sm" (click)="deleteNotice(notice.id)">Löschen</button>
+                <button class="btn btn-outline-primary btn-sm"
+                        [disabled]="pendingNoticeId === notice.id"
+                        (click)="openEditForm(notice)">Bearbeiten</button>
+                <button class="btn btn-outline-danger btn-sm"
+                        [disabled]="pendingNoticeId === notice.id"
+                        (click)="deleteNotice(notice.id)">
+                  @if (pendingNoticeId === notice.id) {
+                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                  }
+                  Löschen
+                </button>
               </div>
             </div>
           </div>
@@ -70,6 +86,10 @@
       <div class="card shadow-sm">
         <div class="card-body p-4">
           <h5 class="fw-bold mb-4">{{ isEditing ? 'Meldung bearbeiten' : 'Neue Meldung erstellen' }}</h5>
+
+          @if (formError) {
+            <div class="alert alert-warning py-2">⚠ {{ formError }}</div>
+          }
 
           <!-- ── Titel ─────────────────────────────────────────────────────── -->
           <div class="mb-3">
@@ -164,7 +184,7 @@
                       <div class="fw-semibold small text-truncate" title="{{ t.name }}">{{ t.name }}</div>
                       <!-- Content preview: first block text + block count hint -->
                       <div class="text-muted" style="font-size:0.78em; line-height:1.3;">
-                        {{ t.blocks[0]?.text | slice:0:80 }}{{ (t.blocks[0]?.text?.length ?? 0) > 80 ? '…' : '' }}
+                        {{ t.blocks[0].text | slice:0:80 }}{{ t.blocks[0].text.length > 80 ? '…' : '' }}
                         @if (t.blocks.length > 1) {
                           <span class="text-primary ms-1">
                             +{{ t.blocks.length - 1 }}&nbsp;weitere{{ t.blocks.length > 2 ? ' Blöcke' : ' Block' }}
@@ -172,7 +192,7 @@
                         }
                       </div>
                     </div>
-                    <small class="text-muted text-nowrap flex-shrink-0">[{{ t.blocks[0]?.type }}]</small>
+                    <small class="text-muted text-nowrap flex-shrink-0">[{{ t.blocks[0].type }}]</small>
                     <button class="btn btn-outline-primary btn-sm text-nowrap flex-shrink-0"
                             (click)="insertTemplate(t)">+ Einfügen</button>
                     <button class="btn btn-outline-danger btn-sm flex-shrink-0"
@@ -323,9 +343,20 @@
 
           <!-- ── Aktionen ────────────────────────────────────────────────────── -->
           <div class="d-flex gap-2 flex-wrap mt-4">
-            <button class="btn btn-outline-primary" (click)="preview()">👁 Vorschau</button>
-            <button class="btn btn-primary fw-semibold" (click)="saveNotice()">💾 Speichern</button>
-            <button class="btn btn-outline-secondary" (click)="cancelForm()">Abbrechen</button>
+            <button class="btn btn-outline-primary"
+                    [disabled]="isFormSaving"
+                    (click)="preview()">👁 Vorschau</button>
+            <button class="btn btn-primary fw-semibold"
+                    [disabled]="isFormSaving"
+                    (click)="saveNotice()">
+              @if (isFormSaving) {
+                <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+              }
+              {{ isFormSaving ? 'Speichern…' : '💾 Speichern' }}
+            </button>
+            <button class="btn btn-outline-secondary"
+                    [disabled]="isFormSaving"
+                    (click)="cancelForm()">Abbrechen</button>
           </div>
         </div>
       </div>

@@ -3,7 +3,19 @@
 define('API_SECRET', 'hac_news_secret_2024_xK9mP');
 
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: https://www.hausarzt-cottbus.de');
+
+// Allow the production origin plus localhost during development. When the
+// request comes through Angular's dev proxy (ng serve on :4200 → php -S on
+// :8001), the browser sends Origin: http://localhost:4200.
+$allowedOrigins = [
+    'https://www.hausarzt-cottbus.de',
+    'http://localhost:4200',
+    'http://localhost:8001',
+];
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (in_array($origin, $allowedOrigins, true)) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+}
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, X-API-Key');
 

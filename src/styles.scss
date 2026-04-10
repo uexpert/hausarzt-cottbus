@@ -38,5 +38,5 @@
 // News content — line-height utilities (applied via class on [innerHTML] elements)
 // Generates .lh-50 (0.50) through .lh-400 (4.00) in steps of 0.05
 @for $i from 10 through 80 {
-  .lh-#{$i * 5} { line-height: #{$i * 5 / 100}; }
+  .lh-#{$i * 5} { line-height: calc(#{$i} * 5 / 100); }
 }

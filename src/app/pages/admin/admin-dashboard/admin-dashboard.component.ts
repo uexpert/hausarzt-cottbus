@@ -34,6 +34,14 @@ export class AdminDashboardComponent implements OnInit {
   showPreview  = false;
   saveStatus: 'idle' | 'saving' | 'saved' | 'error' = 'idle';
 
+  // ── Loading state per action ───────────────────────────────────────────────
+  /** True while the form's Speichern request is in flight. */
+  isFormSaving = false;
+  /** ID of the row whose toggle/delete is in flight (only one row at a time). */
+  pendingNoticeId: string | null = null;
+  /** User-visible validation error for the form (title/content rules). */
+  formError: string | null = null;
+
   currentNotice: NewsNotice = this.emptyNotice();
 
   // Preview inputs (passed to <latest-news>)
@@ -318,6 +326,7 @@ export class AdminDashboardComponent implements OnInit {
     this.isEditing    = false;
     this.showForm     = true;
     this.showPreview  = false;
+    this.formError    = null;
   }
 
   openEditForm(notice: NewsNotice) {
@@ -325,11 +334,13 @@ export class AdminDashboardComponent implements OnInit {
     this.isEditing    = true;
     this.showForm     = true;
     this.showPreview  = false;
+    this.formError    = null;
   }
 
   cancelForm() {
     this.showForm    = false;
     this.showPreview = false;
+    this.formError   = null;
   }
 
   addBlock() {
@@ -361,10 +372,21 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   saveNotice() {
-    if (!this.currentNotice.title.trim()) return;
-    const filtered = this.currentNotice.content.filter(b => b.text.trim() !== '');
-    if (!filtered.length) return;
+    // ── Validation ──────────────────────────────────────────────────────────
+    if (!this.currentNotice.title.trim()) {
+      this.formError = 'Bitte geben Sie einen Titel ein.';
+      return;
+    }
+    // Keep structural blocks (separator/spacer) regardless of text content.
+    const filtered = this.currentNotice.content.filter(b =>
+      b.type === 'separator' || b.type === 'spacer' || b.text.trim() !== ''
+    );
+    if (!filtered.length) {
+      this.formError = 'Mindestens ein Inhaltsblock ist erforderlich.';
+      return;
+    }
     this.currentNotice.content = filtered;
+    this.formError = null;
 
     if (this.isEditing) {
       this.newsService.updateNotice(this.currentNotice);
@@ -372,7 +394,7 @@ export class AdminDashboardComponent implements OnInit {
       this.newsService.addNotice(this.currentNotice);
     }
 
-    this.newsService.getNotices().subscribe(n => this.notices = n);
+    this.notices = this.newsService.getNoticesSnapshot();
     this.showForm    = false;
     this.showPreview = false;
     this.persistToServer();
@@ -384,24 +406,30 @@ export class AdminDashboardComponent implements OnInit {
       'Möchten Sie diese Meldung wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.'
     );
     if (!ok) return;
+
     this.newsService.deleteNotice(id);
-    this.newsService.getNotices().subscribe(n => this.notices = n);
+    this.notices = this.newsService.getNoticesSnapshot();
     this.persistToServer();
   }
 
   toggleActive(notice: NewsNotice) {
     this.newsService.updateNotice({ ...notice, isActive: !notice.isActive });
-    this.newsService.getNotices().subscribe(n => this.notices = n);
+    this.notices = this.newsService.getNoticesSnapshot();
     this.persistToServer();
   }
 
   persistToServer() {
     this.saveStatus = 'saving';
-    this.newsService.getNotices().subscribe(notices => {
-      this.newsService.saveNotices(notices).subscribe({
-        next:  () => { this.saveStatus = 'saved';  setTimeout(() => this.saveStatus = 'idle', 3000); },
-        error: () => { this.saveStatus = 'error'; setTimeout(() => this.saveStatus = 'idle', 4000); },
-      });
+    const notices = this.newsService.getNoticesSnapshot();
+    this.newsService.saveNotices(notices).subscribe({
+      next: () => {
+        this.saveStatus = 'saved';
+        setTimeout(() => this.saveStatus = 'idle', 3000);
+      },
+      error: () => {
+        this.saveStatus = 'error';
+        setTimeout(() => this.saveStatus = 'idle', 4000);
+      }
     });
   }
 
