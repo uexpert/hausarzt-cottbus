@@ -143,7 +143,8 @@ All internal links validated:
 **Active Notice Resolution**:
 - `NewsService.getActiveNotices()` returns **all** notices where:
   - `isActive === true`, AND
-  - Today's date falls within `startDate` (inclusive) to `endDate` (inclusive, end of day)
+  - Today's date has not passed `endDate` (inclusive, end of day)
+- Notices are visible **before** their start date — the start/end dates describe when the clinic is closed, not when the announcement becomes visible. Patients need advance notice of closures.
 - If no notices match, the "Aktuelles" section is hidden entirely (`@if (activeNotices.length > 0)`)
 
 **Display**:
@@ -181,8 +182,8 @@ All internal links validated:
 - **Title templates** (localStorage `hac_title_templates`): Save the current title text with optional `{startDate}`/`{endDate}` markers; on "Übernehmen" markers are substituted with the notice's current dates (German long format)
 
 **Status Badges**:
-- "Aktiv & Sichtbar" (green): `isActive === true` AND today is within date range
-- "Aktiviert (außerhalb Zeitraum)" (yellow): `isActive === true` BUT today is outside date range
+- "Aktiv & Sichtbar" (green): `isActive === true` AND `endDate` has not yet passed
+- "Aktiviert (abgelaufen)" (yellow): `isActive === true` BUT `endDate` has already passed
 - "Deaktiviert" (grey): `isActive === false`
 
 **Form Validation (Save)**:
@@ -246,7 +247,7 @@ All internal links validated:
 
 - **Endpoint**: `/api/save-news.php` accepts POST only
 - **Authentication**: `X-API-Key` header validated against server-side secret
-- **CORS**: Restricted to `https://www.hausarzt-cottbus.de`
+- **CORS**: Origin whitelist — `https://www.hausarzt-cottbus.de`, `http://localhost:4200`, `http://localhost:8001`; reflects request `Origin` only when it matches
 - **Input Validation**: JSON body decoded and validated as array before writing
 
 ### Input Sanitization

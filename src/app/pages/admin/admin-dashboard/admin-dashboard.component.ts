@@ -41,6 +41,8 @@ export class AdminDashboardComponent implements OnInit {
   pendingNoticeId: string | null = null;
   /** User-visible validation error for the form (title/content rules). */
   formError: string | null = null;
+  /** Detailed error from the last failed persistToServer() call. */
+  saveErrorDetail: string | null = null;
 
   currentNotice: NewsNotice = this.emptyNotice();
 
@@ -420,15 +422,22 @@ export class AdminDashboardComponent implements OnInit {
 
   persistToServer() {
     this.saveStatus = 'saving';
+    this.saveErrorDetail = null;
     const notices = this.newsService.getNoticesSnapshot();
     this.newsService.saveNotices(notices).subscribe({
       next: () => {
         this.saveStatus = 'saved';
         setTimeout(() => this.saveStatus = 'idle', 3000);
       },
-      error: () => {
+      error: (err) => {
         this.saveStatus = 'error';
-        setTimeout(() => this.saveStatus = 'idle', 4000);
+        const status = err?.status ?? 0;
+        const msg = err?.error?.error ?? err?.message ?? 'Unbekannter Fehler';
+        this.saveErrorDetail = status
+          ? `HTTP ${status}: ${msg}`
+          : `Netzwerkfehler: ${msg}`;
+        console.error('persistToServer failed:', err);
+        setTimeout(() => this.saveStatus = 'idle', 6000);
       }
     });
   }
@@ -437,10 +446,9 @@ export class AdminDashboardComponent implements OnInit {
     if (!notice.isActive) return false;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const start = new Date(notice.startDate);
-    const end   = new Date(notice.endDate);
+    const end = new Date(notice.endDate);
     end.setHours(23, 59, 59, 999);
-    return today >= start && today <= end;
+    return today <= end;
   }
 
   logout() {

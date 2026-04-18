@@ -366,7 +366,7 @@ Key Methods:
 - `loadNotices()`: GET request to `/data/news.json` (cache-busted with timestamp), updates BehaviorSubject and localStorage
 - `getNotices()`: Returns `Observable<NewsNotice[]>` from BehaviorSubject
 - `getNoticesSnapshot()`: Synchronous helper returning the current `notices$.getValue()` — used by `AdminDashboardComponent` to read the list without subscribing
-- `getActiveNotices()`: Synchronously returns **all** notices where `isActive === true` and today falls within `startDate`–`endDate` (inclusive)
+- `getActiveNotices()`: Synchronously returns **all** notices where `isActive === true` and today has not passed `endDate` (inclusive). Notices are visible before their start date so patients get advance notice of closures.
 - `getActiveNotice()`: Returns the first result of `getActiveNotices()` or `null` (backwards-compatibility alias)
 - `saveNotices(notices)`: Updates local state + localStorage, then POSTs to `/api/save-news.php` with `X-API-Key` header
 - `addNotice(notice)`: Adds to in-memory array

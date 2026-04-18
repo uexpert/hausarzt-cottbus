@@ -59,7 +59,9 @@ Local development requires **two processes running in parallel**: the Angular de
 ```bash
 npm run start:php
 ```
-Runs `php -S localhost:8001 -t public` — serves the `public/` folder with real PHP execution. Leave it running. Requires PHP on `PATH` (XAMPP's `C:\xampp\php` works out of the box on Windows).
+Runs `node server/start-php.js` which launches `php -S localhost:8001 -t server/` — serves the `server/` directory (containing `api/save-news.php`) with real PHP execution. Leave it running. Requires PHP on `PATH` (XAMPP's `C:\xampp\php` works out of the box on Windows).
+
+**Alternative (no PHP):** Run `node server/dev-api.js` instead — a Node.js server that provides the same `/api/save-news.php` endpoint without requiring PHP.
 
 **Terminal 2 — Angular dev server (with proxy):**
 ```bash

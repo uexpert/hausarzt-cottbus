@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (2026-04-19)
+- **Notice visibility logic**: Changed from "visible only within startDate–endDate range" to "visible until endDate passes". Notices now appear immediately when activated, giving patients advance notice of clinic closures. Affects `NewsService.getActiveNotices()` and `AdminDashboardComponent.isCurrentlyActive()`
+- **Admin status badge**: Yellow badge text changed from "Aktiviert (außerhalb Zeitraum)" to "Aktiviert (abgelaufen)" — the only scenario for yellow is now when the end date has already passed
+
+### Fixed (2026-04-18)
+- **Windows `npm start` script**: The `&` operator in npm scripts runs through `cmd.exe` on Windows where it means "run sequentially" (not background). Since `node server/start-php.js` blocks forever, `ng serve` never started. Separated into two scripts: `start` runs only `ng serve --proxy-config proxy.conf.json`; PHP server remains separate via `npm run start:php`
+- **Timezone bug in `isCurrentlyActive()`**: `new Date("YYYY-MM-DD")` creates a UTC midnight date, but `today` was set to local midnight (CEST, UTC+2). Added `start.setHours(0, 0, 0, 0)` to normalize the start date to local midnight
+
 ### Added (2026-04-10)
 - **`NewsService.getNoticesSnapshot()`**: Synchronous helper returning `this.notices$.getValue()` — lets the admin component read the current notices list without subscribing to the BehaviorSubject
 - **Form validation error display**: `AdminDashboardComponent` has a new `formError: string | null` field and a Bootstrap `alert-warning` block at the top of the form — surfaces "Bitte geben Sie einen Titel ein." / "Mindestens ein Inhaltsblock ist erforderlich." instead of silently aborting

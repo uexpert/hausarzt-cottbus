@@ -92,12 +92,14 @@ Located in `src/app/core/`:
 | **renderBlocks** (utility) | Pure function in `content-block.renderer.ts` — maps `ContentBlock[]` + optional `RenderContext` to safe HTML; pipeline: HTML-escape → date substitution → `**bold**` → CSS classes; no `style=""` attributes |
 | **DialogService** | Root-level injectable returning `Promise<string\|null>` from `prompt()` and `Promise<boolean>` from `confirm()`; `DialogComponent` at `AppComponent` level renders the overlay |
 
-### Backend (PHP)
-Located in `public/api/`:
+### Backend (Server)
+Located in `server/`:
 
 | File | Purpose |
 |------|---------|
-| **save-news.php** | POST endpoint that validates `X-API-Key` header and writes news JSON to `public/data/news.json` |
+| **api/save-news.php** | PHP POST endpoint that validates `X-API-Key` header and writes news JSON to `public/data/news.json` |
+| **dev-api.js** | Node.js alternative to the PHP endpoint (same API, no PHP required) |
+| **start-php.js** | Launcher script for PHP's built-in server (`php -S localhost:8001 -t server`) |
 
 ### Data Files
 Located in `public/data/`:
@@ -149,11 +151,14 @@ src/
 ├── index.html            # HTML entry point
 └── main.ts               # Bootstrap file
 public/                    # Public static files
-├── api/
-│   └── save-news.php     # PHP endpoint for saving news
 ├── data/
 │   └── news.json         # Dynamic news data
 └── favicon.ico
+server/                    # Dev/prod backend
+├── api/
+│   └── save-news.php     # PHP endpoint for saving news
+├── dev-api.js            # Node.js alternative backend
+└── start-php.js          # PHP built-in server launcher
 dist/                      # Build output
 ```
 
@@ -210,7 +215,7 @@ npm run test
 ### Dynamic News Management
 - Admin dashboard for creating, editing, and deleting news notices
 - Multiple notices can be active simultaneously; all are shown on the home page under a single "Aktuelles!" heading
-- Date-range based activation (notices auto-show/hide by date); section hidden entirely when no notices are active
+- Date-based activation: notices are visible from the moment they're activated until their end date passes; section hidden entirely when no notices are active
 - Live preview of news before publishing (shows "Aktuelles!" heading above card, just like public page)
 - PHP backend persists changes to `news.json` on server
 - API key secured save endpoint

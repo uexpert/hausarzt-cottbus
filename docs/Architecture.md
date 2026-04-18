@@ -93,11 +93,14 @@ src/
 └── main.ts                      # Bootstrap entry point
 
 public/                          # Static files served as-is
-├── api/
-│   └── save-news.php           # PHP endpoint for news persistence
 ├── data/
 │   └── news.json               # Dynamic news data (JSON)
 └── favicon.ico
+server/                          # Dev/prod backend
+├── api/
+│   └── save-news.php           # PHP endpoint for news persistence
+├── dev-api.js                  # Node.js alternative backend (no PHP required)
+└── start-php.js                # Launcher for PHP built-in server
 proxy.conf.json                  # Angular dev proxy: /api/** → http://localhost:8001
 dist/                           # Build output (generated)
 ```

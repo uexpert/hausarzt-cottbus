@@ -126,7 +126,15 @@ Updated PROJECT_OVERVIEW, Architecture, Angular_Structure, Business_Rules, Setup
 - **Local dev with real PHP backend**: new `proxy.conf.json` forwards `/api/**` from `ng serve` (`:4200`) to `php -S localhost:8001 -t public`; `start:php` npm script added; `start` script now uses the proxy config. `save-news.php` CORS header switched from a hardcoded production origin to an Origin whitelist including `localhost:4200` and `localhost:8001`, reflecting the request Origin only when it matches.
 - **Build warning cleanup**: `styles.scss` `.lh-*` generator wrapped division in `calc()` (Dart Sass 2.0 deprecation); `admin-dashboard.component.html` removed redundant `?.` optional chains on non-nullable `ContentBlock` fields (NG8107).
 
+### 2026-04-19 — Docs Sync #6
+Updated PROJECT_OVERVIEW, Architecture, Angular_Structure, Business_Rules, CHANGELOG to reflect:
+- **Notice visibility logic corrected**: Changed from "visible only when today is within startDate–endDate" to "visible until endDate passes". Start/end dates describe when the clinic is closed — patients need to see the announcement *before* the closure starts. `NewsService.getActiveNotices()` and `AdminDashboardComponent.isCurrentlyActive()` now check only `today <= endDate`.
+- **Admin badge text**: Yellow badge changed from "Aktiviert (außerhalb Zeitraum)" to "Aktiviert (abgelaufen)" — the only scenario for yellow is now when the end date has passed.
+- **Windows `npm start` fix**: Removed combined `node server/start-php.js & ng serve` script — on Windows, npm runs through `cmd.exe` where `&` is a sequential separator, not a backgrounding operator, so the PHP server blocked forever and `ng serve` never started. Scripts are now separate: `start` = Angular only, `start:php` = PHP only.
+- **Timezone bug fix**: `isCurrentlyActive()` normalized `today` and `end` dates but not `start` — `new Date("YYYY-MM-DD")` creates UTC midnight which differs from local midnight in CEST (UTC+2). Added `start.setHours(0,0,0,0)`.
+- **`server/` directory**: PHP endpoint moved from `public/api/save-news.php` to `server/api/save-news.php`; new `server/dev-api.js` (Node.js alternative backend); new `server/start-php.js` (PHP server launcher).
+
 ---
 
-Last Updated: 2026-04-10
-Documentation Version: 1.4
+Last Updated: 2026-04-19
+Documentation Version: 1.5

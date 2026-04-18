@@ -35,17 +35,15 @@ export class NewsService {
     return this.getActiveNotices()[0] ?? null;
   }
 
-  /** Returns ALL notices that are currently active (isActive + within date range). */
+  /** Returns ALL notices that are active and whose end date has not yet passed. */
   getActiveNotices(): NewsNotice[] {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return this.notices$.getValue().filter(notice => {
       if (!notice.isActive) return false;
-      const start = new Date(notice.startDate);
-      const end   = new Date(notice.endDate);
-      start.setHours(0, 0, 0, 0);
+      const end = new Date(notice.endDate);
       end.setHours(23, 59, 59, 999);
-      return today >= start && today <= end;
+      return today <= end;
     });
   }
 

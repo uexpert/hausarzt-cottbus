@@ -49,8 +49,13 @@ if (!is_array($data)) {
     exit();
 }
 
-// Write to news.json (one directory up from /api/)
+// Write to news.json
+// Production layout: api/save-news.php → ../data/news.json
+// Dev layout:        server/api/save-news.php → ../../public/data/news.json
 $filePath = __DIR__ . '/../data/news.json';
+if (!is_dir(dirname($filePath))) {
+    $filePath = __DIR__ . '/../../public/data/news.json';
+}
 $result = file_put_contents($filePath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
 if ($result === false) {

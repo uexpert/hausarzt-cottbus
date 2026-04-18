@@ -18,7 +18,12 @@
       <div class="alert alert-success py-2">✅ Erfolgreich gespeichert!</div>
     }
     @if (saveStatus === 'error') {
-      <div class="alert alert-danger py-2">❌ Fehler beim Speichern. Bitte erneut versuchen.</div>
+      <div class="alert alert-danger py-2">
+        ❌ Fehler beim Speichern. Bitte erneut versuchen.
+        @if (saveErrorDetail) {
+          <br><small>{{ saveErrorDetail }}</small>
+        }
+      </div>
     }
 
     <!-- ══════════════════════════════════════════════════════════════════════ -->
@@ -49,7 +54,7 @@
                 @if (isCurrentlyActive(notice)) {
                   <span class="badge bg-success">Aktiv & Sichtbar</span>
                 } @else if (notice.isActive) {
-                  <span class="badge bg-warning text-dark">Aktiviert (außerhalb Zeitraum)</span>
+                  <span class="badge bg-warning text-dark">Aktiviert (abgelaufen)</span>
                 } @else {
                   <span class="badge bg-secondary">Deaktiviert</span>
                 }

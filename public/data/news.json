@@ -1,23 +1,52 @@
 [
-  {
-    "id": "1",
-    "title": "Weihnachtsurlaub 2025",
-    "content": [
-      { "type": "heading",   "text": "Weihnachtsurlaub vom 23. Dezember 2025 bis 2. Januar 2026" },
-      { "type": "paragraph", "text": "Liebe Patientinnen und Patienten," },
-      { "type": "paragraph", "text": "bitte beachten Sie, dass unsere Praxis vom 23.12.2025 bis einschließlich 02.01.2026 aufgrund unseres Weihnachtsurlaubs geschlossen bleibt." },
-      { "type": "paragraph", "text": "In dieser Zeit übernimmt die folgende Praxis freundlicherweise die ärztliche Vertretung:" },
-      { "type": "bold",      "text": "Vertretungspraxis:" },
-      { "type": "list-item", "text": "Praxis Dr. Mustermann, Bahnhofstraße 64" },
-      { "type": "paragraph", "text": "Bitte nehmen Sie für Rezeptwünsche Ihren Medikamentenplan mit." },
-      { "type": "emergency", "text": "In dringenden Fällen außerhalb der Sprechzeiten wenden Sie sich bitte an den ärztlichen Bereitschaftsdienst unter der Telefonnummer 116 117 oder im Notfall an den Rettungsdienst unter 112." },
-      { "type": "paragraph", "text": "Ab Montag, den 05.01.2026 sind wir wieder wie gewohnt für Sie da." },
-      { "type": "paragraph", "text": "Vielen Dank für Ihr Verständnis - wir wünschen Ihnen ein frohes und gesundes Weihnachtsfest sowie einen guten Start ins neue Jahr!" },
-      { "type": "paragraph", "text": "Praxisteam" }
-    ],
-    "startDate": "2025-12-23",
-    "endDate": "2026-01-05",
-    "isActive": true,
-    "createdAt": "2026-01-01T00:00:00.000Z"
-  }
+    {
+        "id": "1",
+        "title": "Weihnachtsurlaub vom  {startDate} bis {endDate}",
+        "content": [
+            {
+                "type": "paragraph",
+                "text": "Liebe Patientinnen und Patienten,"
+            },
+            {
+                "type": "paragraph",
+                "text": "bitte beachten Sie, dass unsere Praxis vom 23.12.2025 bis einschließlich 02.01.2026 aufgrund unseres Weihnachtsurlaubs geschlossen bleibt."
+            },
+            {
+                "type": "paragraph",
+                "text": "In dieser Zeit übernimmt die folgende Praxis freundlicherweise die ärztliche Vertretung:"
+            },
+            {
+                "type": "bold",
+                "text": "Vertretungspraxis:"
+            },
+            {
+                "type": "list-item",
+                "text": "Praxis Dr. Mustermann, Bahnhofstraße 64"
+            },
+            {
+                "type": "paragraph",
+                "text": "Bitte nehmen Sie für Rezeptwünsche Ihren Medikamentenplan mit."
+            },
+            {
+                "type": "emergency",
+                "text": "In dringenden Fällen außerhalb der Sprechzeiten wenden Sie sich bitte an den ärztlichen Bereitschaftsdienst unter der Telefonnummer 116 117 oder im Notfall an den Rettungsdienst unter 112."
+            },
+            {
+                "type": "paragraph",
+                "text": "Ab Montag, den 05.01.2026 sind wir wieder wie gewohnt für Sie da."
+            },
+            {
+                "type": "paragraph",
+                "text": "Vielen Dank für Ihr Verständnis - wir wünschen Ihnen ein frohes und gesundes Weihnachtsfest sowie einen guten Start ins neue Jahr!"
+            },
+            {
+                "type": "paragraph",
+                "text": "Praxisteam"
+            }
+        ],
+        "startDate": "2026-03-13",
+        "endDate": "2026-03-20",
+        "isActive": true,
+        "createdAt": "2026-01-01T00:00:00.000Z"
+    }
 ]

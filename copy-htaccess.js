@@ -1,4 +1,5 @@
 const fs = require('fs');
+const fsp = fs.promises;
 const path = require('path');
 
 const sourcePath = path.join(__dirname, 'src', 'assets');
@@ -63,3 +64,14 @@ fs.copyFile(bingSource, bingDest, (err) => {
     console.log('BingSiteAuth copied to dist folder.');
   }
 });
+
+// PHP API endpoint (excluded from Angular assets to avoid static-file conflict with dev proxy)
+const apiSourceDir = path.join(__dirname, 'server', 'api');
+const apiDestDir = path.join(destPath, 'api');
+fsp.mkdir(apiDestDir, { recursive: true })
+  .then(() => fsp.readdir(apiSourceDir))
+  .then(files => Promise.all(
+    files.map(f => fsp.copyFile(path.join(apiSourceDir, f), path.join(apiDestDir, f)))
+  ))
+  .then(() => console.log('api/ folder copied to dist folder.'))
+  .catch(err => console.error('Failed to copy api/ folder:', err));

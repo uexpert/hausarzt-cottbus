@@ -6,7 +6,15 @@
       "Bash(node -e \"const p=require\\(''./package.json''\\); console.log\\(JSON.stringify\\(Object.keys\\({...p.dependencies,...p.devDependencies}\\).filter\\(k=>k.includes\\(''cdk''\\)||k.includes\\(''drag''\\)\\)\\)\\)\")",
       "Bash(npx ng:*)",
       "Bash(npm run:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(npm ls:*)",
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(php -v)",
+      "Bash(node server/start-php.js)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8001/api/save-news.php)",
+      "Bash(curl:*)",
+      "Bash(pkill -f \"php -S localhost:8001\")"
     ]
   }
 }
