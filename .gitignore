@@ -43,3 +43,6 @@ Thumbs.db
 
 # Claude
 docs/sessions/
+
+# Server-side secrets (real backup credentials live only on Hostinger)
+server/api/backup-config.php

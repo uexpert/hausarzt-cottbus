@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NewsService } from '../../../core/services/news.service';
 import { DialogService } from '../../../core/services/dialog.service';
 import {
@@ -13,7 +13,7 @@ import { LatestNewsComponent } from '../../../components/latest-news/latest-news
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, LatestNewsComponent],
+  imports: [CommonModule, FormsModule, RouterLink, LatestNewsComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss'
 })
@@ -61,7 +61,7 @@ export class AdminDashboardComponent implements OnInit {
   // ── Block-type select options ──────────────────────────────────────────────
   readonly blockTypes: { value: BlockType; label: string }[] = [
     { value: 'paragraph', label: 'Absatz' },
-    { value: 'heading',   label: 'Überschrift (blau, fett)' },
+    { value: 'heading',   label: 'Überschrift (bunt, fett)' },
     { value: 'bold',      label: 'Fettgedruckt' },
     { value: 'list-item', label: 'Listenpunkt' },
     { value: 'emergency', label: 'Notfallhinweis (rot)' },
@@ -318,7 +318,8 @@ export class AdminDashboardComponent implements OnInit {
       content:   [{ type: 'paragraph', text: '' }],
       startDate: today,
       endDate:   today,
-      isActive:  true,
+      // Start inactive so the admin must explicitly preview & activate.
+      isActive:  false,
       createdAt: new Date().toISOString(),
     };
   }

@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { Location } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -10,11 +11,15 @@ const STORAGE_KEY = 'hausarzt_news';
 @Injectable({ providedIn: 'root' })
 export class NewsService {
   private http = inject(HttpClient);
+  // prepareExternalUrl() prepends <base href>, so URLs work under both root
+  // deployments ("/") and sub-folder deployments ("/hausarzt-cottbus/").
+  private location = inject(Location);
+
   private notices$ = new BehaviorSubject<NewsNotice[]>([]);
 
   loadNotices(): Observable<NewsNotice[]> {
     // Always fetch fresh from news.json (cache-busted)
-    const url = `/data/news.json?v=${Date.now()}`;
+    const url = this.location.prepareExternalUrl(`data/news.json?v=${Date.now()}`);
     return this.http.get<NewsNotice[]>(url).pipe(
       tap(notices => {
         this.notices$.next(notices);
@@ -29,6 +34,11 @@ export class NewsService {
 
   getNoticesSnapshot(): NewsNotice[] {
     return this.notices$.getValue();
+  }
+
+  /** Look up a notice by ID across the full set, ignoring isActive and date range. */
+  getNoticeById(id: string): NewsNotice | null {
+    return this.notices$.getValue().find(n => n.id === id) ?? null;
   }
 
   getActiveNotice(): NewsNotice | null {
@@ -54,7 +64,7 @@ export class NewsService {
       'Content-Type': 'application/json',
       'X-API-Key': API_SECRET
     });
-    return this.http.post('/api/save-news.php', notices, { headers });
+    return this.http.post(this.location.prepareExternalUrl('api/save-news.php'), notices, { headers });
   }
 
   addNotice(notice: NewsNotice): void {

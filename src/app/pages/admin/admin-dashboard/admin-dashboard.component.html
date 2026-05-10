@@ -58,6 +58,13 @@
                 } @else {
                   <span class="badge bg-secondary">Deaktiviert</span>
                 }
+                <a class="btn btn-outline-info btn-sm"
+                   [routerLink]="['/home']"
+                   [queryParams]="{ preview: notice.id }"
+                   target="_blank" rel="noopener"
+                   title="Diese Meldung auf der Webseite ansehen (öffnet in neuem Tab)">
+                  👁 Auf Website ansehen
+                </a>
                 <button class="btn btn-outline-secondary btn-sm"
                         [disabled]="pendingNoticeId === notice.id"
                         (click)="toggleActive(notice)">
@@ -163,6 +170,11 @@
                      [(ngModel)]="currentNotice.isActive" id="activeToggle" />
               <label class="form-check-label fw-semibold" for="activeToggle">Meldung aktivieren</label>
             </div>
+            <small class="text-muted d-block mt-1">
+              💡 Empfohlen: Meldung zunächst <strong>deaktiviert</strong> speichern,
+              anschließend in der Liste auf „👁 Auf Website ansehen" klicken zur Kontrolle,
+              dann erst aktivieren.
+            </small>
           </div>
 
           <!-- ── Textvorlagen (Block-Gruppen) ──────────────────────────────── -->

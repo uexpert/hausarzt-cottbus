@@ -148,18 +148,99 @@ ng build --watch
 ### Build Output Structure
 
 ```
-dist/hausarzt-cottbus/
+dist/hausarzt-cottbus/browser/
 ├── index.html           # Main HTML file
-├── styles.css           # Global styles (minified)
-├── main.js              # Main bundle (minified)
-├── polyfills.js         # Browser polyfills
-├── assets/              # Static assets
-│   ├── images/
-│   ├── js/
-│   └── data/
-├── .htaccess            # Apache routing configuration
-└── other-bundles.js     # Additional chunks
+├── *.js / *.css         # Hashed bundles
+├── assets/              # Static assets (images, jQuery, etc.)
+├── data/                # Copied from /public/data — contains news.json
+│   └── news.json
+├── api/                 # Copied from /server/api by copy-htaccess.js
+│   ├── save-news.php
+│   ├── backup-news.php
+│   ├── backup-config.example.php
+│   └── .htaccess
+└── .htaccess            # Apache routing + cache headers
 ```
+
+The whole contents of `dist/hausarzt-cottbus/browser/` is what gets uploaded to the hosting server (Hostinger's `public_html/` for a root deploy, or `public_html/<subfolder>/` for a sub-folder deploy).
+
+## Deploying to Hostinger Premium
+
+The clinic site runs on **Hostinger Premium (Web Hosting)** — shared Apache + PHP, no SSH, but cron jobs and PHP CLI are available. The same instructions apply to any Apache+PHP shared host.
+
+### One-time hPanel checks
+1. **PHP enabled** — hPanel → Advanced → PHP Configuration → pick **PHP 8.1+**.
+2. **`mod_rewrite` and `mod_headers`** — both are enabled by default; required by `src/assets/.htaccess` for SPA routing and cache headers.
+
+### Production deploy (root domain `hausarzt-cottbus.de`)
+
+1. Build locally:
+   ```bash
+   npm run build
+   ```
+2. Upload the entire contents of `dist/hausarzt-cottbus/browser/` into the live account's `public_html/` (File Manager or FTP — credentials in hPanel → Files → FTP Accounts).
+3. Set permissions once after first upload:
+   - `public_html/data/`           → `755`
+   - `public_html/data/news.json`  → `644`
+   - `public_html/api/*.php`       → `644`
+4. Open `public_html/api/save-news.php` and confirm the `$allowedOrigins` list at the top includes the production domain.
+5. Smoke test: visit `/admin/login` → log in → toggle a notice → confirm the green save banner.
+
+### Test deploy (sub-folder, e.g. `test-host.example.com/hausarzt-cottbus/`)
+
+For validating changes on a separate Hostinger test account *before* touching the live domain:
+
+1. Build with sub-folder base href:
+   ```bash
+   npm run build:usama-dev
+   ```
+   This sets `--base-href /hausarzt-cottbus/`, so Angular Router and asset URLs are all prefixed.
+2. On the test account, create `public_html/hausarzt-cottbus/` and upload the entire contents of `dist/hausarzt-cottbus/browser/` into it.
+3. Apply the same permissions as above, but inside `public_html/hausarzt-cottbus/`.
+4. Edit `public_html/hausarzt-cottbus/api/save-news.php` → add the test account's origin to `$allowedOrigins` (just `scheme://host`, no path).
+5. Smoke test URLs:
+   - Public:        `https://test-host.example.com/hausarzt-cottbus/`
+   - Admin login:   `https://test-host.example.com/hausarzt-cottbus/admin/login`
+   - Preview link:  `https://test-host.example.com/hausarzt-cottbus/home?preview=<noticeId>`
+
+`NewsService` uses `Location.prepareExternalUrl()` so both `/data/news.json` and `/api/save-news.php` automatically pick up the `<base href>` — no further code changes between root and sub-folder deploys.
+
+### Daily off-site backup of `news.json` (private GitHub repo)
+
+`server/api/backup-news.php` is a cron-triggered script that uploads `data/news.json` to a private GitHub repo as `news-YYYY-MM-DD.json`, with a 30-day rolling retention. Each upload becomes a real git commit, giving you a full audit log of every admin save for free.
+
+**One-time GitHub setup** (do once for the test account, repeat with a separate token/repo for production):
+1. Create a **private** repo (e.g. `hausarzt-cottbus-backups`) with an initial README so `main` exists.
+2. Settings → Developer settings → **Personal access tokens → Fine-grained tokens** → Generate new token:
+   - Resource owner: your user
+   - Repository access: *Only select repositories* → the backup repo
+   - Permissions → Repository → **Contents: Read and write**
+   - Expiration: 1 year. **Set a calendar reminder to rotate before it expires.**
+3. Copy the `github_pat_…` token (shown once).
+
+**One-time Hostinger setup:**
+1. After uploading the build, you'll find `public_html/api/backup-config.example.php` (or `…/hausarzt-cottbus/api/…` for the sub-folder deploy). In File Manager, **copy** it next to itself and rename the copy to `backup-config.php`.
+2. Edit `backup-config.php` and fill in:
+   - `github_owner` — your GitHub username.
+   - `github_repo` — the backup repo name.
+   - `github_token` — the PAT created above.
+   - `backup_trigger_token` — any long random string (used for manual ?key= testing).
+   - `retention_days` — `30` (or whatever you prefer).
+3. hPanel → Advanced → Cron Jobs → Add new:
+   - Command: `/usr/bin/php /home/<your-user>/public_html/api/backup-news.php`
+     (for the sub-folder deploy: `…/public_html/hausarzt-cottbus/api/backup-news.php`)
+   - Schedule: `0 21 * * *` (daily 21:00 UTC ≈ 22:00 Berlin in winter, 23:00 in summer).
+
+**Smoke-test it without waiting for cron:**
+```
+https://<host>/api/backup-news.php?key=<backup_trigger_token>
+```
+A successful run prints `{"ok":true,"uploaded":"news-YYYY-MM-DD.json","updated":false,"pruned":0,"errors":[]}`. The GitHub repo should show a new commit for today's file. Re-triggering the same day reports `"updated":true` (overwrites in place — only one file per day).
+
+**Security notes:**
+- `backup-config.php` is gitignored and lives only on the server. The committed template `backup-config.example.php` contains placeholders only.
+- `server/api/.htaccess` denies direct download of `backup-config.php` as defense-in-depth.
+- Without `?key=…`, browser-triggered requests get a `403 forbidden`. Only the cron (running via PHP CLI) bypasses this check.
 
 ## Configuration
 

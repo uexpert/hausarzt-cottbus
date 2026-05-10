@@ -46,7 +46,7 @@
         ],
         "startDate": "2026-05-20",
         "endDate": "2026-05-25",
-        "isActive": false,
+        "isActive": true,
         "createdAt": "2026-01-01T00:00:00.000Z"
     },
     {
@@ -96,7 +96,7 @@
         ],
         "startDate": "2026-06-20",
         "endDate": "2026-06-25",
-        "isActive": true,
+        "isActive": false,
         "createdAt": "2026-05-10T07:16:11.773Z"
     }
 ]

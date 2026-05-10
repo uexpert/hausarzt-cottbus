@@ -1,5 +1,23 @@
 <hero></hero>
 
+@if (previewMode) {
+  <div class="alert alert-warning text-center rounded-0 mb-0 py-2 fw-semibold"
+       style="border-left:0; border-right:0;">
+    👁 Vorschaumodus — diese Meldung ist nur sichtbar, weil ein <code>?preview=</code>-Parameter gesetzt ist.
+    Für Besucher der Website ist sie nicht zu sehen, solange sie nicht aktiviert ist.
+  </div>
+}
+
+@if (previewMode && previewMissing) {
+  <section class="section-padding nav-section">
+    <div class="container">
+      <div class="alert alert-danger">
+        ⚠ Keine Meldung mit dieser ID gefunden. Bitte im Admin-Bereich erneut auf „Auf Website ansehen" klicken.
+      </div>
+    </div>
+  </section>
+}
+
 @if (activeNotices.length > 0) {
   <section class="section-padding nav-section">
     <div class="container">
