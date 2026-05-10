@@ -98,7 +98,11 @@ public/                          # Static files served as-is
 └── favicon.ico
 server/                          # Dev/prod backend
 ├── api/
-│   └── save-news.php           # PHP endpoint for news persistence
+│   ├── save-news.php           # PHP endpoint for news persistence
+│   ├── backup-news.php         # Cron-triggered GitHub backup script (rolling 30-day retention)
+│   ├── backup-config.example.php  # Committed credentials template (placeholders only)
+│   ├── backup-config.php       # (Gitignored, server-only) real credentials for backup-news.php
+│   └── .htaccess               # Denies direct download of backup-config.php
 ├── dev-api.js                  # Node.js alternative backend (no PHP required)
 ├── start-php.js                # Launcher for PHP built-in server
 └── start-dev.js                # Combined dev launcher (PHP + ng serve, used by `npm start`)
@@ -250,9 +254,15 @@ Error handling patterns:
 
 ### API Security
 - PHP save endpoint validates `X-API-Key` header against server-side secret
-- CORS uses an Origin whitelist: `https://www.hausarzt-cottbus.de` (production), plus `http://localhost:4200` and `http://localhost:8001` for local development. The response reflects the request `Origin` header only when it matches a whitelist entry
+- CORS uses an Origin whitelist: `https://www.hausarzt-cottbus.de` (production), plus `http://localhost:4200` and `http://localhost:8001` for local development. Sub-folder test deploys add the test host (origin only; the `/hausarzt-cottbus/` path is not part of the `Origin` header). The response reflects the request `Origin` header only when it matches a whitelist entry
 - Only POST method accepted; OPTIONS handled for preflight
 - HTTPS enforced in production
+
+### Backup Endpoint Security
+- `backup-news.php` accepts CLI execution unconditionally (this is how Hostinger cron invokes it). Web execution requires `?key=<backup_trigger_token>` matching the value in `backup-config.php`; mismatches return `403 forbidden`.
+- `backup-config.php` is **gitignored** — the real GitHub PAT lives only on the Hostinger server. `backup-config.example.php` ships with placeholders.
+- `server/api/.htaccess` adds `<Files "backup-config.php"> Require all denied </Files>` as defense-in-depth: even if `mod_php` were ever disabled, Apache would refuse to serve the file as plaintext.
+- The GitHub token is a **fine-grained PAT** scoped to a single private repo with only `Contents: Read and write` permission, minimizing blast radius if the server is compromised.
 
 ### XSS Handling
 - `LatestNewsComponent` uses `DomSanitizer.sanitize(SecurityContext.HTML, ...)` — no `bypassSecurityTrustHtml`
@@ -286,15 +296,25 @@ npm run start:ng
 
 ### Production Build
 ```bash
-ng build
-# or custom base-href for subfolder deployment
-ng build --base-href /hausarzt-cottbus/
+npm run build           # root deployment (base href "/")
+npm run build:usama-dev # sub-folder deployment (base href "/hausarzt-cottbus/")
 ```
 
+Both scripts run `ng build && npm run copyHtaccess`. `NewsService` uses `Location.prepareExternalUrl()` so both `/data/news.json` and `/api/save-news.php` automatically pick up whatever `<base href>` `index.html` was built with — no per-environment config needed.
+
 ### Asset Handling
-- `.htaccess` file copied to dist via `copy-htaccess.js` post-build script
-- `.htaccess` includes `Cache-Control` headers: `no-cache` for `index.html`, `max-age=31536000, immutable` for hashed JS/CSS, `no-store` for JSON data, `max-age=2592000` for images/fonts
-- Static assets from `public/` and `src/assets/` included
+- `copy-htaccess.js` post-build script copies the following into `dist/hausarzt-cottbus/browser/`:
+  - `src/assets/.htaccess` → `.htaccess` (SPA rewrite + Cache-Control)
+  - `src/assets/sitemap.xml`, `robots.txt`, Google/Bing site-verification files
+  - The entire `server/api/` directory → `api/` (PHP endpoints, backup script, config template, deny-rule `.htaccess`)
+- `.htaccess` `Cache-Control` strategy: `no-cache` for `index.html`, `max-age=31536000, immutable` for hashed JS/CSS, `no-store` for JSON data, `max-age=2592000` for images/fonts
+- Static assets from `public/` (incl. `data/news.json`) and `src/assets/` included via Angular's asset configuration
+
+### Hostinger Premium Deployment
+See [Setup.md → Deploying to Hostinger Premium](./Setup.md#deploying-to-hostinger-premium) for the full step-by-step. Key constraints that shape the deploy model:
+- No SSH access on Premium tier — but hPanel cron jobs and PHP CLI are available.
+- No `git` binary on the server — that's why the daily backup talks to the GitHub Contents REST API via PHP `curl` instead of `git push`.
+- `data/news.json` is the only mutable file on the server; rolling 30-day off-site backups are pushed daily to a private GitHub repo by `server/api/backup-news.php`.
 
 ## Environment Configuration
 

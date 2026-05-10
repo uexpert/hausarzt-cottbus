@@ -49,14 +49,19 @@ Purpose: Landing/home page with practice overview and dynamic news.
 Sections:
 - Hero banner with practice name/tagline
 - Latest news section (dynamically loaded from `news.json` via `NewsService`)
+- Yellow `Vorschaumodus` banner when accessed via `?preview=<id>`
 
 Key Logic:
-- Injects `NewsService`
-- On init, calls `newsService.loadNotices()` then sets `activeNotices: NewsNotice[]` from `getActiveNotices()`
-- All currently active notices are shown (multiple notices can be active simultaneously)
+- Injects `NewsService` and `ActivatedRoute`
+- On init, calls `newsService.loadNotices()`; subscribes to `route.queryParamMap` so the displayed notices are re-resolved whenever the URL changes
+- `applyPreviewOrActive()` decides what to show:
+  - If `?preview=<id>` is present: `previewMode = true` and `activeNotices = [getNoticeById(id)]` — the referenced notice is rendered regardless of `isActive` or date range. `previewMissing = true` when the ID is unknown, surfacing a red `alert-danger` block.
+  - Otherwise: standard `getActiveNotices()` result drives `activeNotices`.
 - The "Aktuelles!" heading appears once as a section heading above all notice cards
 - Entire section is hidden with `@if (activeNotices.length > 0)` when no notices are active
 - Each notice rendered by its own `<latest-news>` instance with `[blocks]`, `[title]`, `[startDate]`, `[endDate]`
+
+Component fields: `activeNotices: NewsNotice[]`, `previewMode: boolean`, `previewMissing: boolean`
 
 ### AboutComponent
 **File**: `src/app/pages/about/about.component.ts`
@@ -165,7 +170,9 @@ Features:
 - Title templates with `{startDate}`/`{endDate}` placeholders; stored in localStorage `hac_title_templates`; applied with German-locale date substitution
 - Delete notices via `DialogService.confirm()` (async, application-specific dialog — no browser `confirm()`)
 - Save-as-template via `DialogService.prompt()` (async — no browser `prompt()`)
-- Live preview using `LatestNewsComponent` with "Aktuelles!" heading above the card
+- In-form live preview using `LatestNewsComponent` with "Aktuelles!" heading above the card (quick visual check during editing)
+- **"👁 Auf Website ansehen" link per saved notice** — uses Angular `RouterLink` (`['/home']` with `[queryParams]="{preview: notice.id}"` and `target="_blank"`), opens the public homepage in a new tab with full-page preview rendering of that notice. Imported via `RouterLink` in the component's standalone imports.
+- **`emptyNotice()` defaults `isActive` to `false`** — every newly created notice is off until the admin explicitly activates it. Editing an existing notice (`openEditForm()`) preserves the current `isActive` state. A hint under the active-toggle suggests the recommended workflow (save deactivated → preview → activate).
 - Auto-persists changes to server via `NewsService.saveNotices()`
 - Save status indicators (saving/saved/error) + inline form validation alert (`formError`)
 - Logout button clears token and redirects
@@ -179,7 +186,7 @@ State ownership & persistence flow:
 
 Key properties: `notices: NewsNotice[]`, `formError: string | null`, `saveStatus`, `isFormSaving`, `pendingNoticeId`, `blockTypes[]`, `lineHeightOptions[]`, `templates: TextTemplate[]`, `titleTemplates: TitleTemplate[]`, `previewBlocks`, `previewTitle`, `previewStartDate`, `previewEndDate`, `dragSrcIndex`, `dragOverIndex`
 
-Imports: `CommonModule`, `FormsModule`, `LatestNewsComponent`; injects `NewsService`, `Router`, `DialogService`
+Imports: `CommonModule`, `FormsModule`, `RouterLink`, `LatestNewsComponent`; injects `NewsService`, `Router`, `DialogService`
 
 ## Shared Components
 
@@ -363,15 +370,18 @@ Services for application logic and utilities.
 Purpose: Central service for loading, caching, and persisting news notices.
 
 Key Methods:
-- `loadNotices()`: GET request to `/data/news.json` (cache-busted with timestamp), updates BehaviorSubject and localStorage
+- `loadNotices()`: GET request to `data/news.json` resolved via `Location.prepareExternalUrl()` (cache-busted with timestamp), updates BehaviorSubject and localStorage
 - `getNotices()`: Returns `Observable<NewsNotice[]>` from BehaviorSubject
 - `getNoticesSnapshot()`: Synchronous helper returning the current `notices$.getValue()` — used by `AdminDashboardComponent` to read the list without subscribing
+- `getNoticeById(id)`: Synchronous lookup that returns the notice with the matching ID regardless of `isActive` or date range, or `null` if not found. Used by `HomeComponent` to render full-page previews requested via `?preview=<id>`.
 - `getActiveNotices()`: Synchronously returns **all** notices where `isActive === true` and today has not passed `endDate` (inclusive). Notices are visible before their start date so patients get advance notice of closures.
 - `getActiveNotice()`: Returns the first result of `getActiveNotices()` or `null` (backwards-compatibility alias)
-- `saveNotices(notices)`: Updates local state + localStorage, then POSTs to `/api/save-news.php` with `X-API-Key` header
+- `saveNotices(notices)`: Updates local state + localStorage, then POSTs to `api/save-news.php` (resolved via `Location.prepareExternalUrl()`) with `X-API-Key` header
 - `addNotice(notice)`: Adds to in-memory array
 - `updateNotice(updated)`: Replaces matching notice by `id`
 - `deleteNotice(id)`: Removes notice by `id`
+
+Base-href awareness: both URLs go through `Location.prepareExternalUrl()` so requests pick up whatever `<base href>` `index.html` was built with — `/data/news.json` for root deploys, `/hausarzt-cottbus/data/news.json` for sub-folder deploys (`npm run build:usama-dev`). No per-environment configuration needed.
 
 State: `BehaviorSubject<NewsNotice[]>` with localStorage backup key `hausarzt_news`
 

@@ -166,7 +166,7 @@ When working on this project:
 
 **Current Version**: 0.0.0 (Initial Release)
 **Last Updated**: 2026-05-10
-**Documentation Version**: 1.6
+**Documentation Version**: 1.7
 
 See [CHANGELOG.md](./CHANGELOG.md) for detailed version history and roadmap.
 

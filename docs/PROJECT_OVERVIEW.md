@@ -98,6 +98,10 @@ Located in `server/`:
 | File | Purpose |
 |------|---------|
 | **api/save-news.php** | PHP POST endpoint that validates `X-API-Key` header and writes news JSON to `public/data/news.json` |
+| **api/backup-news.php** | Cron-triggered PHP script that uploads `data/news.json` to a private GitHub repo via the GitHub Contents API; in-place updates on same-day re-runs; prunes backups older than `retention_days` (default 30) |
+| **api/backup-config.example.php** | Committed template documenting the keys required by `backup-config.php` (`github_owner`, `github_repo`, `github_token`, `backup_trigger_token`, `retention_days`) |
+| **api/backup-config.php** | (Server-only, gitignored) Real credentials used by `backup-news.php`; copied from the example template on the Hostinger server and never committed |
+| **api/.htaccess** | `<Files "backup-config.php"> Require all denied </Files>` — defense-in-depth deny rule preventing direct download of credentials |
 | **dev-api.js** | Node.js alternative to the PHP endpoint (same API, no PHP required) |
 | **start-php.js** | Launcher script for PHP's built-in server (`php -S localhost:8001 -t server`) |
 | **start-dev.js** | Single-command dev launcher — spawns `start-php.js` and Angular's `ng.js serve` directly (no shell), prefixes output as `[php]`/`[ng]`, kills both children on exit; used by `npm start` |
@@ -219,9 +223,12 @@ npm run test
 - Admin dashboard for creating, editing, and deleting news notices
 - Multiple notices can be active simultaneously; all are shown on the home page under a single "Aktuelles!" heading
 - Date-based activation: notices are visible from the moment they're activated until their end date passes; section hidden entirely when no notices are active
-- Live preview of news before publishing (shows "Aktuelles!" heading above card, just like public page)
+- **Full-context preview**: "👁 Auf Website ansehen" link in admin opens the public homepage with `?preview=<noticeId>` in a new tab; `HomeComponent` then renders that specific notice regardless of `isActive`/date, with a yellow banner explicitly marking the preview mode. Lets the admin verify rendering inside the real layout before flipping the active toggle.
+- **Inactive-by-default on creation**: `emptyNotice()` sets `isActive: false`; new notices never go live by accident. Editing existing notices preserves their current state.
+- In-form live preview (inside the admin form, shows "Aktuelles!" heading above card) for quick checks during editing
 - PHP backend persists changes to `news.json` on server
 - API key secured save endpoint
+- **Daily off-site backup**: `server/api/backup-news.php` runs once daily via Hostinger cron, uploads the current `news.json` to a private GitHub repo as `news-YYYY-MM-DD.json` (each upload is a real Git commit), prunes anything older than `retention_days` (default 30). Provides both rolling 30-day point-in-time recovery and a free audit log of every admin save.
 
 ### Admin Panel
 - Password-protected admin login at `/admin/login` with SHA-256 hashed credential storage
@@ -264,14 +271,19 @@ npm run test
 ## Deployment
 
 ### Build Output
-- Location: `dist/hausarzt-cottbus/`
-- Configuration: Custom webpack for .htaccess copying
-- Base href can be customized via build scripts
+- Location: `dist/hausarzt-cottbus/browser/`
+- Configuration: `copy-htaccess.js` post-build script copies `.htaccess`, sitemap, robots, search-engine verification files, and the entire `server/api/` directory into the build output
+- Base href can be customized via build scripts (root `/` or `/hausarzt-cottbus/` sub-folder)
 
 ### Deployment Steps
-1. Run `npm run build` (or `build:usama-dev` for subfolder deployment)
-2. Upload contents of `dist/hausarzt-cottbus/` to web server
-3. Ensure `.htaccess` file is included for routing support
+1. Run `npm run build` for root-domain deployment (or `npm run build:usama-dev` for sub-folder deployment at `/hausarzt-cottbus/`)
+2. Upload contents of `dist/hausarzt-cottbus/browser/` to web server (Hostinger `public_html/`, or `public_html/hausarzt-cottbus/` for the sub-folder layout)
+3. Ensure `.htaccess` is included for SPA routing and Cache-Control headers
+4. Set permissions on the server: `data/` → `755`, `data/news.json` → `644`, `api/*.php` → `644`
+5. Add the test-server origin to `$allowedOrigins` in `api/save-news.php` if deploying somewhere other than `hausarzt-cottbus.de`
+6. (Optional) Set up the daily GitHub backup: copy `api/backup-config.example.php` → `api/backup-config.php`, fill in PAT + trigger token, add hPanel cron job `0 21 * * *` → `/usr/bin/php /home/<user>/public_html/api/backup-news.php`
+
+See [Setup.md → Deploying to Hostinger Premium](./Setup.md#deploying-to-hostinger-premium) for the full step-by-step (root deploy, sub-folder test deploy, and backup setup).
 
 ## Development Notes
 

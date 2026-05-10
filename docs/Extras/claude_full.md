@@ -140,7 +140,27 @@ Updated PROJECT_OVERVIEW, Architecture, README, Setup, CHANGELOG to reflect:
 - **Combined launcher (final fix)**: New `server/start-dev.js` — pure-Node script that spawns `node server/start-php.js` and `node node_modules/@angular/cli/bin/ng.js serve --proxy-config proxy.conf.json` directly with `shell: false`. Output is line-prefixed `[php]` (magenta) / `[ng]` (cyan); if either child exits, the launcher kills the other. `npm start` now invokes it. New `start:ng` script preserves the standalone-Angular fallback. Two-terminal flow remains supported via `start:php` + `start:ng`.
 - **Why not `concurrently`**: First attempt installed `concurrently@^9.2.1` for the same purpose, but it failed with `spawn cmd.exe ENOENT`. Diagnosed to a missing `C:\Windows\System32` entry in the user's PATH (sub-paths like `System32\Wbem` are present, the parent dir is not; `Get-Command cmd.exe` returns nothing). `concurrently` resolves the shell by bare name `cmd.exe` on Windows, so any tool with that dependency fails silently in this environment. The custom launcher's `shell: false` invocation bypasses the entire issue. `concurrently` was uninstalled.
 
+### 2026-05-10 (later that day) — Docs Sync #8
+Updated PROJECT_OVERVIEW, Architecture, Angular_Structure, Business_Rules, CHANGELOG, README, Setup to reflect two related feature drops:
+
+**A. Preview-before-publish workflow** (lower the risk of a typo/layout glitch going live):
+- `NewsService.getNoticeById(id)` — new synchronous lookup ignoring `isActive`/date filters; documented in `Angular_Structure.md`.
+- `HomeComponent` reads `?preview=<id>` from `ActivatedRoute.queryParamMap` and renders that single notice in the *real* homepage layout. Yellow site-wide "Vorschaumodus" banner makes it impossible to mistake the preview for the public view. Unknown ID → red `alert-danger` block. Documented in `Angular_Structure.md` + `Business_Rules.md` ("Preview Override" subsection).
+- "👁 Auf Website ansehen" `RouterLink` per row in the admin dashboard; `target="_blank"`, `RouterLink` added to standalone imports. Documented in `Angular_Structure.md`.
+- `emptyNotice()` now defaults `isActive` to `false` (was `true`). Editing existing notices preserves their state. Workflow hint under the active-toggle suggests: save deactivated → preview → activate. Documented in `Business_Rules.md` ("Recommended Publish Workflow") and `PROJECT_OVERVIEW.md` ("Inactive-by-default on creation").
+- Documented "Two Levels of Preview" (in-form quick preview vs. full-page preview link) in `Business_Rules.md`.
+
+**B. Hostinger deployment + daily off-site backup**:
+- `NewsService` URLs converted from root-absolute strings to `Location.prepareExternalUrl()` so sub-folder builds (`npm run build:usama-dev` → `--base-href /hausarzt-cottbus/`) work without code branching. Documented in `Angular_Structure.md` (NewsService) and `Architecture.md` (Build & Deployment Pipeline).
+- `server/api/backup-news.php` (new) — cron-triggered backup script; uploads `data/news.json` via the GitHub Contents REST API to a private repo as `news-YYYY-MM-DD.json`; same-day re-runs update in place via sha; rolling 30-day prune. Documented in `PROJECT_OVERVIEW.md` (Backend table + Daily off-site backup feature), `Architecture.md` (Backup Endpoint Security), `Business_Rules.md` (Backup Endpoint Access Control + Backup Data Protection).
+- `server/api/backup-config.example.php` (new committed template) and `backup-config.php` (gitignored real credentials, lives only on server). `server/api/.htaccess` denies direct download of `backup-config.php`.
+- `.gitignore`: added `server/api/backup-config.php`.
+- `docs/Setup.md` "Deploying to Hostinger Premium" section: full step-by-step for root and sub-folder test deploys, GitHub PAT creation (fine-grained, single repo, Contents R/W, 1y expiry), hPanel cron job, smoke-test URLs, security notes.
+- Build verification: `npx ng build --configuration development` + `npm run copyHtaccess` confirmed clean; `dist/.../api/` contains `backup-news.php`, `backup-config.example.php`, `.htaccess`, and `save-news.php`.
+
+Skipped from this sync (do not apply to this project): `DotNet_Backend.md`, `Database_Model.md` — the project is PHP + flat JSON, not .NET + DB. The skill template references those file names; documenting features that don't exist would violate the "document only what exists" rule.
+
 ---
 
 Last Updated: 2026-05-10
-Documentation Version: 1.6
+Documentation Version: 1.7

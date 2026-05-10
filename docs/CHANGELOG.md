@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (2026-05-10 — later that day)
+- **Preview-before-publish workflow for `Aktuelles` notices**:
+  - `NewsService.getNoticeById(id)` — synchronous lookup by ID across the full notice set, ignoring `isActive` and date range
+  - `HomeComponent` reads `?preview=<id>` from `ActivatedRoute.queryParamMap` and renders that single notice in real homepage context; subscribes to the query map so changes update without a full reload
+  - Yellow site-wide *"Vorschaumodus"* banner shown whenever the preview parameter is present, with explicit "für Besucher nicht sichtbar" copy
+  - Unknown notice ID shows a red `alert-danger` block instead of a silent blank page
+  - "👁 Auf Website ansehen" `RouterLink` per row in admin dashboard (`['/home']` with `[queryParams]="{preview: notice.id}"`, `target="_blank"`); `RouterLink` added to `AdminDashboardComponent` standalone imports
+- **`emptyNotice()` defaults `isActive` to `false`** — new notices must be explicitly activated; existing notices keep their state on edit
+- **Workflow hint** under the active-toggle: "💡 Empfohlen: Meldung zunächst deaktiviert speichern, anschließend in der Liste auf „👁 Auf Website ansehen" klicken zur Kontrolle, dann erst aktivieren."
+- **Daily off-site backup of `news.json` to a private GitHub repo**:
+  - `server/api/backup-news.php` (new) — cron-triggered script; uploads `data/news.json` via GitHub Contents REST API as `news-YYYY-MM-DD.json`; same-day re-run updates the file in place via sha; lists root and deletes any backup older than `retention_days` (default 30); appends one summary line per run to `data/backups.log` (server-side only). CLI invocations bypass `?key=…` check; web invocations require it (else `403`).
+  - `server/api/backup-config.example.php` (new) — committed template documenting the five required keys
+  - `server/api/backup-config.php` (server-only, **gitignored**) — real credentials, never committed
+  - `server/api/.htaccess` (new) — `<Files "backup-config.php"> Require all denied </Files>` defense-in-depth deny rule
+- **`docs/Setup.md` deploy guide**: new "Deploying to Hostinger Premium" section covering root-domain deploy, sub-folder test deploy via `npm run build:usama-dev`, file permissions, CORS edits, GitHub PAT creation steps, cron job configuration, smoke-test URLs, security notes
+
+### Changed (2026-05-10 — later that day)
+- **`NewsService` URLs now base-href aware**: `loadNotices()` and `saveNotices()` both build URLs via `Location.prepareExternalUrl()` instead of root-absolute strings. Root deploys still hit `/data/news.json` and `/api/save-news.php`; sub-folder deploys (`--base-href /hausarzt-cottbus/`) now correctly hit `/hausarzt-cottbus/data/news.json` and `/hausarzt-cottbus/api/save-news.php`. Required for the Hostinger test-account deploy to function.
+- **`.gitignore`**: added `server/api/backup-config.php` to ensure the real GitHub PAT can never be committed.
+
 ### Fixed (2026-05-10)
 - **Admin save 404 — `Cannot POST /api/save-news.php`**: Saving a notice with a new date range failed because the PHP backend on `:8001` wasn't running, so Angular's dev-server proxy fell through to webpack-dev-server's Express handler and returned a 404. The save logic itself was correct.
 

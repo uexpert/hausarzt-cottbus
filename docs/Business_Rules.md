@@ -147,6 +147,12 @@ All internal links validated:
 - Notices are visible **before** their start date — the start/end dates describe when the clinic is closed, not when the announcement becomes visible. Patients need advance notice of closures.
 - If no notices match, the "Aktuelles" section is hidden entirely (`@if (activeNotices.length > 0)`)
 
+**Preview Override**:
+- If the URL contains `?preview=<noticeId>`, `HomeComponent` bypasses `getActiveNotices()` and renders only that specific notice via `NewsService.getNoticeById(id)`, ignoring both `isActive` and the date range.
+- A yellow site-wide banner is shown at the top: *"Vorschaumodus — diese Meldung ist nur sichtbar, weil ein ?preview= Parameter gesetzt ist. Für Besucher der Website ist sie nicht zu sehen, solange sie nicht aktiviert ist."*
+- An unknown ID surfaces a red `alert-danger` block, not a silent blank page.
+- This preview link is **not security-sensitive**: notice IDs are timestamps and a casual visitor cannot guess them, but anyone with the link can view the notice. Treat preview links as semi-private; do not share them publicly.
+
 **Display**:
 - "Aktuelles!" heading appears once as a section heading above all active notice cards
 - Each active notice is rendered by its own `<latest-news>` card, showing the notice `title` below "Aktuelles!"
@@ -162,10 +168,17 @@ All internal links validated:
 **Location**: `/admin/dashboard` (protected by `authGuard`)
 
 **CRUD Operations**:
-- **Create**: New notice with title, start/end dates, active flag, and block-builder content
+- **Create**: New notice with title, start/end dates, active flag, and block-builder content. **Default `isActive` is `false`** — newly created notices are inactive and must be explicitly activated by the admin after previewing. This prevents accidental publication of unfinished or unverified notices.
 - **Read**: Lists all notices with status badges
-- **Update**: Edit any field of an existing notice
+- **Update**: Edit any field of an existing notice. Editing **preserves** the current `isActive` state — a small typo fix to a live notice does not yank it offline.
 - **Delete**: Confirmation via `DialogService.confirm()` (no browser `confirm()`)
+
+**Recommended Publish Workflow** (suggested by the in-form hint under the Aktiv-Schalter):
+1. Create or edit notice with `isActive = false` (the default for new notices)
+2. Save the deactivated notice
+3. Click "👁 Auf Website ansehen" on the row → public homepage opens in a new tab with the notice rendered in real layout (yellow Vorschaumodus banner is shown)
+4. Verify the rendering, then return to the admin tab
+5. Click "Aktivieren" to make the notice publicly visible
 
 **Block-Builder Content Editor**:
 - Admin selects a block type per row (dropdown): `Absatz`, `Überschrift`, `Fettgedruckt`, `Listenpunkt`, `Notfallhinweis`, `── Trennlinie ──`, `↕ Leerzeile`
@@ -199,7 +212,9 @@ All internal links validated:
 4. PHP endpoint validates the key, decodes the JSON body, and writes to `public/data/news.json`
 5. Save status shown to admin via a top-of-page banner: "💾 Wird gespeichert…" → "✅ Erfolgreich gespeichert!" / "❌ Fehler beim Speichern."
 
-**Live Preview**: Admin can preview a notice using the same `LatestNewsComponent` used on the public site; preview section includes "Aktuelles!" heading above the card
+**Two Levels of Preview**:
+1. **In-form preview** — "👁 Vorschau" button inside the create/edit form renders the current draft using the same `LatestNewsComponent` used on the public site, with the "Aktuelles!" heading above the card. Good for quick visual checks while editing.
+2. **Full-page preview** — "👁 Auf Website ansehen" link per row (only available for *saved* notices). Opens `/home?preview=<noticeId>` in a new tab; `HomeComponent` renders the notice within the actual public homepage (header, hero, layout, mobile breakpoints), regardless of `isActive` or date range. The yellow Vorschaumodus banner makes it impossible to mistake the preview for the public view.
 
 **Dialog System**:
 - All interactive confirmations and text prompts use `DialogService` (application-specific modal overlays)
@@ -245,10 +260,26 @@ All internal links validated:
 
 ### API Security
 
-- **Endpoint**: `/api/save-news.php` accepts POST only
+- **Save endpoint**: `/api/save-news.php` accepts POST only
 - **Authentication**: `X-API-Key` header validated against server-side secret
-- **CORS**: Origin whitelist — `https://www.hausarzt-cottbus.de`, `http://localhost:4200`, `http://localhost:8001`; reflects request `Origin` only when it matches
+- **CORS**: Origin whitelist — `https://www.hausarzt-cottbus.de`, `http://localhost:4200`, `http://localhost:8001`; reflects request `Origin` only when it matches. Sub-folder test deploys add the test host (origin only — the `/hausarzt-cottbus/` path is never part of `Origin`).
 - **Input Validation**: JSON body decoded and validated as array before writing
+
+### Backup Endpoint Access Control
+
+- **Endpoint**: `server/api/backup-news.php`
+- **CLI invocation** (Hostinger cron): allowed unconditionally — `php_sapi_name() === 'cli'` short-circuits the gate.
+- **Web invocation** (browser): requires `?key=<backup_trigger_token>` in the URL. The token is configured in `backup-config.php` and is **not** the same as the GitHub PAT — it only guards manual web-triggered runs (debug / smoke tests).
+- Without the token, web requests return `403 forbidden`. The endpoint cannot be casually triggered by visitors.
+
+### Backup Data Protection
+
+- **What is backed up**: `data/news.json` only. localStorage-only data (`hac_text_templates`, `hac_title_templates`) lives in each admin's browser and is **not** backed up. Templates lost on browser data clear cannot be recovered.
+- **Where**: A private GitHub repository (one repo per environment — test and production each get their own).
+- **Retention**: rolling 30 days. Each daily run uploads `news-YYYY-MM-DD.json` and deletes any older file matching the pattern. The repo's commit log itself is permanent — even pruned filenames remain in history.
+- **Recovery procedure**: clone the backup repo, pick the desired commit / dated file, download its `news-YYYY-MM-DD.json`, upload it to the server as `public_html/.../data/news.json`, refresh the site.
+- **GitHub credential scope**: fine-grained Personal Access Token limited to **one** repo with only `Contents: Read and write`. PAT expiry is 1 year — set a calendar reminder; rotation is a one-line edit to `backup-config.php`.
+- **Production vs. test environments**: use **separate** PATs and (recommended) **separate** repos so the test environment's noise never contaminates production audit history.
 
 ### Input Sanitization
 
