@@ -100,6 +100,7 @@ Located in `server/`:
 | **api/save-news.php** | PHP POST endpoint that validates `X-API-Key` header and writes news JSON to `public/data/news.json` |
 | **dev-api.js** | Node.js alternative to the PHP endpoint (same API, no PHP required) |
 | **start-php.js** | Launcher script for PHP's built-in server (`php -S localhost:8001 -t server`) |
+| **start-dev.js** | Single-command dev launcher — spawns `start-php.js` and Angular's `ng.js serve` directly (no shell), prefixes output as `[php]`/`[ng]`, kills both children on exit; used by `npm start` |
 
 ### Data Files
 Located in `public/data/`:
@@ -158,7 +159,8 @@ server/                    # Dev/prod backend
 ├── api/
 │   └── save-news.php     # PHP endpoint for saving news
 ├── dev-api.js            # Node.js alternative backend
-└── start-php.js          # PHP built-in server launcher
+├── start-php.js          # PHP built-in server launcher
+└── start-dev.js          # Combined dev launcher (PHP + ng serve)
 dist/                      # Build output
 ```
 
@@ -173,18 +175,19 @@ dist/                      # Build output
 # Install dependencies
 npm install
 
-# Terminal 1 — PHP backend (required for admin save/toggle/delete)
-npm run start:php
-# == php -S localhost:8001 -t public
-# Requires PHP on PATH (XAMPP's C:\xampp\php is fine)
-
-# Terminal 2 — Angular dev server with proxy
+# Single-command dev — launches PHP backend (:8001) + Angular dev server (:4200) together
 npm start
-# == ng serve --proxy-config proxy.conf.json
+# == node server/start-dev.js
+# Requires PHP on PATH (XAMPP's C:\xampp\php is fine).
+# Output is prefixed [php]/[ng]; Ctrl+C kills both.
 
 # Navigate to http://localhost:4200/
 # App auto-reloads on file changes
 # /api/** requests are proxied to the PHP server on :8001
+
+# Optional fallbacks (two-terminal workflow):
+npm run start:php   # PHP backend only
+npm run start:ng    # Angular dev server only
 ```
 
 Frontend-only mode (public pages only, no admin persistence):

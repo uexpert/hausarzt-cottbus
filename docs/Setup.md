@@ -53,28 +53,32 @@ npm list @angular/core
 
 ### Starting the Development Server
 
-Local development requires **two processes running in parallel**: the Angular dev server for the frontend and a PHP process for the admin save endpoint. Without the PHP process, saving/activating/deleting announcements in the admin dashboard will fail because `ng serve` cannot execute PHP files.
+Local development needs both the Angular dev server (frontend on `:4200`) and a PHP process (admin save endpoint on `:8001`). A single command starts both:
 
-**Terminal 1 — PHP backend:**
-```bash
-npm run start:php
-```
-Runs `node server/start-php.js` which launches `php -S localhost:8001 -t server/` — serves the `server/` directory (containing `api/save-news.php`) with real PHP execution. Leave it running. Requires PHP on `PATH` (XAMPP's `C:\xampp\php` works out of the box on Windows).
-
-**Alternative (no PHP):** Run `node server/dev-api.js` instead — a Node.js server that provides the same `/api/save-news.php` endpoint without requiring PHP.
-
-**Terminal 2 — Angular dev server (with proxy):**
 ```bash
 npm start
-# or
-ng serve --proxy-config proxy.conf.json
 ```
+
+This runs `node server/start-dev.js`, a tiny launcher that spawns both processes directly (no shell) with `[php]` / `[ng]` prefixed output:
+
+- `node server/start-php.js` → `php -S localhost:8001 -t server/` (requires PHP on `PATH`; XAMPP's `C:\xampp\php` works on Windows)
+- `node node_modules/@angular/cli/bin/ng.js serve --proxy-config proxy.conf.json`
+
+If either child process exits, the launcher kills the other so a half-broken dev environment can't silently swallow admin saves. Ctrl+C terminates both.
 
 The application will be available at:
 - **Local**: `http://localhost:4200/`
 - **Network**: `http://[your-ip]:4200/`
 
-The `proxy.conf.json` forwards requests to `/api/**` from Angular (`:4200`) to PHP (`:8001`), so `/api/save-news.php` is executed by PHP and writes to `public/data/news.json` exactly as it does in production. Static files (including `/data/news.json` and all assets) continue to be served directly by `ng serve`.
+The `proxy.conf.json` forwards requests to `/api/**` from Angular (`:4200`) to PHP (`:8001`), so `/api/save-news.php` is executed by PHP and writes to `public/data/news.json` exactly as in production. Static files (including `/data/news.json` and all assets) continue to be served directly by `ng serve`.
+
+**Run the servers individually if you prefer two terminals:**
+```bash
+npm run start:php   # terminal 1: PHP backend on :8001
+npm run start:ng    # terminal 2: Angular dev server on :4200
+```
+
+**Alternative (no PHP installed):** run `node server/dev-api.js` instead of `start:php` — a Node.js server that provides the same `/api/save-news.php` endpoint without requiring PHP.
 
 The development server includes:
 - Hot module replacement (HMR)
@@ -84,7 +88,7 @@ The development server includes:
 
 ### Frontend-only quick start (no admin persistence)
 
-If you only need to view public pages and do not need to save admin changes, you can run `ng serve` alone — but the admin dashboard save/toggle/delete actions will show an error because `/api/save-news.php` will not execute.
+If you only need to view public pages and do not need to save admin changes, you can run `npm run start:ng` alone — but the admin dashboard save/toggle/delete actions will show an error because `/api/save-news.php` will not execute.
 
 ### Development Server Options
 

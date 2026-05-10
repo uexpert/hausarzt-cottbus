@@ -14,7 +14,17 @@
       "Bash(node server/start-php.js)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8001/api/save-news.php)",
       "Bash(curl:*)",
-      "Bash(pkill -f \"php -S localhost:8001\")"
+      "Bash(pkill -f \"php -S localhost:8001\")",
+      "Bash(awk '{print $1 \" bytes\"}')",
+      "Bash(netstat -ano)",
+      "PowerShell(Get-NetTCPConnection *)",
+      "Bash(npm start *)",
+      "PowerShell($env:Path -split ';' | Where-Object { $_ -match 'php' })",
+      "PowerShell(Get-Job *)",
+      "Bash(npx concurrently *)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(Get-Process *)",
+      "Bash(git *)"
     ]
   }
 }

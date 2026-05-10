@@ -134,7 +134,13 @@ Updated PROJECT_OVERVIEW, Architecture, Angular_Structure, Business_Rules, CHANG
 - **Timezone bug fix**: `isCurrentlyActive()` normalized `today` and `end` dates but not `start` — `new Date("YYYY-MM-DD")` creates UTC midnight which differs from local midnight in CEST (UTC+2). Added `start.setHours(0,0,0,0)`.
 - **`server/` directory**: PHP endpoint moved from `public/api/save-news.php` to `server/api/save-news.php`; new `server/dev-api.js` (Node.js alternative backend); new `server/start-php.js` (PHP server launcher).
 
+### 2026-05-10 — Docs Sync #7
+Updated PROJECT_OVERVIEW, Architecture, README, Setup, CHANGELOG to reflect:
+- **Bug**: Saving a notice with a new date range failed with `404 Not Found` and HTML body `Cannot POST /api/save-news.php` — the Express-style 404 from webpack-dev-server's fallback handler when its proxy target (PHP on `:8001`) is unreachable. Root cause: the two-terminal workflow from sync #6 required a separately-launched `npm run start:php`; users routinely forgot it.
+- **Combined launcher (final fix)**: New `server/start-dev.js` — pure-Node script that spawns `node server/start-php.js` and `node node_modules/@angular/cli/bin/ng.js serve --proxy-config proxy.conf.json` directly with `shell: false`. Output is line-prefixed `[php]` (magenta) / `[ng]` (cyan); if either child exits, the launcher kills the other. `npm start` now invokes it. New `start:ng` script preserves the standalone-Angular fallback. Two-terminal flow remains supported via `start:php` + `start:ng`.
+- **Why not `concurrently`**: First attempt installed `concurrently@^9.2.1` for the same purpose, but it failed with `spawn cmd.exe ENOENT`. Diagnosed to a missing `C:\Windows\System32` entry in the user's PATH (sub-paths like `System32\Wbem` are present, the parent dir is not; `Get-Command cmd.exe` returns nothing). `concurrently` resolves the shell by bare name `cmd.exe` on Windows, so any tool with that dependency fails silently in this environment. The custom launcher's `shell: false` invocation bypasses the entire issue. `concurrently` was uninstalled.
+
 ---
 
-Last Updated: 2026-04-19
-Documentation Version: 1.5
+Last Updated: 2026-05-10
+Documentation Version: 1.6

@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2026-05-10)
+- **Admin save 404 — `Cannot POST /api/save-news.php`**: Saving a notice with a new date range failed because the PHP backend on `:8001` wasn't running, so Angular's dev-server proxy fell through to webpack-dev-server's Express handler and returned a 404. The save logic itself was correct.
+
+### Added (2026-05-10)
+- **`server/start-dev.js`** — combined dev launcher used by `npm start`. Spawns `node server/start-php.js` and `node node_modules/@angular/cli/bin/ng.js serve --proxy-config proxy.conf.json` directly via `child_process.spawn(node, [...], { shell: false })`. Output is line-prefixed `[php]` (magenta) / `[ng]` (cyan); if either child exits, the other is killed; SIGINT/SIGTERM cleanly shut both down.
+- **`start:ng` npm script** → `ng serve --proxy-config proxy.conf.json` — standalone fallback for the two-terminal workflow.
+
+### Changed (2026-05-10)
+- **`npm start`** now runs `node server/start-dev.js` instead of just `ng serve`. A single command brings up both PHP (`:8001`) and Angular (`:4200`) so a missing backend can no longer silently break admin saves.
+- **`docs/Setup.md`** "Starting the Development Server" section rewritten around the single-command flow; two-terminal flow kept as fallback.
+- **`docs/PROJECT_OVERVIEW.md`**, **`docs/Architecture.md`**, **`docs/README.md`** quick-start blocks updated to reflect the new launcher.
+
+### Notes (2026-05-10)
+- An earlier attempt added the `concurrently` npm package for the same goal. It failed in the dev environment with `spawn cmd.exe ENOENT` because `C:\Windows\System32` is missing from the user's PATH (only sub-paths like `System32\Wbem` are present, and `Get-Command cmd.exe` returns nothing). `concurrently` resolves the shell by bare name `cmd.exe` on Windows, so it can't recover from this. The custom launcher avoids the shell entirely with `shell: false` and is immune to that PATH issue. `concurrently` was uninstalled.
+
 ### Changed (2026-04-19)
 - **Notice visibility logic**: Changed from "visible only within startDate–endDate range" to "visible until endDate passes". Notices now appear immediately when activated, giving patients advance notice of clinic closures. Affects `NewsService.getActiveNotices()` and `AdminDashboardComponent.isCurrentlyActive()`
 - **Admin status badge**: Yellow badge text changed from "Aktiviert (außerhalb Zeitraum)" to "Aktiviert (abgelaufen)" — the only scenario for yellow is now when the end date has already passed

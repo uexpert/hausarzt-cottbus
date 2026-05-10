@@ -100,7 +100,8 @@ server/                          # Dev/prod backend
 ├── api/
 │   └── save-news.php           # PHP endpoint for news persistence
 ├── dev-api.js                  # Node.js alternative backend (no PHP required)
-└── start-php.js                # Launcher for PHP built-in server
+├── start-php.js                # Launcher for PHP built-in server
+└── start-dev.js                # Combined dev launcher (PHP + ng serve, used by `npm start`)
 proxy.conf.json                  # Angular dev proxy: /api/** → http://localhost:8001
 dist/                           # Build output (generated)
 ```
@@ -262,19 +263,24 @@ Error handling patterns:
 
 ### Development Build
 ```bash
-# Terminal 1 — PHP backend (serves public/ with real PHP execution on :8001)
-npm run start:php
-
-# Terminal 2 — Angular dev server with proxy (:4200 → :8001 for /api/**)
+# Single command — launches PHP backend (:8001) + Angular dev server (:4200) together
 npm start
-# == ng serve --proxy-config proxy.conf.json
+# == node server/start-dev.js
 ```
+
+`server/start-dev.js` is a tiny launcher that spawns `node server/start-php.js` and `node node_modules/@angular/cli/bin/ng.js serve --proxy-config proxy.conf.json` directly with `shell: false`. Output is line-prefixed `[php]` (magenta) / `[ng]` (cyan); if either child exits the launcher kills the other and exits — a half-broken environment can't silently swallow admin saves. Ctrl+C terminates both via the SIGINT handler.
 
 `proxy.conf.json` forwards `/api/**` from the Angular dev server to PHP's built-in server so `save-news.php` executes locally and writes to `public/data/news.json` on disk, matching production behavior.
 
+Two-terminal fallback:
+```bash
+npm run start:php   # PHP backend only
+npm run start:ng    # Angular dev server only
+```
+
 Frontend-only (no admin persistence):
 ```bash
-ng serve
+npm run start:ng
 # Public pages work; admin save/toggle/delete will fail because PHP isn't running
 ```
 
