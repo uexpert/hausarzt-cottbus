@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { hashPassword, ADMIN_PASSWORD_HASH } from '../../../core/utils/auth.utils';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-admin-login',
@@ -13,21 +13,32 @@ import { hashPassword, ADMIN_PASSWORD_HASH } from '../../../core/utils/auth.util
 })
 export class AdminLoginComponent {
   password = '';
-  error = false;
-  private router = inject(Router);
+  errorMessage = '';
+  submitting = false;
 
-  constructor(private r: Router) {
-    this.router = r;
-  }
+  private router   = inject(Router);
+  private http     = inject(HttpClient);
+  private location = inject(Location);
 
-  async login() {
-    const hash = await hashPassword(this.password);
-    if (hash === ADMIN_PASSWORD_HASH) {
-      localStorage.setItem('admin_token', hash);
-      this.router.navigate(['/admin/dashboard']);
-    } else {
-      this.error = true;
-      this.password = '';
-    }
+  login() {
+    if (this.submitting) return;
+    this.errorMessage = '';
+    this.submitting = true;
+    const url = this.location.prepareExternalUrl('api/login.php');
+    this.http.post(url, { password: this.password }, { withCredentials: true }).subscribe({
+      next: () => {
+        this.submitting = false;
+        // Clean up the stale token from the previous (client-side) auth scheme.
+        localStorage.removeItem('admin_token');
+        this.router.navigate(['/admin/dashboard']);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.submitting = false;
+        this.password = '';
+        if (err.status === 401)      this.errorMessage = 'Falsches Passwort. Bitte erneut versuchen.';
+        else if (err.status === 429) this.errorMessage = 'Zu viele Fehlversuche. Bitte einige Minuten warten.';
+        else                         this.errorMessage = 'Login fehlgeschlagen. Bitte später erneut versuchen.';
+      }
+    });
   }
 }

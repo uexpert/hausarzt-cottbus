@@ -78,7 +78,22 @@ npm run start:php   # terminal 1: PHP backend on :8001
 npm run start:ng    # terminal 2: Angular dev server on :4200
 ```
 
-**Alternative (no PHP installed):** run `node server/dev-api.js` instead of `start:php` — a Node.js server that provides the same `/api/save-news.php` endpoint without requiring PHP.
+PHP is now a hard requirement — the admin endpoints (`login.php`, `logout.php`, `whoami.php`, `save-news.php`) need a real PHP interpreter. XAMPP works fine on Windows; on macOS/Linux the system `php` binary is usually sufficient.
+
+### One-time local auth setup
+
+Before the admin dashboard works locally you need an `auth-config.php` next to the committed `auth-config.example.php`:
+
+```bash
+# 1. Copy the template
+cp server/api/auth-config.example.php server/api/auth-config.php
+
+# 2. Generate a bcrypt hash of your chosen dev password and paste it into
+#    the new file under 'admin_password_hash'. Example:
+php -r 'echo password_hash("your-dev-password", PASSWORD_BCRYPT, ["cost" => 12]) . PHP_EOL;'
+```
+
+The resulting `server/api/auth-config.php` is gitignored, so the dev password never leaves your machine. Without this file, every call to `/api/login.php` returns `500: auth-config.php missing on server`.
 
 The development server includes:
 - Hot module replacement (HMR)
@@ -183,8 +198,11 @@ The clinic site runs on **Hostinger Premium (Web Hosting)** — shared Apache + 
    - `public_html/data/`           → `755`
    - `public_html/data/news.json`  → `644`
    - `public_html/api/*.php`       → `644`
-4. Open `public_html/api/save-news.php` and confirm the `$allowedOrigins` list at the top includes the production domain.
-5. Smoke test: visit `/admin/login` → log in → toggle a notice → confirm the green save banner.
+4. Open `public_html/api/auth-helpers.php` and confirm the CORS whitelist (`$allowed` array in `set_cors_headers()`) contains the production domain.
+5. **Create `public_html/api/auth-config.php`** by copying `auth-config.example.php` and pasting a bcrypt hash of the real admin password. Generate the hash with the same `php -r 'echo password_hash(...)'` one-liner shown above, ideally on a trusted machine — never via a public hash generator. Store the plaintext password in a password manager; the server only ever sees the hash.
+6. Smoke test: visit `/admin/login` → log in → toggle a notice → confirm the green save banner. Check DevTools → Application → Cookies that `hac_session` is present with `HttpOnly`, `Secure`, and `SameSite=Strict`.
+
+**Rotating the admin password later:** regenerate the bcrypt hash and overwrite `admin_password_hash` in `auth-config.php`. Existing sessions remain valid until expiry; delete `data/sessions.json` to invalidate them immediately.
 
 ### Test deploy (sub-folder, e.g. `test-host.example.com/hausarzt-cottbus/`)
 

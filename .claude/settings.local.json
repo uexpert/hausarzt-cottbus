@@ -24,7 +24,8 @@
       "Bash(npx concurrently *)",
       "PowerShell(Get-Command *)",
       "PowerShell(Get-Process *)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "PowerShell($bytes = New-Object byte[] 24; [System.Security.Cryptography.RandomNumberGenerator]::Create\\(\\).GetBytes\\($bytes\\); $b64 = [Convert]::ToBase64String\\($bytes\\) -replace '\\\\+','-' -replace '/','_' -replace '=',''; \"hac_2026_$b64\")"
     ]
   }
 }

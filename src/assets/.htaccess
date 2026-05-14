@@ -21,6 +21,14 @@
   </FilesMatch>
 </IfModule>
 
+# ── Deny secret JSON state files (server-only auth state) ──────
+<Files "sessions.json">
+  Require all denied
+</Files>
+<Files "login-attempts.json">
+  Require all denied
+</Files>
+
 # ── SPA Routing ────────────────────────────────────────────────
 <IfModule mod_rewrite.c>
   RewriteEngine On

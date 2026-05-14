@@ -1,6 +1,9 @@
-# Defense in depth: deny direct download of backup-config.php.
-# PHP files are normally interpreted by the server, but if mod_php
-# is ever disabled the file would otherwise leak its contents.
+# Defense in depth: deny direct download of *-config.php secret files.
+# PHP files are normally interpreted by the server, but if mod_php is ever
+# disabled Apache would otherwise serve their contents plaintext.
 <Files "backup-config.php">
+  Require all denied
+</Files>
+<Files "auth-config.php">
   Require all denied
 </Files>

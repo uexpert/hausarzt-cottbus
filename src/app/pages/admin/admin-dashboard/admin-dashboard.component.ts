@@ -1,7 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { NewsService } from '../../../core/services/news.service';
 import { DialogService } from '../../../core/services/dialog.service';
 import {
@@ -21,6 +22,8 @@ export class AdminDashboardComponent implements OnInit {
   private newsService = inject(NewsService);
   private router = inject(Router);
   private dialogService = inject(DialogService);
+  private http = inject(HttpClient);
+  private location = inject(Location);
 
   private readonly TEMPLATES_KEY       = 'hac_text_templates';
   private readonly TITLE_TEMPLATES_KEY = 'hac_title_templates';
@@ -453,7 +456,18 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   logout() {
-    localStorage.removeItem('admin_token');
+    const url = this.location.prepareExternalUrl('api/logout.php');
+    // Navigate away regardless of whether the server call succeeds — the
+    // client is logging out either way; the server-side session may already
+    // be gone (e.g. expired).
+    this.http.post(url, {}, { withCredentials: true }).subscribe({
+      next: () => this.afterLogout(),
+      error: () => this.afterLogout(),
+    });
+  }
+
+  private afterLogout(): void {
+    localStorage.removeItem('admin_token'); // legacy cleanup
     this.router.navigate(['/admin/login']);
   }
 }

@@ -1,11 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { Location } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { NewsNotice } from '../utils/news.model';
 
-const API_SECRET = 'hac_news_secret_2024_xK9mP';
 const STORAGE_KEY = 'hausarzt_news';
 
 @Injectable({ providedIn: 'root' })
@@ -18,7 +17,7 @@ export class NewsService {
   private notices$ = new BehaviorSubject<NewsNotice[]>([]);
 
   loadNotices(): Observable<NewsNotice[]> {
-    // Always fetch fresh from news.json (cache-busted)
+    // Always fetch fresh from news.json (cache-busted). Public read, no auth.
     const url = this.location.prepareExternalUrl(`data/news.json?v=${Date.now()}`);
     return this.http.get<NewsNotice[]>(url).pipe(
       tap(notices => {
@@ -60,11 +59,12 @@ export class NewsService {
   saveNotices(notices: NewsNotice[]): Observable<any> {
     this.notices$.next(notices);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(notices));
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'X-API-Key': API_SECRET
-    });
-    return this.http.post(this.location.prepareExternalUrl('api/save-news.php'), notices, { headers });
+    // withCredentials sends the HttpOnly hac_session cookie set by login.php.
+    return this.http.post(
+      this.location.prepareExternalUrl('api/save-news.php'),
+      notices,
+      { withCredentials: true }
+    );
   }
 
   addNotice(notice: NewsNotice): void {

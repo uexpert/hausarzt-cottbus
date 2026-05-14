@@ -16,13 +16,18 @@
           autofocus />
       </div>
 
-      @if (error) {
+      @if (errorMessage) {
         <div class="alert alert-danger py-2 mb-3" style="font-size:14px;">
-          Falsches Passwort. Bitte erneut versuchen.
+          {{ errorMessage }}
         </div>
       }
 
-      <button class="btn btn-primary w-100 fw-semibold" (click)="login()">
+      <button class="btn btn-primary w-100 fw-semibold"
+              (click)="login()"
+              [disabled]="submitting">
+        @if (submitting) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+        }
         Anmelden
       </button>
     </div>

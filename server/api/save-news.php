@@ -1,68 +1,42 @@
 <?php
-// Simple security: secret API key
-define('API_SECRET', 'hac_news_secret_2024_xK9mP');
+/**
+ * POST /api/save-news.php
+ *
+ * Persists the admin's notice array to data/news.json. Authentication is
+ * by HttpOnly session cookie issued by login.php; no static API key.
+ */
 
-header('Content-Type: application/json');
+declare(strict_types=1);
+require_once __DIR__ . '/auth-helpers.php';
 
-// Allow the production origin plus localhost during development. When the
-// request comes through Angular's dev proxy (ng serve on :4200 → php -S on
-// :8001), the browser sends Origin: http://localhost:4200.
-$allowedOrigins = [
-    'https://www.hausarzt-cottbus.de',
-    'http://localhost:4200',
-    'http://localhost:8001',
-];
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-if (in_array($origin, $allowedOrigins, true)) {
-    header('Access-Control-Allow-Origin: ' . $origin);
-}
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, X-API-Key');
+set_cors_headers();
+handle_preflight();
 
-// Handle preflight
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    send_json(['error' => 'method not allowed'], 405);
 }
 
-// Only allow POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['error' => 'Method not allowed']);
-    exit();
-}
+require_auth();
 
-// Validate API key
-$apiKey = $_SERVER['HTTP_X_API_KEY'] ?? '';
-if ($apiKey !== API_SECRET) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Unauthorized']);
-    exit();
-}
-
-// Read and validate JSON body
 $body = file_get_contents('php://input');
-$data = json_decode($body, true);
+$data = json_decode((string)$body, true);
 if (!is_array($data)) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Invalid JSON']);
-    exit();
+    send_json(['error' => 'invalid JSON'], 400);
 }
 
-// Write to news.json
-// Production layout: api/save-news.php → ../data/news.json
-// Dev layout:        server/api/save-news.php → ../../public/data/news.json
+// Production: server/api/save-news.php → ../data/news.json
+// Dev:        server/api/save-news.php → ../../public/data/news.json
 $filePath = __DIR__ . '/../data/news.json';
 if (!is_dir(dirname($filePath))) {
     $filePath = __DIR__ . '/../../public/data/news.json';
 }
-$result = file_put_contents($filePath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
+$result = file_put_contents(
+    $filePath,
+    json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+);
 if ($result === false) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Failed to write file']);
-    exit();
+    send_json(['error' => 'failed to write file'], 500);
 }
 
-echo json_encode(['success' => true, 'saved' => count($data) . ' notices']);
-?>
+send_json(['success' => true, 'saved' => count($data) . ' notices']);

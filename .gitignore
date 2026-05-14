@@ -44,5 +44,10 @@ Thumbs.db
 # Claude
 docs/sessions/
 
-# Server-side secrets (real backup credentials live only on Hostinger)
+# Server-side secrets (real credentials live only on each host)
 server/api/backup-config.php
+server/api/auth-config.php
+
+# Runtime auth state (created by PHP on first login)
+public/data/sessions.json
+public/data/login-attempts.json
