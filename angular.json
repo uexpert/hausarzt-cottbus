@@ -28,7 +28,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "public",
+                "ignore": ["data/sessions.json", "data/login-attempts.json", "data/backups.log"]
               },
               "src/assets"
             ],
@@ -100,7 +101,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "public",
+                "ignore": ["data/sessions.json", "data/login-attempts.json", "data/backups.log"]
               },
               "src/assets"
             ],

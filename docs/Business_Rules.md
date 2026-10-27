@@ -262,7 +262,7 @@ All internal links validated:
 
 - **Save endpoint**: `/api/save-news.php` accepts POST only
 - **Authentication**: `X-API-Key` header validated against server-side secret
-- **CORS**: Origin whitelist — `https://www.hausarzt-cottbus.de`, `http://localhost:4200`, `http://localhost:8001`; reflects request `Origin` only when it matches. Sub-folder test deploys add the test host (origin only — the `/hausarzt-cottbus/` path is never part of `Origin`).
+- **CORS**: Origin whitelist — `https://www.praxis-chosnis.de`, `https://praxis-chosnis.de`, `http://localhost:4200`, `http://localhost:8001`; reflects request `Origin` only when it matches.
 - **Input Validation**: JSON body decoded and validated as array before writing
 
 ### Backup Endpoint Access Control

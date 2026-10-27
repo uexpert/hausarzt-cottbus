@@ -71,8 +71,8 @@ function cookie_path(): string {
 
 function set_cors_headers(): void {
     static $allowed = [
-        'https://www.hausarzt-cottbus.de',
-        'https://hausarzt-cottbus.de',
+        'https://www.praxis-chosnis.de',
+        'https://praxis-chosnis.de',
         'http://localhost:4200',
         'http://localhost:8001',
     ];

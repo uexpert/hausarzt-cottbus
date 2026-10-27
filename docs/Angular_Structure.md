@@ -381,7 +381,7 @@ Key Methods:
 - `updateNotice(updated)`: Replaces matching notice by `id`
 - `deleteNotice(id)`: Removes notice by `id`
 
-Base-href awareness: both URLs go through `Location.prepareExternalUrl()` so requests pick up whatever `<base href>` `index.html` was built with — `/data/news.json` for root deploys, `/hausarzt-cottbus/data/news.json` for sub-folder deploys (`npm run build:usama-dev`). No per-environment configuration needed.
+Base-href awareness: both URLs go through `Location.prepareExternalUrl()` so requests pick up whatever `<base href>` `index.html` was built with. The site is deployed at the domain root, so this resolves to `/data/news.json` and `/api/save-news.php`.
 
 State: `BehaviorSubject<NewsNotice[]>` with localStorage backup key `hausarzt_news`
 

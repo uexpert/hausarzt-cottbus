@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (2026-10-27 — production deploy at domain root)
+- **CORS whitelist corrected**: `set_cors_headers()` in `server/api/auth-helpers.php` now allows `https://www.praxis-chosnis.de` and `https://praxis-chosnis.de` (the real live domain). The previous `hausarzt-cottbus.de` entries were a placeholder derived from the project name and never matched the live site.
+- **`.htaccess` SPA rewrite is now relative**: dropped `RewriteBase /` and rewrite to `index.html` instead of `/index.html`.
+- **Runtime auth state excluded from the build**: `angular.json` asset glob for `public/` ignores `data/sessions.json`, `data/login-attempts.json`, `data/backups.log`, so local dev sessions never ship to the server.
+
+### Removed (2026-10-27)
+- `npm run build:usama-dev` script and the sub-folder (`/hausarzt-cottbus/`) test-deploy instructions — the site and admin dashboard are deployed only at the root of `www.praxis-chosnis.de`.
+
 ### Added (2026-05-10 — later that day)
 - **Preview-before-publish workflow for `Aktuelles` notices**:
   - `NewsService.getNoticeById(id)` — synchronous lookup by ID across the full notice set, ignoring `isActive` and date range

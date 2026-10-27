@@ -131,18 +131,9 @@ npm run build
 ng build
 ```
 
-Output: `dist/hausarzt-cottbus/`
+Output: `dist/hausarzt-cottbus/` (the folder name is just the Angular project name — the site is deployed at the domain root).
 
-### Production Build with Custom Base Href
-
-For deploying to a subdirectory (e.g., `example.com/hausarzt-cottbus/`):
-
-```bash
-npm run build:usama-dev
-# which runs: ng build --base-href /hausarzt-cottbus/
-```
-
-This also copies the `.htaccess` file for routing support.
+`npm run build` also runs `copy-htaccess.js`, which copies `.htaccess`, `sitemap.xml`, `robots.txt`, the search-engine verification files and the `api/` folder into the output.
 
 ### Build Options
 
@@ -170,14 +161,17 @@ dist/hausarzt-cottbus/browser/
 ├── data/                # Copied from /public/data — contains news.json
 │   └── news.json
 ├── api/                 # Copied from /server/api by copy-htaccess.js
+│   ├── auth-helpers.php, login.php, logout.php, whoami.php
 │   ├── save-news.php
 │   ├── backup-news.php
-│   ├── backup-config.example.php
+│   ├── auth-config.example.php, backup-config.example.php
 │   └── .htaccess
 └── .htaccess            # Apache routing + cache headers
 ```
 
-The whole contents of `dist/hausarzt-cottbus/browser/` is what gets uploaded to the hosting server (Hostinger's `public_html/` for a root deploy, or `public_html/<subfolder>/` for a sub-folder deploy).
+The whole contents of `dist/hausarzt-cottbus/browser/` is what gets uploaded to Hostinger's `public_html/` (root of `www.praxis-chosnis.de`).
+
+Local runtime state (`public/data/sessions.json`, `login-attempts.json`, `backups.log`) is excluded from the build via the `ignore` list in `angular.json`, so dev sessions never ship to the server.
 
 ## Deploying to Hostinger Premium
 
@@ -187,47 +181,37 @@ The clinic site runs on **Hostinger Premium (Web Hosting)** — shared Apache + 
 1. **PHP enabled** — hPanel → Advanced → PHP Configuration → pick **PHP 8.1+**.
 2. **`mod_rewrite` and `mod_headers`** — both are enabled by default; required by `src/assets/.htaccess` for SPA routing and cache headers.
 
-### Production deploy (root domain `hausarzt-cottbus.de`)
+### Production deploy (root domain `www.praxis-chosnis.de`)
 
 1. Build locally:
    ```bash
    npm run build
    ```
-2. Upload the entire contents of `dist/hausarzt-cottbus/browser/` into the live account's `public_html/` (File Manager or FTP — credentials in hPanel → Files → FTP Accounts).
-3. Set permissions once after first upload:
+2. **Before uploading (every deploy after the first):** download the live `public_html/data/news.json` as a safety copy. The build contains `data/news.json` from the repo, and uploading it **overwrites every announcement the clinic saved in the admin dashboard**. On every deploy after the first, skip `data/news.json` when uploading (or put the downloaded live copy back afterwards).
+3. Upload the contents of `dist/hausarzt-cottbus/browser/` into the live account's `public_html/` (File Manager or FTP — credentials in hPanel → Files → FTP Accounts). This replaces the old site files, including the root `.htaccess`.
+4. Set permissions once after first upload:
    - `public_html/data/`           → `755`
    - `public_html/data/news.json`  → `644`
    - `public_html/api/*.php`       → `644`
-4. Open `public_html/api/auth-helpers.php` and confirm the CORS whitelist (`$allowed` array in `set_cors_headers()`) contains the production domain.
-5. **Create `public_html/api/auth-config.php`** by copying `auth-config.example.php` and pasting a bcrypt hash of the real admin password. Generate the hash with the same `php -r 'echo password_hash(...)'` one-liner shown above, ideally on a trusted machine — never via a public hash generator. Store the plaintext password in a password manager; the server only ever sees the hash.
-6. Smoke test: visit `/admin/login` → log in → toggle a notice → confirm the green save banner. Check DevTools → Application → Cookies that `hac_session` is present with `HttpOnly`, `Secure`, and `SameSite=Strict`.
+5. The CORS whitelist (`$allowed` in `set_cors_headers()`, `api/auth-helpers.php`) already contains `https://www.praxis-chosnis.de` and `https://praxis-chosnis.de` — nothing to edit.
+6. **Create `public_html/api/auth-config.php`** (first deploy only) by copying `auth-config.example.php` and pasting a bcrypt hash of the real admin password. Generate the hash with the same `php -r 'echo password_hash(...)'` one-liner shown above, ideally on a trusted machine — never via a public hash generator. Store the plaintext password in a password manager; the server only ever sees the hash. The file is not part of the build, so later uploads never overwrite it.
+7. Smoke test:
+   - `https://www.praxis-chosnis.de/` — homepage loads; "Aktuelles" shows only active, non-expired notices.
+   - `https://www.praxis-chosnis.de/admin/login` — loads directly (not 404), so SPA routing works.
+   - Log in → toggle a notice → confirm the green save banner. DevTools → Application → Cookies shows `hac_session` with `HttpOnly`, `Secure`, `SameSite=Strict`.
+   - "👁 Auf Website ansehen" opens `/home?preview=<id>` with the yellow preview banner.
+   - "Abmelden" → cookie cleared; `/admin/dashboard` redirects to the login page.
+   - `https://www.praxis-chosnis.de/data/sessions.json` → 403.
+
+**Note on `www` vs. non-`www`:** the session cookie is bound to the exact host. Logging in on `praxis-chosnis.de` does not log you in on `www.praxis-chosnis.de` — always use the same address for the admin area.
 
 **Rotating the admin password later:** regenerate the bcrypt hash and overwrite `admin_password_hash` in `auth-config.php`. Existing sessions remain valid until expiry; delete `data/sessions.json` to invalidate them immediately.
-
-### Test deploy (sub-folder, e.g. `test-host.example.com/hausarzt-cottbus/`)
-
-For validating changes on a separate Hostinger test account *before* touching the live domain:
-
-1. Build with sub-folder base href:
-   ```bash
-   npm run build:usama-dev
-   ```
-   This sets `--base-href /hausarzt-cottbus/`, so Angular Router and asset URLs are all prefixed.
-2. On the test account, create `public_html/hausarzt-cottbus/` and upload the entire contents of `dist/hausarzt-cottbus/browser/` into it.
-3. Apply the same permissions as above, but inside `public_html/hausarzt-cottbus/`.
-4. Edit `public_html/hausarzt-cottbus/api/save-news.php` → add the test account's origin to `$allowedOrigins` (just `scheme://host`, no path).
-5. Smoke test URLs:
-   - Public:        `https://test-host.example.com/hausarzt-cottbus/`
-   - Admin login:   `https://test-host.example.com/hausarzt-cottbus/admin/login`
-   - Preview link:  `https://test-host.example.com/hausarzt-cottbus/home?preview=<noticeId>`
-
-`NewsService` uses `Location.prepareExternalUrl()` so both `/data/news.json` and `/api/save-news.php` automatically pick up the `<base href>` — no further code changes between root and sub-folder deploys.
 
 ### Daily off-site backup of `news.json` (private GitHub repo)
 
 `server/api/backup-news.php` is a cron-triggered script that uploads `data/news.json` to a private GitHub repo as `news-YYYY-MM-DD.json`, with a 30-day rolling retention. Each upload becomes a real git commit, giving you a full audit log of every admin save for free.
 
-**One-time GitHub setup** (do once for the test account, repeat with a separate token/repo for production):
+**One-time GitHub setup:**
 1. Create a **private** repo (e.g. `hausarzt-cottbus-backups`) with an initial README so `main` exists.
 2. Settings → Developer settings → **Personal access tokens → Fine-grained tokens** → Generate new token:
    - Resource owner: your user
@@ -237,7 +221,7 @@ For validating changes on a separate Hostinger test account *before* touching th
 3. Copy the `github_pat_…` token (shown once).
 
 **One-time Hostinger setup:**
-1. After uploading the build, you'll find `public_html/api/backup-config.example.php` (or `…/hausarzt-cottbus/api/…` for the sub-folder deploy). In File Manager, **copy** it next to itself and rename the copy to `backup-config.php`.
+1. After uploading the build, you'll find `public_html/api/backup-config.example.php`. In File Manager, **copy** it next to itself and rename the copy to `backup-config.php`.
 2. Edit `backup-config.php` and fill in:
    - `github_owner` — your GitHub username.
    - `github_repo` — the backup repo name.
@@ -246,12 +230,11 @@ For validating changes on a separate Hostinger test account *before* touching th
    - `retention_days` — `30` (or whatever you prefer).
 3. hPanel → Advanced → Cron Jobs → Add new:
    - Command: `/usr/bin/php /home/<your-user>/public_html/api/backup-news.php`
-     (for the sub-folder deploy: `…/public_html/hausarzt-cottbus/api/backup-news.php`)
    - Schedule: `0 21 * * *` (daily 21:00 UTC ≈ 22:00 Berlin in winter, 23:00 in summer).
 
 **Smoke-test it without waiting for cron:**
 ```
-https://<host>/api/backup-news.php?key=<backup_trigger_token>
+https://www.praxis-chosnis.de/api/backup-news.php?key=<backup_trigger_token>
 ```
 A successful run prints `{"ok":true,"uploaded":"news-YYYY-MM-DD.json","updated":false,"pruned":0,"errors":[]}`. The GitHub repo should show a new commit for today's file. Re-triggering the same day reports `"updated":true` (overwrites in place — only one file per day).
 

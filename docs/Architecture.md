@@ -254,7 +254,7 @@ Error handling patterns:
 
 ### API Security
 - PHP save endpoint validates `X-API-Key` header against server-side secret
-- CORS uses an Origin whitelist: `https://www.hausarzt-cottbus.de` (production), plus `http://localhost:4200` and `http://localhost:8001` for local development. Sub-folder test deploys add the test host (origin only; the `/hausarzt-cottbus/` path is not part of the `Origin` header). The response reflects the request `Origin` header only when it matches a whitelist entry
+- CORS uses an Origin whitelist: `https://www.praxis-chosnis.de` and `https://praxis-chosnis.de` (production), plus `http://localhost:4200` and `http://localhost:8001` for local development. The response reflects the request `Origin` header only when it matches a whitelist entry
 - Only POST method accepted; OPTIONS handled for preflight
 - HTTPS enforced in production
 
@@ -297,7 +297,6 @@ npm run start:ng
 ### Production Build
 ```bash
 npm run build           # root deployment (base href "/")
-npm run build:usama-dev # sub-folder deployment (base href "/hausarzt-cottbus/")
 ```
 
 Both scripts run `ng build && npm run copyHtaccess`. `NewsService` uses `Location.prepareExternalUrl()` so both `/data/news.json` and `/api/save-news.php` automatically pick up whatever `<base href>` `index.html` was built with — no per-environment config needed.

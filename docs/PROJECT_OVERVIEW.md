@@ -205,8 +205,6 @@ ng serve
 # Build for production
 npm run build
 
-# For development environment build (with base-href)
-npm run build:usama-dev
 
 # Output will be in dist/hausarzt-cottbus/
 ```
@@ -273,17 +271,17 @@ npm run test
 ### Build Output
 - Location: `dist/hausarzt-cottbus/browser/`
 - Configuration: `copy-htaccess.js` post-build script copies `.htaccess`, sitemap, robots, search-engine verification files, and the entire `server/api/` directory into the build output
-- Base href can be customized via build scripts (root `/` or `/hausarzt-cottbus/` sub-folder)
+- Deployed at the domain root of `www.praxis-chosnis.de` (base href `/`)
 
 ### Deployment Steps
-1. Run `npm run build` for root-domain deployment (or `npm run build:usama-dev` for sub-folder deployment at `/hausarzt-cottbus/`)
-2. Upload contents of `dist/hausarzt-cottbus/browser/` to web server (Hostinger `public_html/`, or `public_html/hausarzt-cottbus/` for the sub-folder layout)
+1. Run `npm run build`
+2. Upload contents of `dist/hausarzt-cottbus/browser/` to Hostinger `public_html/` — on every deploy after the first, do **not** overwrite the live `data/news.json` (it holds the announcements saved via the admin dashboard)
 3. Ensure `.htaccess` is included for SPA routing and Cache-Control headers
 4. Set permissions on the server: `data/` → `755`, `data/news.json` → `644`, `api/*.php` → `644`
-5. Add the test-server origin to `$allowedOrigins` in `api/save-news.php` if deploying somewhere other than `hausarzt-cottbus.de`
+5. First deploy only: create `api/auth-config.php` from `auth-config.example.php` with the bcrypt hash of the admin password (CORS whitelist in `api/auth-helpers.php` already contains `praxis-chosnis.de`)
 6. (Optional) Set up the daily GitHub backup: copy `api/backup-config.example.php` → `api/backup-config.php`, fill in PAT + trigger token, add hPanel cron job `0 21 * * *` → `/usr/bin/php /home/<user>/public_html/api/backup-news.php`
 
-See [Setup.md → Deploying to Hostinger Premium](./Setup.md#deploying-to-hostinger-premium) for the full step-by-step (root deploy, sub-folder test deploy, and backup setup).
+See [Setup.md → Deploying to Hostinger Premium](./Setup.md#deploying-to-hostinger-premium) for the full step-by-step (deploy, smoke test, and backup setup).
 
 ## Development Notes
 
