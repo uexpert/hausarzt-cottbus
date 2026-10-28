@@ -275,9 +275,9 @@ npm run test
 
 ### Deployment Steps
 1. Run `npm run build`
-2. Upload contents of `dist/hausarzt-cottbus/browser/` to Hostinger `public_html/` — on every deploy after the first, do **not** overwrite the live `data/news.json` (it holds the announcements saved via the admin dashboard)
+2. Upload the full contents of `dist/hausarzt-cottbus/browser/` to Hostinger `public_html/` — the build contains no `data/` folder, so the live `data/news.json` (announcements saved via the admin dashboard) is never overwritten. PHP creates it on the first admin save
 3. Ensure `.htaccess` is included for SPA routing and Cache-Control headers
-4. Set permissions on the server: `data/` → `755`, `data/news.json` → `644`, `api/*.php` → `644`
+4. Set permissions on the server: `api/*.php` → `644`; after the first admin save `data/` → `755`, `data/news.json` → `644`
 5. First deploy only: create `api/auth-config.php` from `auth-config.example.php` with the bcrypt hash of the admin password (CORS whitelist in `api/auth-helpers.php` already contains `praxis-chosnis.de`)
 6. (Optional) Set up the daily GitHub backup: copy `api/backup-config.example.php` → `api/backup-config.php`, fill in PAT + trigger token, add hPanel cron job `0 21 * * *` → `/usr/bin/php /home/<user>/public_html/api/backup-news.php`
 

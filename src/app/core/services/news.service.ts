@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { Location } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { NewsNotice } from '../utils/news.model';
 
 const STORAGE_KEY = 'hausarzt_news';
@@ -20,6 +20,10 @@ export class NewsService {
     // Always fetch fresh from news.json (cache-busted). Public read, no auth.
     const url = this.location.prepareExternalUrl(`data/news.json?v=${Date.now()}`);
     return this.http.get<NewsNotice[]>(url).pipe(
+      // news.json is not part of the build (so deploys never overwrite live
+      // data). Until the admin saves the first notice it does not exist on
+      // the server — treat that 404 as "no notices".
+      catchError((err: HttpErrorResponse) => err.status === 404 ? of([]) : throwError(() => err)),
       tap(notices => {
         this.notices$.next(notices);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(notices));

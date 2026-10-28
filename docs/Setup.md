@@ -158,8 +158,6 @@ dist/hausarzt-cottbus/browser/
 ├── index.html           # Main HTML file
 ├── *.js / *.css         # Hashed bundles
 ├── assets/              # Static assets (images, jQuery, etc.)
-├── data/                # Copied from /public/data — contains news.json
-│   └── news.json
 ├── api/                 # Copied from /server/api by copy-htaccess.js
 │   ├── auth-helpers.php, login.php, logout.php, whoami.php
 │   ├── save-news.php
@@ -171,7 +169,7 @@ dist/hausarzt-cottbus/browser/
 
 The whole contents of `dist/hausarzt-cottbus/browser/` is what gets uploaded to Hostinger's `public_html/` (root of `www.praxis-chosnis.de`).
 
-Local runtime state (`public/data/sessions.json`, `login-attempts.json`, `backups.log`) is excluded from the build via the `ignore` list in `angular.json`, so dev sessions never ship to the server.
+**`data/` is never part of the build.** The `ignore` list in `angular.json` excludes `public/data/news.json`, `sessions.json`, `login-attempts.json` and `backups.log`. A deploy therefore can never overwrite the announcements saved via the admin dashboard on the server, and local dev sessions never ship. On the server, `data/` and `news.json` are created by `save-news.php` on the first admin save; until then the homepage simply shows no "Aktuelles" section (`NewsService.loadNotices()` treats the 404 as an empty list).
 
 ## Deploying to Hostinger Premium
 
@@ -187,12 +185,10 @@ The clinic site runs on **Hostinger Premium (Web Hosting)** — shared Apache + 
    ```bash
    npm run build
    ```
-2. **Before uploading (every deploy after the first):** download the live `public_html/data/news.json` as a safety copy. The build contains `data/news.json` from the repo, and uploading it **overwrites every announcement the clinic saved in the admin dashboard**. On every deploy after the first, skip `data/news.json` when uploading (or put the downloaded live copy back afterwards).
-3. Upload the contents of `dist/hausarzt-cottbus/browser/` into the live account's `public_html/` (File Manager or FTP — credentials in hPanel → Files → FTP Accounts). This replaces the old site files, including the root `.htaccess`.
-4. Set permissions once after first upload:
-   - `public_html/data/`           → `755`
-   - `public_html/data/news.json`  → `644`
-   - `public_html/api/*.php`       → `644`
+2. Optional safety copy before re-deploying: download the live `public_html/data/news.json`. The upload itself never touches it — the build contains no `data/` folder.
+3. Upload the full contents of `dist/hausarzt-cottbus/browser/` into the live account's `public_html/` (File Manager or FTP — credentials in hPanel → Files → FTP Accounts). This replaces the old site files, including the root `.htaccess`.
+4. Set permissions once after first upload: `public_html/api/*.php` → `644`. After the first admin save (which creates `data/`), check `public_html/data/` → `755` and `data/news.json` → `644`.
+   - *Optional starting content:* to start with the notices from the repo, upload `public/data/news.json` **once** by hand to `public_html/data/news.json`. Never again afterwards.
 5. The CORS whitelist (`$allowed` in `set_cors_headers()`, `api/auth-helpers.php`) already contains `https://www.praxis-chosnis.de` and `https://praxis-chosnis.de` — nothing to edit.
 6. **Create `public_html/api/auth-config.php`** (first deploy only) by copying `auth-config.example.php` and pasting a bcrypt hash of the real admin password. Generate the hash with the same `php -r 'echo password_hash(...)'` one-liner shown above, ideally on a trusted machine — never via a public hash generator. Store the plaintext password in a password manager; the server only ever sees the hash. The file is not part of the build, so later uploads never overwrite it.
 7. Smoke test:

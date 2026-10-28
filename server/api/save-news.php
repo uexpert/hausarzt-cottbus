@@ -24,12 +24,10 @@ if (!is_array($data)) {
     send_json(['error' => 'invalid JSON'], 400);
 }
 
-// Production: server/api/save-news.php → ../data/news.json
-// Dev:        server/api/save-news.php → ../../public/data/news.json
-$filePath = __DIR__ . '/../data/news.json';
-if (!is_dir(dirname($filePath))) {
-    $filePath = __DIR__ . '/../../public/data/news.json';
-}
+// data_dir() resolves prod (api/../data) vs. dev (server/api/../../public/data)
+// and creates data/ on the server if it does not exist yet. news.json is not
+// part of the build, so the first save creates it.
+$filePath = data_dir() . '/news.json';
 
 $result = file_put_contents(
     $filePath,

@@ -29,7 +29,7 @@
               {
                 "glob": "**/*",
                 "input": "public",
-                "ignore": ["data/sessions.json", "data/login-attempts.json", "data/backups.log"]
+                "ignore": ["data/news.json", "data/sessions.json", "data/login-attempts.json", "data/backups.log"]
               },
               "src/assets"
             ],
@@ -102,7 +102,7 @@
               {
                 "glob": "**/*",
                 "input": "public",
-                "ignore": ["data/sessions.json", "data/login-attempts.json", "data/backups.log"]
+                "ignore": ["data/news.json", "data/sessions.json", "data/login-attempts.json", "data/backups.log"]
               },
               "src/assets"
             ],

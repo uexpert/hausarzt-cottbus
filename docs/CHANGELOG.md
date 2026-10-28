@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (2026-10-28 — news.json no longer shipped with the build)
+- **`angular.json`**: `data/news.json` added to the `public/` asset `ignore` list. Deploys can no longer overwrite the announcements saved on the server.
+- **`NewsService.loadNotices()`**: a 404 on `data/news.json` (server before the first admin save) is treated as an empty notice list instead of an error.
+- **`save-news.php`**: resolves its target via `data_dir()` from `auth-helpers.php`, which creates `data/` on the server if missing (previously a missing `data/` made it fall back to the dev path and fail).
+- **`.htaccess`**: `data/` and `api/` are excluded from the SPA rewrite, so a missing file returns a real 404 instead of `index.html`.
+
 ### Changed (2026-10-27 — production deploy at domain root)
 - **CORS whitelist corrected**: `set_cors_headers()` in `server/api/auth-helpers.php` now allows `https://www.praxis-chosnis.de` and `https://praxis-chosnis.de` (the real live domain). The previous `hausarzt-cottbus.de` entries were a placeholder derived from the project name and never matched the live site.
 - **`.htaccess` SPA rewrite is now relative**: dropped `RewriteBase /` and rewrite to `index.html` instead of `/index.html`.

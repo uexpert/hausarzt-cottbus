@@ -33,6 +33,9 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteRule ^index\.html$ - [L]
+  # data/ and api/ are never SPA routes: a missing file (e.g. news.json before
+  # the first admin save) must return a real 404, not index.html.
+  RewriteRule ^(data|api)/ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . index.html [L]
