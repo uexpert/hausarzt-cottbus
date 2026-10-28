@@ -29,6 +29,7 @@ Welcome to the complete documentation for the Hausarzt Cottbus Angular project.
 | **Business_Rules.md** | Validation rules, workflows, error handling, SEO | Frontend Developers |
 | **Setup.md** | Development environment, installation, configuration, debugging | Developers |
 | **CHANGELOG.md** | Version history and release notes | Project Managers & Developers |
+| **Benutzeranleitung_Meldungen.md** | User guide (German) for clinic staff: managing "Aktuelles" notices in the admin dashboard | Clinic staff |
 
 ## Quick Navigation
 
@@ -99,6 +100,7 @@ docs/
 ├── Business_Rules.md          # Validation & workflows
 ├── Setup.md                   # Development setup
 ├── CHANGELOG.md               # Version history
+├── Benutzeranleitung_Meldungen.md # Staff user guide (German)
 ├── Extras/
 │   └── claude_full.md         # Full documentation backup
 └── diagrams/                  # (Future: Component diagrams)
